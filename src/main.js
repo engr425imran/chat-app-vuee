@@ -8,12 +8,13 @@ import axios from "axios";
 Vue.config.productionTip = false;
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common.Accept = "application/json";
-axios.get("http://localhost:8000/sanctum/csrf-cookie").then((response) => {
-  console.log(response.data);
-});
+
 new Vue({
   router,
   store,
   vuetify,
+  created() {
+    store.dispatch("checkUser");
+  },
   render: (h) => h(App),
 }).$mount("#app");

@@ -21,9 +21,9 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Sign in to Shifl chat bot</p>
+          <p class="heading">Sign in to Shifl chat bot {{ getUser }}</p>
           <input
-            @click="check()"
+            @click="logoutUser()"
             type="button"
             value="Google Account"
             class="google-signin-button"
@@ -64,8 +64,8 @@
           </div>
           <input
             type="button"
-            value="Change image"
-            @click="login()"
+            value="Login"
+            @click="loginUser()"
             class="button-submit"
           />
         </v-card>
@@ -75,9 +75,10 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import { mapGetters, mapActions } from "vuex";
+
 export default {
-  computed: {},
   data() {
     return {
       user: {
@@ -86,31 +87,11 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapGetters(["getUser"]),
+  },
   methods: {
-    login() {
-      axios.get("http://localhost:8000/sanctum/csrf-cookie").then(() => {
-        axios
-          .post("http://localhost:8000/login", this.user)
-          .then((res) => {
-            console.log(res.data);
-            console.log("request succsesful");
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      });
-    },
-    check() {
-      axios
-        .get("http://localhost:8000/api/user")
-        .then((res) => {
-          console.log(res.data);
-          console.log("ssss");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+    ...mapActions(["loginUser", "checkUser", "logoutUser"]),
   },
 };
 </script>
