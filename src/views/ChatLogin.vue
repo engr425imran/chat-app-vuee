@@ -21,7 +21,7 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Sign in to Shifl chat bot {{ getUser }}</p>
+          <p class="heading">Sign in to Shifl chat bot</p>
           <input
             @click="logoutUser()"
             type="button"
@@ -65,7 +65,7 @@
           <input
             type="button"
             value="Login"
-            @click="loginUser()"
+            @click="login"
             class="button-submit"
           />
         </v-card>
@@ -82,8 +82,10 @@ export default {
   data() {
     return {
       user: {
-        email: "test@email.com",
+        // email: "",
+        email: "test@shifl.com",
         password: "password",
+        // password: "",
       },
     };
   },
@@ -92,6 +94,10 @@ export default {
   },
   methods: {
     ...mapActions(["loginUser", "checkUser", "logoutUser"]),
+    login() {
+      this.loginUser(this.user);
+      this.$router.push("/");
+    },
   },
 };
 </script>

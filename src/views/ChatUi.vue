@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>home view</p>
+    <p>chat UI Page</p>
   </div>
 </template>
 

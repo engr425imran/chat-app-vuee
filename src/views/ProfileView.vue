@@ -21,7 +21,7 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Welcome to Shifl Chat</p>
+          <p class="heading">Welcome to Shifl Chat {{ getUser.name }}</p>
           <p class="sub-heading">Lets setup your profile</p>
           <div class="d-flex justify-center align-center">
             <div class="justify-center">
@@ -37,6 +37,7 @@
           <input type="button" value="Change image" class="button-avatar" />
           <div style="margin-top: 24px">
             <input
+              :value="getUser.email"
               type="text"
               class="card-input"
               placeholder="Enter email Address"
@@ -58,7 +59,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
+  computed: {
+    ...mapGetters(["getUser"]),
+  },
   methods: {
     loginUser() {},
   },

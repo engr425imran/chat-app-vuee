@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import ChatView from "../views/ProfileView.vue";
+import ChatUi from "../views/ChatUi.vue";
 import ChatLogin from "../views/ChatLogin.vue";
 Vue.use(VueRouter);
 
@@ -23,6 +24,12 @@ const routes = [
     path: "/chat",
     name: "chat",
     component: ChatView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/chatUIPage",
+    name: "chatPage",
+    component: ChatUi,
     meta: { requiresAuth: true },
   },
   {

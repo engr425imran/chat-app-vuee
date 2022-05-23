@@ -92,9 +92,9 @@ export default {
       drawer: null,
       isMobile: false,
       items: [
-        { title: "Chat", icon: "mdi-view-dashboard", route: "login" },
-        { title: "Home", icon: "mdi-image", route: "chat" },
-        { title: "Profile", icon: "mdi-border-color", route: "profile" },
+        { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
+        { title: "Home", icon: "mdi-image", route: "/" },
+        { title: "Profile", icon: "mdi-border-color", route: "chat" },
       ],
     };
   },
