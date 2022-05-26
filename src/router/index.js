@@ -16,12 +16,12 @@ const routes = [
   },
   {
     path: "/login",
-    name: "login",
+    name: "Login",
     component: ChatLogin,
     meta: { requiresAuth: false },
   },
   {
-    path: "/chat",
+    path: "/profile",
     name: "chat",
     component: ChatView,
     meta: { requiresAuth: true },
@@ -33,7 +33,7 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/profile",
+    path: "/profileEdit",
     name: "profile",
     component: ProfileView,
     meta: { requiresAuth: true },
@@ -55,13 +55,21 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+const loggedIn = localStorage.getItem("user");
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem("user");
-  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
-    next("/login");
-    return;
-  }
-  next();
+  if (to.name !== "Login" && !loggedIn) next({ name: "Login" });
+  else next();
 });
 
 export default router;
+
+// if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
+//   next("/login");
+//   return;
+// } else {
+//   if (to.matched.some((record) => !record.meta.requiresAuth) ) {
+//     next({
+//       name: "home",
+//     });
+//   }
+// }

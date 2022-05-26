@@ -13,8 +13,6 @@ new Vue({
   router,
   store,
   vuetify,
-  created() {
-    store.dispatch("checkUser");
-  },
+
   render: (h) => h(App),
 }).$mount("#app");

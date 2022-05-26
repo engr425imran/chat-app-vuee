@@ -16,7 +16,7 @@
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
         <v-card
           :min-height="456"
-          :min-width="$vuetify.breakpoint.xs ? 300 : 484"
+          :max-width="$vuetify.breakpoint.xs ? 300 : 484"
           class="text-center card-body"
           outlined
           elevation="0"
@@ -113,7 +113,7 @@ export default {
   border-color: black;
 }
 .card-input {
-  width: 400px;
+  width: 100%;
   height: 40px;
   padding: 10px;
   border: 1px solid #c4c4c4;
@@ -121,7 +121,7 @@ export default {
 }
 .button-submit {
   margin-top: 16px;
-  width: 400px;
+  width: 100%;
   padding: 6px;
   background-color: #0171a1;
   color: #fff;
@@ -130,7 +130,7 @@ export default {
 
 .google-signin-button {
   margin-top: 42px;
-  width: 400px;
+  width: 100%;
   height: 40px;
   background: #ffffff;
   color: #0171a1;
@@ -144,5 +144,8 @@ export default {
   font-size: 22px;
   font-weight: 600, semi Bold;
   line-height: 26px;
+}
+.card-body {
+  padding: 15px;
 }
 </style>

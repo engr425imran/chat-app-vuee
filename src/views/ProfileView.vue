@@ -21,7 +21,7 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Welcome to Shifl Chat {{ getUser.name }}</p>
+          <p class="heading">Welcome to Shifl Chat</p>
           <p class="sub-heading">Lets setup your profile</p>
           <div class="d-flex justify-center align-center">
             <div class="justify-center">
@@ -62,7 +62,7 @@
 import { mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters(["getUser"]),
+    ...mapGetters("auth", ["getUser"]),
   },
   methods: {
     loginUser() {},
