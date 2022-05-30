@@ -33,7 +33,7 @@ export default {
           content: "Message 1",
           senderId: 1234,
           username: "John Doe",
-          avatar: "/avatar.jpeg",
+          avatar: "@/assets/images/avatar.jpeg",
           date: "13 November",
           timestamp: "10:20",
           system: false,

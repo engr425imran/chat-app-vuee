@@ -98,7 +98,6 @@ const mutations = {
   SET_USER: (state, payload) => {
     state.user = payload.user;
     state.token = payload.access_token;
-    console.log("user has been set");
   },
   LOGOUT_USER: (state) => {
     state.user = null;

@@ -10,7 +10,7 @@
           alt="shfil logo"
           width="203px"
           height="50px"
-          src="/logo.png"
+          src="@/assets/images/logo.png"
         />
       </div>
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
@@ -30,7 +30,7 @@
                 alt="shfil logo"
                 width="100"
                 height="100"
-                src="/avatar.jpeg"
+                src="@/assets/images/avatar.jpeg"
               ></v-img>
             </div>
           </div>
@@ -51,7 +51,20 @@
               placeholder="Enter Password"
             />
           </div>
-          <input type="button" value="Submit" class="button-submit" />
+          <button class="button-submit">
+            <span>
+              <v-progress-circular
+                :size="15"
+                color="red"
+                :width="2"
+                indeterminate
+                v-if="loading"
+                style="margin-right: 3px"
+              >
+              </v-progress-circular>
+              Submit
+            </span>
+          </button>
         </v-card>
       </v-sheet>
     </div>
@@ -61,6 +74,11 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  data() {
+    return {
+      loading: true,
+    };
+  },
   computed: {
     ...mapGetters("auth", ["getUser"]),
   },

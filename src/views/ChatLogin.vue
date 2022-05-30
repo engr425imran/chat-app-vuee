@@ -10,7 +10,7 @@
           alt="shfil logo"
           width="203px"
           height="50px"
-          src="/logo.png"
+          src="@/assets/images/logo.png"
         />
       </div>
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-// import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 
 export default {

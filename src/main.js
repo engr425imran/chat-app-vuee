@@ -13,12 +13,5 @@ new Vue({
   store,
   vuetify,
   router,
-
-  // created() {
-  //   console.log(store.state.auth.user);
-  //   if (store.state.auth.user) {
-  //     router.push("/");
-  //   }
-  // },
   render: (h) => h(App),
 }).$mount("#app");
