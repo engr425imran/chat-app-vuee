@@ -19,6 +19,7 @@ export default {
   },
   data() {
     return {
+      dark: "dark",
       rooms: [
         {
           roomId: 3,

@@ -94,15 +94,15 @@ export default {
       items: [
         { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
         { title: "Home", icon: "mdi-image", route: "/" },
-        { title: "Profile", icon: "mdi-border-color", route: "profile" },
+        { title: "Profile", icon: "mdi-border-color", route: "profileEdit" },
       ],
     };
   },
   computed: {
-    ...mapGetters("auth", ["getUser"]),
+    ...mapGetters(["getUser"]),
   },
   methods: {
-    ...mapActions("auth", ["logoutUser"]),
+    ...mapActions(["logoutUser"]),
     onResize() {
       if (window.innerWidth < 1024) {
         this.isMobile = true;
@@ -120,7 +120,6 @@ export default {
     },
     logout() {
       this.logoutUser();
-      this.$router.push("/login");
     },
   },
 };

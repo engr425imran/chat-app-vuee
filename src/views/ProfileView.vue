@@ -82,7 +82,7 @@ export default {
   border-color: black;
 }
 .card-input {
-  width: 400px;
+  width: 100%;
   height: 40px;
   padding: 10px;
   border: 1px solid #c4c4c4;
@@ -94,11 +94,11 @@ export default {
   font-weight: 400, Regular;
   font-size: 12px;
   line-height: 19px;
-  width: 400px;
+  width: 100%;
   padding: 6px;
   background-color: #0171a1;
   color: #fff;
-  border-radius: 7px;
+  border-radius: 5px;
 }
 
 .heading {
@@ -116,6 +116,9 @@ export default {
   font-size: 12px;
   font-weight: 400, Regular;
   line-height: 14px;
+}
+.card-body {
+  padding: 20px;
 }
 .button-avatar {
   margin-top: 7px;

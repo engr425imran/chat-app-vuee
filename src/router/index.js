@@ -2,9 +2,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ProfileView from "../views/ProfileView.vue";
-import ChatView from "../views/ProfileView.vue";
 import ChatUi from "../views/ChatUi.vue";
 import ChatLogin from "../views/ChatLogin.vue";
+import store from "../store";
 Vue.use(VueRouter);
 
 const routes = [
@@ -16,15 +16,9 @@ const routes = [
   },
   {
     path: "/login",
-    name: "Login",
+    name: "LoginView",
     component: ChatLogin,
     meta: { requiresAuth: false },
-  },
-  {
-    path: "/profile",
-    name: "chat",
-    component: ChatView,
-    meta: { requiresAuth: true },
   },
   {
     path: "/chatUIPage",
@@ -52,24 +46,22 @@ const routes = [
 
 const router = new VueRouter({
   mode: "history",
-  base: process.env.BASE_URL,
   routes,
 });
-const loggedIn = localStorage.getItem("user");
+const loggedIn = store.getters.getUser;
+// const loggedIn = store.state.user;
+// const loggedIn = localStorage.getItem("user");
 router.beforeEach((to, from, next) => {
-  if (to.name !== "Login" && !loggedIn) next({ name: "Login" });
-  else next();
+  if (to.name !== "LoginView" && !loggedIn) {
+    next({ name: "LoginView" });
+    console.log("either user is not  defined or user is login page");
+    console.log("user status => ", loggedIn);
+  } else {
+    next();
+    console.log(
+      "either user is defined or user is visiting other than login page "
+    );
+    console.log("user status", loggedIn);
+  }
 });
-
 export default router;
-
-// if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
-//   next("/login");
-//   return;
-// } else {
-//   if (to.matched.some((record) => !record.meta.requiresAuth) ) {
-//     next({
-//       name: "home",
-//     });
-//   }
-// }

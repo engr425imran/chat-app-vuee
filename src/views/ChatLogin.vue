@@ -15,15 +15,14 @@
       </div>
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
         <v-card
-          :min-height="456"
-          :max-width="$vuetify.breakpoint.xs ? 300 : 484"
+          :min-height="495"
+          :max-width="$vuetify.breakpoint.xs ? 310 : 495"
           class="text-center card-body"
           outlined
           elevation="0"
         >
           <p class="heading">Sign in to Shifl chat bot</p>
           <input
-            @click="logoutUser()"
             type="button"
             value="Google Account"
             class="google-signin-button"
@@ -79,6 +78,7 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  name: "LoginView",
   data() {
     return {
       user: {
@@ -90,13 +90,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getUser"]),
+    ...mapGetters(["getLoadingStatus"]),
   },
   methods: {
-    ...mapActions(["loginUser", "checkUser", "logoutUser"]),
+    ...mapActions(["loginUser"]),
     login() {
       this.loginUser(this.user);
-      this.$router.push("/");
     },
   },
 };
@@ -125,7 +124,7 @@ export default {
   padding: 6px;
   background-color: #0171a1;
   color: #fff;
-  border-radius: 7px;
+  border-radius: 5px;
 }
 
 .google-signin-button {
