@@ -10,14 +10,15 @@ Vue.config.productionTip = false;
 // axios.defaults.headers.common.Accept = "application/json";
 
 new Vue({
-  router,
   store,
   vuetify,
-  created() {
-    console.log(store.state.auth.user);
-    if (store.state.auth.user) {
-      router.push("/");
-    }
-  },
+  router,
+
+  // created() {
+  //   console.log(store.state.auth.user);
+  //   if (store.state.auth.user) {
+  //     router.push("/");
+  //   }
+  // },
   render: (h) => h(App),
 }).$mount("#app");

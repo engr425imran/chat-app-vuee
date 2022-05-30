@@ -1,4 +1,4 @@
-import auth from "./modules/auth";
+// import auth from "./modules/auth";
 import Vue from "vue";
 import Vuex from "vuex";
 import router from "@/router";
@@ -7,9 +7,11 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     user: localStorage.getItem("user") || null,
+    loadingStatus: false,
   },
   getters: {
     getUser: (state) => state.user,
+    getLoadingStatus: (state) => state.loadingStatus,
   },
   actions: {
     loginUser: async ({ commit }, payload) => {
@@ -40,14 +42,16 @@ export default new Vuex.Store({
     SET_USER: (state, payload) => {
       state.user = payload;
       console.log("user has been set");
-      router.push("/");
     },
     LOGOUT_USER: (state) => {
       state.user = null;
       console.log("logged out");
     },
+    SET_LOADING_STATUS: (state, payload) => {
+      state.loadingStatus = payload;
+    },
   },
   modules: {
-    auth,
+    // auth,
   },
 });

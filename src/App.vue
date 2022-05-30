@@ -122,6 +122,12 @@ export default {
       this.logoutUser();
     },
   },
+  watch: {
+    // whenever question changes, this function will run
+    getUser(newQuestion) {
+      if (newQuestion) this.$router.push("/");
+    },
+  },
 };
 </script>
 

@@ -1,35 +1,34 @@
 import Vue from "vue";
+// import store from "../store";
 import VueRouter from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import ProfileView from "../views/ProfileView.vue";
-import ChatUi from "../views/ChatUi.vue";
-import ChatLogin from "../views/ChatLogin.vue";
-import store from "../store";
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
+    component: () =>
+      import(/* webpackChunkName: "/" */ "../views/HomeView.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/login",
     name: "LoginView",
-    component: ChatLogin,
+    component: () =>
+      import(/* webpackChunkName: "/" */ "../views/ChatLogin.vue"),
     meta: { requiresAuth: false },
   },
   {
     path: "/chatUIPage",
     name: "chatPage",
-    component: ChatUi,
+    component: () => import(/* webpackChunkName: "/" */ "../views/ChatUi.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/profileEdit",
     name: "profile",
-    component: ProfileView,
+    component: () =>
+      import(/* webpackChunkName: "/" */ "../views/ProfileView.vue"),
     meta: { requiresAuth: true },
   },
   {
@@ -48,20 +47,40 @@ const router = new VueRouter({
   mode: "history",
   routes,
 });
-const loggedIn = store.getters.getUser;
-// const loggedIn = store.state.user;
+// const loggedInn = store.getters.getUser;
+// // const loggedIn = store.state.user;
 // const loggedIn = localStorage.getItem("user");
+// router.beforeEach((to, from, next) => {
+//   if (to.name !== "LoginView" && !loggedIn) {
+//     next({ name: "LoginView" });
+//     console.log(" user is not  defined and  user is not visiting login page");
+//     console.log(
+//       "user status from storage => ",
+//       loggedIn,
+//       "user status from state =>",
+//       loggedInn
+//     );
+//   } else {
+//     next();
+//     console.log("either user is defined or user is visiting  login page ");
+//     console.log(
+//       "user status from storage => ",
+//       loggedIn,
+//       "user status from state =>",
+//       loggedInn
+//     );
+//   }
+// });
 router.beforeEach((to, from, next) => {
-  if (to.name !== "LoginView" && !loggedIn) {
-    next({ name: "LoginView" });
-    console.log("either user is not  defined or user is login page");
-    console.log("user status => ", loggedIn);
+  const publicPages = ["/login"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("user");
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next("/login");
   } else {
     next();
-    console.log(
-      "either user is defined or user is visiting other than login page "
-    );
-    console.log("user status", loggedIn);
   }
 });
 export default router;
