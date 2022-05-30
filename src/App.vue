@@ -99,10 +99,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getUser"]),
+    ...mapGetters("auth", ["getUser"]),
   },
   methods: {
-    ...mapActions(["logoutUser"]),
+    ...mapActions("auth", ["logoutUser"]),
     onResize() {
       if (window.innerWidth < 1024) {
         this.isMobile = true;

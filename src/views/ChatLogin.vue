@@ -90,10 +90,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getLoadingStatus"]),
+    ...mapGetters("auth", ["getLoadingStatus"]),
   },
   methods: {
-    ...mapActions(["loginUser"]),
+    ...mapActions("auth", ["loginUser"]),
     login() {
       this.loginUser(this.user);
     },
