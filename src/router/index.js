@@ -53,6 +53,8 @@ router.beforeEach((to, from, next) => {
   // redirect to login page
   if (authRequired && !loggedIn) {
     next("/login");
+  } else if (to.name === "LoginView" && loggedIn) {
+    next("/");
   } else {
     next();
   }

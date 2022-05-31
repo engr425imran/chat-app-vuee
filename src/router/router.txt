@@ -60,3 +60,7 @@ router.beforeEach((to, from, next) => {
   }
 });
 export default router;
+
+else if (to.name == 'LoginView' && loggedIn && from) {
+  next("/")
+}

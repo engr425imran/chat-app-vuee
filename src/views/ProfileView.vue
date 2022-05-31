@@ -34,7 +34,8 @@
               ></v-img>
             </div>
           </div>
-          <input type="button" value="Change image" class="button-avatar" />
+          <input type="file" class="button-avatar" />
+          <!-- <input type="file" class="custom-file-input" /> -->
           <div style="margin-top: 24px">
             <input
               :value="getUser.email"
@@ -55,10 +56,10 @@
             <span>
               <v-progress-circular
                 :size="15"
-                color="red"
-                :width="2"
+                color="#fff"
+                :width="3"
                 indeterminate
-                v-if="loading"
+                v-if="getLoadingStatus"
                 style="margin-right: 3px"
               >
               </v-progress-circular>
@@ -80,7 +81,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["getUser"]),
+    ...mapGetters("auth", ["getUser", "getLoadingStatus"]),
   },
   methods: {
     loginUser() {},
@@ -90,6 +91,41 @@ export default {
 </script>
 
 <style scoped>
+.button-avatar {
+  color: transparent;
+}
+
+.button-avatar::-webkit-file-upload-button {
+  margin: 5px 89px;
+  cursor: pointer;
+  height: 40px;
+  width: 127px;
+  padding: 12px;
+  background-color: #fff;
+  color: #0171a1;
+  border: 1px solid #0171a1;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 400, Regular;
+  line-height: 14px;
+}
+/* .button-avatar::before {
+  visibility: hidden;
+  margin-top: 7px;
+  content: "Select some files";
+  display: inline-block;
+  cursor: pointer;
+  height: 40px;
+  width: 127px;
+  padding: 12px;
+  color: #0171a1;
+  border: 1px solid #0171a1;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 400, Regular;
+  line-height: 14px;
+} */
+
 .main-container {
   background-color: #e5e5e5;
   width: 100%;
@@ -137,17 +173,5 @@ export default {
 }
 .card-body {
   padding: 20px;
-}
-.button-avatar {
-  margin-top: 7px;
-  height: 40px;
-  width: 127px;
-  padding: 12px;
-  color: #0171a1;
-  border: 1px solid #0171a1;
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: 400, Regular;
-  line-height: 14px;
 }
 </style>

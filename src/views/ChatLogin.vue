@@ -61,12 +61,22 @@
               />
             </div>
           </div>
-          <input
-            type="button"
-            value="Login"
-            @click="login"
-            class="button-submit"
-          />
+          <p style="margin-top: 8px; color: #ea3f3f; font-size: 13px">
+            {{ getErrorMessage }}
+          </p>
+          <button @click="login()" class="button-submit">
+            <v-progress-circular
+              :size="15"
+              color="#fff"
+              :width="3"
+              indeterminate
+              v-if="getLoadingStatus"
+              style="margin-right: 3px"
+            >
+            </v-progress-circular>
+            <span> Login </span>
+          </button>
+          <input />
         </v-card>
       </v-sheet>
     </div>
@@ -89,7 +99,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["getLoadingStatus"]),
+    ...mapGetters("auth", ["getLoadingStatus", "getErrorMessage"]),
   },
   methods: {
     ...mapActions("auth", ["loginUser"]),
@@ -118,7 +128,7 @@ export default {
   border-radius: 5px;
 }
 .button-submit {
-  margin-top: 16px;
+  margin-top: 5px;
   width: 100%;
   padding: 6px;
   background-color: #0171a1;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>home xxs view</p>
+    <h2>Home view xx ss dd</h2>
   </div>
 </template>
 

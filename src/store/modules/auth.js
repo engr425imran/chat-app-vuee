@@ -1,21 +1,23 @@
 import router from "@/router";
 import axios from "axios";
-// const localUrl = process.env.API_URL;
-// const REMOTE_API = process.env.REMOTE_API;
+const VUE_APP_LOCAL_APP_URL = process.env.VUE_APP_HEROKU_APP_URL;
+// const VUE_APP_LOCAL_APP_URL = process.env.VUE_APP_LOCAL_APP_URL;
 
 const state = {
-  user: localStorage.getItem("user") || null,
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null,
   token: localStorage.getItem("access_token")
     ? JSON.parse(localStorage.getItem("access_token"))
     : null,
   loadingStatus: false,
-  imran: null,
+  errorMessage: "",
 };
 
 const getters = {
   getUser: (state) => state.user,
   getLoadingStatus: (state) => state.loadingStatus,
-  getimran: (state) => state.imran,
+  getErrorMessage: (state) => state.errorMessage,
 };
 
 const actions = {
@@ -60,8 +62,11 @@ const actions = {
       email: payload.email,
       password: payload.password,
     };
-    axios
-      .post("http://localhost:8000/api/user/login", body)
+    await axios
+      .post(`${VUE_APP_LOCAL_APP_URL}/user/login`, body)
+      // .get(`${APIBaseUrl}/getyards`)
+
+      // .post("http://localhost:8000/api/user/login", body)
       .then((res) => {
         commit("SET_USER", res.data);
         localStorage.setItem("user", JSON.stringify(body));
@@ -71,15 +76,16 @@ const actions = {
           JSON.stringify(res.data.access_token)
         );
         commit("SET_LOADING_STATUS", false);
-        commit("SET_IMRAN", "olamba");
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((error) => {
+        if (error.response.data.message)
+          commit("SET_ERROR_MESSAGE", error.response.data.message);
+        commit("SET_LOADING_STATUS", false);
       });
   },
   logoutUser: async ({ commit, state }) => {
     await axios
-      .get("http://localhost:8000/api/user/logout", {
+      .get(`${VUE_APP_LOCAL_APP_URL}/user/logout`, {
         headers: { Authorization: `Bearer ${state.token}` },
       })
       .then(() => {
@@ -105,8 +111,8 @@ const mutations = {
   SET_LOADING_STATUS: (state, payload) => {
     state.loadingStatus = payload;
   },
-  SET_IMRAN: (state, payload) => {
-    state.imran = payload;
+  SET_ERROR_MESSAGE: (state, payload) => {
+    state.errorMessage = payload;
   },
 };
 
