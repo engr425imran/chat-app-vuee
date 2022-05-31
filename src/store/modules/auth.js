@@ -1,7 +1,7 @@
 import router from "@/router";
 import axios from "axios";
-const VUE_APP_LOCAL_APP_URL = process.env.VUE_APP_HEROKU_APP_URL;
-// const VUE_APP_LOCAL_APP_URL = process.env.VUE_APP_LOCAL_APP_URL;
+// const VUE_APP_LOCAL_APP_URL = process.env.VUE_APP_HEROKU_APP_URL;
+const VUE_APP_LOCAL_APP_URL = process.env.VUE_APP_LOCAL_APP_URL;
 
 const state = {
   user: localStorage.getItem("user")
