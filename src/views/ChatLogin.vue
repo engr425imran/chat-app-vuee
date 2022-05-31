@@ -76,7 +76,6 @@
             </v-progress-circular>
             <span> Login </span>
           </button>
-          <input />
         </v-card>
       </v-sheet>
     </div>
@@ -91,10 +90,10 @@ export default {
   data() {
     return {
       user: {
-        // email: "",
-        email: "test@shifl.com",
-        password: "password",
-        // password: "",
+        email: "",
+        // email: "test@shifl.com",
+        // password: "password",
+        password: "",
       },
     };
   },
