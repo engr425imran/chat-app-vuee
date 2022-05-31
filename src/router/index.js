@@ -5,6 +5,7 @@ import ChatLogin from "../views/ChatLogin.vue";
 import ChatUi from "../views/ChatUi.vue";
 import ProfileView from "../views/ProfileView.vue";
 import AboutView from "../views/AboutView.vue";
+import NotFound from "../views/404View.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -38,6 +39,7 @@ const routes = [
     component: AboutView,
     meta: { requiresAuth: true },
   },
+  { path: "/:pathMatch(.*)", component: NotFound },
 ];
 
 const router = new VueRouter({
