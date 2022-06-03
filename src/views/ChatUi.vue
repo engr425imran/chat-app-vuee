@@ -1,75 +1,153 @@
 <template>
-  <chat-window
-    :theme="dark"
-    :responsive-breakpoint="122"
-    :current-user-id="currentUserId"
-    :rooms="rooms"
-    :messages="messages"
-    @send-message="sendMessage"
-  />
-</template>
+  <div>
+    <div
+      class="app-container"
+      :class="{ 'app-mobile': isDevice, 'app-mobile-dark': theme === 'dark' }"
+    >
+      <span
+        v-if="showOptions"
+        class="user-logged"
+        :class="{ 'user-logged-dark': theme === 'dark' }"
+      >
+        Logged as
+      </span>
+      <select v-if="showOptions" v-model="currentUserId">
+        <option v-for="user in users" :key="user._id" :value="user._id">
+          {{ user.username }}
+        </option>
+      </select>
 
+      <div v-if="showOptions" class="button-theme">
+        <button class="button-light" @click="theme = 'light'">Light</button>
+        <button class="button-dark" @click="theme = 'dark'">Dark</button>
+        <button class="button-github">
+          <a href="#">
+            <img src="@/assets/images/logo.svg" />
+          </a>
+        </button>
+      </div>
+
+      <chat-container
+        v-if="showChat"
+        :current-user-id="currentUserId"
+        :theme="theme"
+        :is-device="isDevice"
+        @show-demo-options="showDemoOptions = $event"
+      />
+      <div class="version-container">v1.0.0</div>
+    </div>
+  </div>
+</template>
 <script>
-import ChatWindow from "vue-advanced-chat";
+// import ChatWindow from "vue-advanced-chat";
+import ChatContainer from "../chat/ChatContainer";
+// import "vue-advanced-chat/dist/vue-advanced-chat.css";
+
 import { mapGetters } from "vuex";
 
 export default {
   components: {
-    ChatWindow,
+    ChatContainer,
   },
   data() {
     return {
-      dark: "dark",
-      rooms: [
+      theme: "light",
+      showChat: true,
+      users: [
         {
-          roomId: 3,
-          roomName: "Room 1",
+          _id: "6R0MijpK6M4AIrwaaCY2",
+          username: "Luke",
+          avatar: require("@/assets/images/avatars/avatarLuke.jpeg"),
+        },
+        {
+          _id: "SGmFnBZB4xxMv9V4CVlW",
+          username: "Leia",
+          avatar: require("@/assets/images/avatars/avatarLeia.jpeg"),
+        },
+        {
+          _id: "6jMsIXUrBHBj7o2cRlau",
+          username: "Yoda",
+          avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
         },
       ],
-      messages: [
-        {
-          _id: 7890,
-          indexId: 12092,
-          content: "Message 1",
-          senderId: 1234,
-          username: "John Doe",
-          avatar: "@/assets/images/avatar.jpeg",
-          date: "13 November",
-          timestamp: "10:20",
-          system: false,
-          saved: true,
-          distributed: true,
-          seen: true,
-          deleted: false,
-          failure: true,
-          disableActions: false,
-          disableReactions: false,
-        },
-      ],
-      currentUserId: 4321,
-
-      menuActions: [
-        { name: "inviteUser", title: "Invite User" },
-        { name: "removeUser", title: "Remove User" },
-        { name: "deleteRoom", title: "Delete Room" },
-      ],
+      currentUserId: "6R0MijpK6M4AIrwaaCY2",
+      isDevice: false,
+      showDemoOptions: true,
+      updatingData: false,
     };
   },
   computed: {
-    ...mapGetters("auth", ["getUser"]),
+    showOptions() {
+      return !this.isDevice || this.showDemoOptions;
+    },
+  },
+  watch: {
+    currentUserId() {
+      this.showChat = false;
+      console.log("user dy chango ko kana");
+      setTimeout(() => (this.showChat = true), 150);
+    },
+  },
+  mounted() {
+    this.isDevice = window.innerWidth < 500;
+    window.addEventListener("resize", (ev) => {
+      if (ev.isTrusted) this.isDevice = window.innerWidth < 500;
+    });
   },
   methods: {
-    check() {
-      // const userbhai = localStorage.getItem("user");
-    },
-    async sendMessage({ content, roomId, replyMessage }) {
-      const message = {
-        sender_id: this.currentUserId,
-        content,
-        timestamp: new Date(),
-      };
-      console.log(message, roomId, replyMessage);
-    },
+    // resetData() {
+    //   firestoreService.getAllRooms().then(({ data }) => {
+    //     data.forEach(async (room) => {
+    //       await firestoreService.getMessages(room.id).then(({ data }) => {
+    //         data.forEach((message) => {
+    //           firestoreService.deleteMessage(room.id, message.id);
+    //           if (message.files) {
+    //             message.files.forEach((file) => {
+    //               storageService.deleteFile(
+    //                 this.currentUserId,
+    //                 message.id,
+    //                 file
+    //               );
+    //             });
+    //           }
+    //         });
+    //       });
+    //       firestoreService.deleteRoom(room.id);
+    //     });
+    //   });
+    //   firestoreService.getAllUsers().then(({ data }) => {
+    //     data.forEach((user) => {
+    //       firestoreService.deleteUser(user.id);
+    //     });
+    //   });
+    // },
+    // async addData() {
+    //   this.updatingData = true;
+    //   const user1 = this.users[0];
+    //   await firestoreService.addIdentifiedUser(user1._id, user1);
+    //   const user2 = this.users[1];
+    //   await firestoreService.addIdentifiedUser(user2._id, user2);
+    //   const user3 = this.users[2];
+    //   await firestoreService.addIdentifiedUser(user3._id, user3);
+    //   await firestoreService.addRoom({
+    //     users: [user1._id, user2._id],
+    //     lastUpdated: new Date(),
+    //   });
+    //   await firestoreService.addRoom({
+    //     users: [user1._id, user3._id],
+    //     lastUpdated: new Date(),
+    //   });
+    //   await firestoreService.addRoom({
+    //     users: [user2._id, user3._id],
+    //     lastUpdated: new Date(),
+    //   });
+    //   await firestoreService.addRoom({
+    //     users: [user1._id, user2._id, user3._id],
+    //     lastUpdated: new Date(),
+    //   });
+    //   this.updatingData = false;
+    //   location.reload();
+    // },
   },
 };
 </script>
