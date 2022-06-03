@@ -46,6 +46,7 @@
       :templates-text="templatesText"
       @fetch-more-rooms="fetchMoreRooms"
       @add-room="addRoom"
+      @send-message="sendMessage"
       @toggle-rooms-list="$emit('show-demo-options', $event.opened)"
     >
       <!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
@@ -59,7 +60,6 @@
     </chat-window>
     <!-- functions to be uses -->
     <!-- <div>
-      @send-message="sendMessage"
       @edit-message="editMessage"
       @delete-message="deleteMessage"
       @open-file="openFile"
@@ -261,25 +261,9 @@ export default {
       }
       this.selectedRoom = room.roomId;
       console.log(room, options);
-      // firestoreService
-      // 	.getMessages(room.roomId, this.messagesPerPage, this.lastLoadedMessage)
-      // 	.then(({ data, docs }) => {
-      // 		// this.incrementDbCounter('Fetch Room Messages', messages.length)
-      // 		if (this.selectedRoom !== room.roomId) return
-      // 		if (data.length === 0 || data.length < this.messagesPerPage) {
-      // 			setTimeout(() => (this.messagesLoaded = true), 0)
-      // 		}
-      // 		if (options.reset) this.messages = []
-      // 		data.forEach(message => {
-      // 			const formattedMessage = this.formatMessage(room, message)
-      // 			this.messages.unshift(formattedMessage)
-      // 		})
-      // 		if (this.lastLoadedMessage) {
-      // 			this.previousLastLoadedMessage = this.lastLoadedMessage
-      // 		}
-      // 		this.lastLoadedMessage = docs[docs.length - 1]
-      // 		this.listenMessages(room)
-      // 	})
+    },
+    sendMessage() {
+      console.log("olamba");
     },
     fetchRooms() {
       this.resetRooms();
