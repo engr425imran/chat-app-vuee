@@ -72,171 +72,291 @@
     </div> -->
   </div>
 </template>
+
 <script>
+// import ChatWindow from "@/chat/lib/ChatWindow.vue";
 import ChatWindow from "vue-advanced-chat";
+
 import "vue-advanced-chat/dist/vue-advanced-chat.css";
-
-import { mapGetters } from "vuex";
-
+// import "./vue-advanced-chat.css";
+// import { parseTimestamp } from "./utils/dates";
 export default {
+  name: "Test-App",
   components: {
     ChatWindow,
   },
+  props: {
+    currentUserId: { type: String, required: true },
+    theme: { type: String, required: true },
+    isDevice: { type: Boolean, required: true },
+  },
   data() {
     return {
-      dark: "dark",
+      roomId: 1,
+      styles: { container: { borderRadius: "4px" } },
+      roomsPerPage: 15,
       rooms: [
         {
-          roomId: 3,
-          roomName: "Room 1",
+          roomId: 1,
+          roomName: "University friends",
+          avatar: require("@/assets/images/logo.png"),
+          unreadCount: 4,
+          index: 3,
+          lastMessage: {
+            content: "match la zu ",
+            senderId: 4321,
+            username: "John Snow",
+            timestamp: "10:20",
+            saved: true,
+            distributed: false,
+            seen: false,
+            new: true,
+          },
+          users: [
+            {
+              _id: 12394,
+              username: "Luke",
+              avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
+              status: { state: "offline", lastChanged: "today, 14:30" },
+            },
+            {
+              _id: 4321,
+              username: "John Snow",
+              avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
+              status: { state: "online", lastChanged: "14 July, 20:00" },
+            },
+          ],
+          typingUsers: [],
         },
-      ],
-      messages: [
         {
-          _id: 7890,
-          indexId: 12092,
-          content: "Message 1",
-          senderId: 1234,
-          username: "John Doe",
-          avatar: "@/assets/images/avatar.jpeg",
-          date: "13 November",
-          timestamp: "10:20",
-          system: false,
-          saved: true,
-          distributed: true,
-          seen: true,
-          deleted: false,
-          failure: true,
-          disableActions: false,
-          disableReactions: false,
+          roomId: 3,
+          roomName: "lamghani",
+          avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
+          // avatar: require("@/assets/images/peple.png"),
+          unreadCount: 1,
+          index: 1,
+          lastMessage: {
+            content: "charta ye",
+            senderId: 4321,
+            username: "Leia Snow",
+            timestamp: "10:20",
+            saved: true,
+            distributed: false,
+            seen: false,
+            new: true,
+          },
+          users: [
+            {
+              _id: 288,
+              username: "Luke",
+              avatar: require("@/assets/images/avatars/avatarLuke.jpeg"),
+              status: { state: "offline", lastChanged: "today, 14:30" },
+            },
+            {
+              _id: 136,
+              username: "Leia Snow",
+              avatar: require("@/assets/images/avatars/avatarLeia.jpeg"),
+              status: { state: "online", lastChanged: "14 July, 20:00" },
+            },
+          ],
+          typingUsers: [],
         },
       ],
-      currentUserId: 4321,
-
+      roomsLoaded: true,
+      messagesLoaded: false,
+      loadingRooms: false,
+      messages: [],
+      addNewRoom: null,
+      loadedRooms: true,
+      inviteRoomId: null,
+      removeRoomId: null,
+      addRoomUsername: "",
+      roomActions: [
+        { name: "inviteUser", title: "Invite Users" },
+        { name: "removeUser", title: "Remove User" },
+        { name: "deleteRoom", title: "Delete Room" },
+      ],
       menuActions: [
         { name: "inviteUser", title: "Invite User" },
         { name: "removeUser", title: "Remove User" },
-        { name: "deleteRoom", title: "Delete Room" },
+        { name: "deleteRoom", title: "Delete Rooms" },
+      ],
+      messageSelectionActions: [{ name: "deleteMessages", title: "Delete" }],
+      roomMessage: "sass",
+      templatesText: [
+        {
+          tag: "help",
+          text: "This is the help",
+        },
+        {
+          tag: "action",
+          text: "This is the action",
+        },
+        {
+          tag: "action 2",
+          text: "This is the second action",
+        },
       ],
     };
   },
   computed: {
-    ...mapGetters("auth", ["getUser"]),
-  },
-  methods: {
-    check() {
-      // const userbhai = localStorage.getItem("user");
+    screenHeight() {
+      return this.isDevice ? window.innerHeight + "px" : "calc(100vh - 80px)";
     },
-    async sendMessage({ content, roomId, replyMessage }) {
-      const message = {
-        sender_id: this.currentUserId,
-        content,
-        timestamp: new Date(),
-      };
-      console.log(message, roomId, replyMessage);
+  },
+  created() {},
+  methods: {
+    openFile() {
+      console.log("helo");
+    },
+    addRoom() {
+      this.resetForms();
+      this.addNewRoom = true;
+    },
+    async createRoom() {
+      this.disableForm = true;
+      // const { id } = await firestoreService.addUser({
+      //   username: this.addRoomUsername,
+      // });
+      // await firestoreService.updateUser(id, { _id: id });
+      // await firestoreService.addRoom({
+      //   users: [id, this.currentUserId],
+      //   lastUpdated: new Date(),
+      // });
+      this.addNewRoom = false;
+      this.addRoomUsername = "";
+      this.fetchRooms();
+    },
+    resetForms() {
+      this.disableForm = false;
+      this.addNewRoom = null;
+      this.addRoomUsername = "";
+      this.inviteRoomId = null;
+      this.invitedUsername = "";
+      this.removeRoomId = null;
+      this.removeUserId = "";
+    },
+    async deleteMessage({ message, roomId }) {
+      // await firestoreService.updateMessage(roomId, message._id, {
+      //   deleted: new Date(),
+      // });
+      const { files } = message;
+      if (files) {
+        console.log(files, message, roomId);
+        // files.forEach((file) => {
+        //   storageService.deleteFile(this.currentUserId, message._id, file);
+        // });
+      }
+    },
+
+    fetchMessages({ room, options = {} }) {
+      this.$emit("show-demo-options", false);
+      if (options.reset) {
+        this.resetMessages();
+        this.roomId = room.roomId;
+      }
+      if (this.previousLastLoadedMessage && !this.lastLoadedMessage) {
+        this.messagesLoaded = true;
+        return;
+      }
+      this.selectedRoom = room.roomId;
+      console.log(room, options);
+      // firestoreService
+      // 	.getMessages(room.roomId, this.messagesPerPage, this.lastLoadedMessage)
+      // 	.then(({ data, docs }) => {
+      // 		// this.incrementDbCounter('Fetch Room Messages', messages.length)
+      // 		if (this.selectedRoom !== room.roomId) return
+      // 		if (data.length === 0 || data.length < this.messagesPerPage) {
+      // 			setTimeout(() => (this.messagesLoaded = true), 0)
+      // 		}
+      // 		if (options.reset) this.messages = []
+      // 		data.forEach(message => {
+      // 			const formattedMessage = this.formatMessage(room, message)
+      // 			this.messages.unshift(formattedMessage)
+      // 		})
+      // 		if (this.lastLoadedMessage) {
+      // 			this.previousLastLoadedMessage = this.lastLoadedMessage
+      // 		}
+      // 		this.lastLoadedMessage = docs[docs.length - 1]
+      // 		this.listenMessages(room)
+      // 	})
+    },
+    fetchRooms() {
+      this.resetRooms();
+      this.fetchMoreRooms();
+    },
+    resetRooms() {
+      console.log("ddd");
+    },
+    fetchMoreRooms() {
+      console.log("fetchMoreRooms");
+    },
+    resetMessages() {
+      console.log("resetMessages");
     },
   },
 };
 </script>
 
-<style lang="scss">
-body {
-  background: #fafafa;
-  margin: 0;
+<style lang="scss" scoped>
+.window-container {
+  width: 100%;
+}
+.window-mobile {
+  form {
+    padding: 0 10px 10px;
+  }
+}
+form {
+  padding-bottom: 20px;
 }
 input {
-  -webkit-appearance: none;
-}
-.app-container {
-  font-family: "Quicksand", sans-serif;
-  padding: 20px 30px 30px;
-}
-.app-mobile {
-  padding: 0;
-  &.app-mobile-dark {
-    background: #131415;
-  }
-  .user-logged {
-    margin: 10px 5px 0 10px;
-  }
-  select {
-    margin: 10px 0;
-  }
-  .button-theme {
-    margin: 10px 10px 0 0;
-    .button-github {
-      height: 23px;
-      img {
-        height: 23px;
-      }
-    }
+  padding: 5px;
+  width: 140px;
+  height: 21px;
+  border-radius: 4px;
+  border: 1px solid #d2d6da;
+  outline: none;
+  font-size: 14px;
+  vertical-align: middle;
+  &::placeholder {
+    color: #9ca6af;
   }
 }
-.user-logged {
-  font-size: 12px;
-  margin-right: 5px;
-  margin-top: 10px;
-  &.user-logged-dark {
-    color: #fff;
+button {
+  background: #202f27;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-left: 10px;
+  border: none;
+  font-size: 14px;
+  transition: 0.3s;
+  vertical-align: middle;
+  &:hover {
+    opacity: 0.8;
   }
+  &:active {
+    opacity: 0.6;
+  }
+  &:disabled {
+    cursor: initial;
+    background: #c6c9cc;
+    opacity: 0.6;
+  }
+}
+.button-cancel {
+  color: #a8aeb3;
+  background: none;
+  margin-left: 5px;
 }
 select {
-  height: 20px;
-  outline: none;
-  border: 1px solid #e0e2e4;
-  border-radius: 4px;
-  background: #fff;
-  margin-bottom: 20px;
-}
-.button-theme {
-  float: right;
-  display: flex;
-  align-items: center;
-  .button-light {
-    background: #fff;
-    border: 1px solid #46484e;
-    color: #46484e;
-  }
-  .button-dark {
-    background: #1c1d21;
-    border: 1px solid #1c1d21;
-  }
-  button {
-    color: #fff;
-    outline: none;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 6px 12px;
-    margin-left: 10px;
-    border: none;
-    font-size: 14px;
-    transition: 0.3s;
-    vertical-align: middle;
-    &.button-github {
-      height: 30px;
-      background: none;
-      padding: 0;
-      margin-left: 20px;
-      img {
-        height: 30px;
-      }
-    }
-    &:hover {
-      opacity: 0.8;
-    }
-    &:active {
-      opacity: 0.6;
-    }
-    @media only screen and (max-width: 768px) {
-      padding: 3px 6px;
-      font-size: 13px;
-    }
-  }
-}
-.version-container {
-  padding-top: 20px;
-  text-align: right;
-  font-size: 14px;
-  color: grey;
+  vertical-align: middle;
+  height: 33px;
+  width: 152px;
+  font-size: 13px;
+  margin: 0 !important;
 }
 </style>

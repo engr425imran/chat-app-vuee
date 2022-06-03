@@ -39,11 +39,7 @@
   </div>
 </template>
 <script>
-// import ChatWindow from "vue-advanced-chat";
 import ChatContainer from "../chat/ChatContainer";
-// import "vue-advanced-chat/dist/vue-advanced-chat.css";
-
-import { mapGetters } from "vuex";
 
 export default {
   components: {
