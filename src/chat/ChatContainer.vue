@@ -20,7 +20,7 @@
       <select v-model="removeUserId">
         <option default value="">Select User</option>
         <option v-for="user in removeUsers" :key="user._id" :value="user._id">
-          {{ user.username }}
+          {{ user }}
         </option>
       </select>
       <button type="submit" :disabled="disableForm || !removeUserId">
@@ -28,175 +28,93 @@
       </button>
       <button class="button-cancel" @click="removeRoomId = null">Cancel</button>
     </form>
+    <Button @click="fetchOldMessages('superhero5')" class="check"
+      >display message</Button
+    >
+    <Button @click="displayUsers()" class="check">users</Button>
+    <Button @click="getConverstionforUser()" class="check">converstion</Button>
     <chat-window
       :rooms="rooms"
-      :height="screenHeight"
-      :theme="theme"
-      :styles="styles"
-      :current-user-id="currentUserId"
       :room-id="roomId"
-      :loading-rooms="loadingRooms"
+      :height="screenHeight"
+      :styles="styles"
+      :rooms-loaded="roomsLoaded"
+      :current-user-id="currentUser.uid"
       :messages="messages"
       :messages-loaded="messagesLoaded"
-      :rooms-loaded="roomsLoaded"
-      :room-actions="roomActions"
-      :menu-actions="menuActions"
       :message-selection-actions="messageSelectionActions"
-      :room-message="roomMessage"
-      :templates-text="templatesText"
       @fetch-more-rooms="fetchMoreRooms"
       @add-room="addRoom"
       @send-message="sendMessage"
       @toggle-rooms-list="$emit('show-demo-options', $event.opened)"
-    >
-      <!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
-        <button
-          style="background-color: red"
-          @click="addEmoji({ unicode: '😁' })"
-        >
-          {{ emojiOpened }}
-        </button>
-      </template> -->
-    </chat-window>
-    <!-- functions to be uses -->
-    <!-- <div>
-      @edit-message="editMessage"
       @delete-message="deleteMessage"
-      @open-file="openFile"
+      @listen-messages="listenMessages"
+      @fetch-messages="fetchMessages"
+    >
+    </chat-window>
+    <!-- 
+      :loading-rooms="loadingRooms"
+     -->
+    <!-- functions to be uses -->
+    <!-- @fetch-messages="fetchMessages" -->
+
+    <!-- <div>
+      :room-actions="roomActions"
+
+      @edit-message="editMessage"
       @open-user-tag="openUserTag"
       @room-action-handler="menuActionHandler"
       @menu-action-handler="menuActionHandler"
       @message-selection-action-handler="messageSelectionActionHandler"
-      @send-message-reaction="sendMessageReaction"
       @typing-message="typingMessage"
     </div> -->
   </div>
 </template>
 
 <script>
-// import ChatWindow from "@/chat/lib/ChatWindow.vue";
 import ChatWindow from "vue-advanced-chat";
-
+import { imran, uniqueId } from "./Helper/helperFunction";
+// import { rooms } from "./Helper/dataObject";
 import "vue-advanced-chat/dist/vue-advanced-chat.css";
-// import "./vue-advanced-chat.css";
-// import { parseTimestamp } from "./utils/dates";
+import { CometChat } from "@cometchat-pro/chat";
+// import { messages } from "./Helper/dataObject";
+
 export default {
-  name: "Test-App",
+  name: "Chat-Container",
   components: {
     ChatWindow,
   },
   props: {
-    currentUserId: { type: String, required: true },
-    theme: { type: String, required: true },
+    theme: { type: String, default: "light" },
     isDevice: { type: Boolean, required: true },
+    currentUser: { type: Object, required: true },
   },
   data() {
     return {
-      roomId: 1,
+      roomId: null,
+      messages: [],
+      rooms: [],
       styles: { container: { borderRadius: "4px" } },
-      roomsPerPage: 15,
-      rooms: [
-        {
-          roomId: 1,
-          roomName: "University friends",
-          avatar: require("@/assets/images/logo.png"),
-          unreadCount: 4,
-          index: 3,
-          lastMessage: {
-            content: "match la zu ",
-            senderId: 4321,
-            username: "John Snow",
-            timestamp: "10:20",
-            saved: true,
-            distributed: false,
-            seen: false,
-            new: true,
-          },
-          users: [
-            {
-              _id: 12394,
-              username: "Luke",
-              avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
-              status: { state: "offline", lastChanged: "today, 14:30" },
-            },
-            {
-              _id: 4321,
-              username: "John Snow",
-              avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
-              status: { state: "online", lastChanged: "14 July, 20:00" },
-            },
-          ],
-          typingUsers: [],
-        },
-        {
-          roomId: 3,
-          roomName: "lamghani",
-          avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
-          // avatar: require("@/assets/images/peple.png"),
-          unreadCount: 1,
-          index: 1,
-          lastMessage: {
-            content: "charta ye",
-            senderId: 4321,
-            username: "Leia Snow",
-            timestamp: "10:20",
-            saved: true,
-            distributed: false,
-            seen: false,
-            new: true,
-          },
-          users: [
-            {
-              _id: 288,
-              username: "Luke",
-              avatar: require("@/assets/images/avatars/avatarLuke.jpeg"),
-              status: { state: "offline", lastChanged: "today, 14:30" },
-            },
-            {
-              _id: 136,
-              username: "Leia Snow",
-              avatar: require("@/assets/images/avatars/avatarLeia.jpeg"),
-              status: { state: "online", lastChanged: "14 July, 20:00" },
-            },
-          ],
-          typingUsers: [],
-        },
-      ],
+      // messages: messages,
+      // rooms: rooms,
+      previousLastLoadedMessage: null,
+      messagesLoadedForSpecific: null,
       roomsLoaded: true,
       messagesLoaded: false,
-      loadingRooms: false,
-      messages: [],
+      loadingRooms: true,
       addNewRoom: null,
+      lastLoadedMessage: true,
       loadedRooms: true,
       inviteRoomId: null,
       removeRoomId: null,
       addRoomUsername: "",
-      roomActions: [
-        { name: "inviteUser", title: "Invite Users" },
-        { name: "removeUser", title: "Remove User" },
-        { name: "deleteRoom", title: "Delete Room" },
-      ],
       menuActions: [
         { name: "inviteUser", title: "Invite User" },
         { name: "removeUser", title: "Remove User" },
         { name: "deleteRoom", title: "Delete Rooms" },
       ],
       messageSelectionActions: [{ name: "deleteMessages", title: "Delete" }],
-      roomMessage: "sass",
-      templatesText: [
-        {
-          tag: "help",
-          text: "This is the help",
-        },
-        {
-          tag: "action",
-          text: "This is the action",
-        },
-        {
-          tag: "action 2",
-          text: "This is the second action",
-        },
-      ],
+      roomMessage: "",
     };
   },
   computed: {
@@ -204,7 +122,7 @@ export default {
       return this.isDevice ? window.innerHeight + "px" : "calc(100vh - 80px)";
     },
   },
-  created() {},
+
   methods: {
     openFile() {
       console.log("helo");
@@ -213,7 +131,7 @@ export default {
       this.resetForms();
       this.addNewRoom = true;
     },
-    async createRoom() {
+    async createRoom(form) {
       this.disableForm = true;
       // const { id } = await firestoreService.addUser({
       //   username: this.addRoomUsername,
@@ -223,9 +141,17 @@ export default {
       //   users: [id, this.currentUserId],
       //   lastUpdated: new Date(),
       // });
+      const newRoom = {
+        roomId: this.uniqueId(),
+        roomName: form.target[0]._value,
+        avatar: require("@/assets/images/users.svg"),
+        users: [],
+      };
+      // console.log(form.target[0]._value);
       this.addNewRoom = false;
       this.addRoomUsername = "";
-      this.fetchRooms();
+      this.rooms.push(newRoom);
+      // this.fetchRooms();
     },
     resetForms() {
       this.disableForm = false;
@@ -236,34 +162,84 @@ export default {
       this.removeRoomId = null;
       this.removeUserId = "";
     },
-    async deleteMessage({ message, roomId }) {
-      // await firestoreService.updateMessage(roomId, message._id, {
-      //   deleted: new Date(),
+    deleteMessage({ message, roomId }) {
+      // const newArr = this.messages.filter(function (stateMessage) {
+      //   return stateMessage._id !== message._id;
       // });
-      const { files } = message;
-      if (files) {
-        console.log(files, message, roomId);
-        // files.forEach((file) => {
-        //   storageService.deleteFile(this.currentUserId, message._id, file);
-        // });
-      }
+      this.messages.forEach((element) => {
+        if (element._id == message._id) {
+          element.content = "this message has been deleted";
+        }
+      });
+      // this.messages.filter();
+      console.log(roomId);
     },
 
-    fetchMessages({ room, options = {} }) {
-      this.$emit("show-demo-options", false);
-      if (options.reset) {
-        this.resetMessages();
-        this.roomId = room.roomId;
-      }
-      if (this.previousLastLoadedMessage && !this.lastLoadedMessage) {
-        this.messagesLoaded = true;
-        return;
-      }
-      this.selectedRoom = room.roomId;
-      console.log(room, options);
+    // fetchMessages({ room, options = {} }) {
+    fetchMessages({ room }) {
+      this.fetchOldMessages(room.roomId);
+      console.log(room.roomId);
+
+      // if (this.previousLastLoadedMessage) {
+      //   this.messagesLoaded = true;
+      //   console.log("waiiii");
+      //   return;
+      // }
+
+      // this.selectedRoom = room.roomId;
+      // this.roomId = room.roomId;
+      // // this.messagesLoaded = true;
+      // console.log("imran khan", room, options);
+      // // console.log("options", options);
     },
-    sendMessage() {
-      console.log("olamba");
+    onMessage() {
+      const message = {
+        _id: this.uniqueId(),
+        indexId: this.uniqueId(),
+        senderId: 12394,
+        content: "alaka pira wrak ye",
+        timestamp: new Date(),
+        username: "Ahmad",
+        avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
+      };
+      this.messages.push(message);
+    },
+    async sendMessage({ content, roomId }) {
+      const message = {
+        _id: this.uniqueId(),
+        indexId: this.uniqueId(),
+        senderId: this.currentUser.uid,
+        content,
+        timestamp: new Date(),
+        username: this.currentUser.username,
+        avatar: this.currentUser.avatar,
+      };
+      this.messages.push(message);
+      // console.log(roomId);
+      let receiverID = roomId;
+      let messageText = content;
+      let receiverType = CometChat.RECEIVER_TYPE.USER;
+      let textMessage = new CometChat.TextMessage(
+        receiverID,
+        messageText,
+        receiverType
+      );
+      CometChat.sendMessage(textMessage).then(
+        (message) => {
+          console.log("Message sent successfully:", message);
+        },
+        (error) => {
+          console.log("Message sending failed with error:", error);
+        }
+      );
+    },
+    resetMessages() {
+      this.messages = [];
+      this.messagesLoaded = false;
+      this.lastLoadedMessage = null;
+      this.previousLastLoadedMessage = null;
+      this.listeners.forEach((listener) => listener());
+      this.listeners = [];
     },
     fetchRooms() {
       this.resetRooms();
@@ -275,72 +251,211 @@ export default {
     fetchMoreRooms() {
       console.log("fetchMoreRooms");
     },
-    resetMessages() {
-      console.log("resetMessages");
+    displayUsers() {
+      const users = new CometChat.UsersRequestBuilder().setLimit(5);
+      const usersRequest = users.build();
+      usersRequest.fetchNext().then((usersList) => {
+        var newRooms = [];
+        var roomObject;
+        console.log(usersList);
+        usersList.forEach((element) => {
+          roomObject = {};
+          roomObject["roomId"] = element.uid;
+          roomObject["roomName"] = element.name;
+          roomObject["avatar"] = element.avatar;
+          roomObject["uid"] = element.uid;
+          roomObject["users"] = [];
+          newRooms.push(roomObject);
+        });
+        this.rooms = newRooms;
+        this.roomId = this.rooms[0].roomId;
+        this.messagesLoaded = true;
+        this.roomsLoaded = true;
+      });
     },
+    listningforMessage() {
+      let listenerID = "UNIQUE_LISTENER_ID";
+      CometChat.addMessageListener(
+        listenerID,
+        new CometChat.MessageListener({
+          onTextMessageReceived: (textMessage) => {
+            console.log(textMessage);
+            var message = {
+              _id: textMessage.rawMessage.id,
+              indexId: this.uniqueId(),
+              senderId: textMessage.sender.uid,
+              content: textMessage.data.text,
+              timestamp: new Date(textMessage.sentAt * 1000),
+              username: textMessage.sender.name,
+              avatar: textMessage.sender.avatar,
+            };
+            this.messages.push(message);
+            console.log("Text message received successfully");
+            // addReciveMessages(textMessage);
+          },
+        })
+      );
+    },
+    uniqueId,
+    listenMessages(room) {
+      console.log("listning to message", room);
+    },
+    async fetchOldMessages(roomId) {
+      console.log("rr", roomId);
+      // async fetchOldConversation(roomId) {
+      let UID = roomId;
+      let limit = 3;
+      let messagesRequest = new CometChat.MessagesRequestBuilder()
+        .setUID(UID)
+        .setLimit(limit)
+        .build();
+
+      messagesRequest.fetchPrevious().then(
+        (messages) => {
+          console.log("Message list fetched:", messages);
+          this.addOldConverstonToSateToMessages(messages);
+        },
+        (error) => {
+          console.log("Message fetching failed with error:", error);
+        }
+      );
+    },
+    addOldConverstonToSateToMessages(messages) {
+      var oldConverstion = [];
+      messages.forEach((element, index) => {
+        var roomObject = {};
+        roomObject["_id"] = element.id;
+        roomObject["indexId"] = index + 1;
+        roomObject["content"] = element.text;
+        roomObject["senderId"] = element.sender.uid;
+        roomObject["avatar"] = element.sender.avatar;
+        oldConverstion.push(roomObject);
+      });
+      console.log(oldConverstion);
+      this.messages = oldConverstion;
+      console.log(this.messages);
+      oldConverstion = [];
+      this.messagesLoaded = true;
+    },
+    checking() {
+      console.log("ss");
+      // console.log(this.messagesLoaded);
+      // this.messagesLoaded = !this.messagesLoaded;
+      // console.log(this.messagesLoaded);
+    },
+    imran,
+    getConverstionforUser() {
+      let limit = 30;
+      let conversationsRequest = new CometChat.ConversationsRequestBuilder()
+        .setLimit(limit)
+        .build();
+
+      conversationsRequest.fetchNext().then(
+        (conversationList) => {
+          console.log("Conversations list received:", conversationList);
+          this.displayConversation(conversationList);
+        },
+        (error) => {
+          console.log("Conversations list fetching failed with error:", error);
+        }
+      );
+    },
+    displayConversation(conversationList) {
+      var newRooms = [];
+      var roomObject;
+      conversationList.forEach((element) => {
+        if (element.conversationType === "group") {
+          roomObject = {
+            roomId: element.conversationWith.guid,
+            roomName: element.conversationWith.name,
+            avatar: element.conversationWith.icon,
+            users: [],
+            lastMessage: {
+              content: element.lastMessage ? element.lastMessage.text : "",
+              senderId: element.lastMessage ? element.lastMessage.sender : "",
+              username: element.lastMessage ? element.lastMessage.name : "",
+              // username: element.lastMessage ? element.lastMessage.name : "",
+              // timestamp: element.lastMessage
+              //   ? new Date(element.lastMessage.sentAt * 1000)
+              //   : "",
+              timestamp: "10:20",
+              saved: true,
+              distributed: false,
+              seen: false,
+              new: true,
+            },
+          };
+        } else {
+          roomObject = {
+            roomId: element.conversationWith.uid,
+            roomName: element.conversationWith.name,
+            avatar: element.conversationWith.avatar,
+            uid: element.conversationWith.uid,
+            users: [
+              {
+                _id: element.conversationWith.uid,
+                username: element.conversationWith.name,
+                avatar: element.conversationWith.avatar,
+                status: {
+                  state: "online",
+                  lastChanged: "today, 14:30",
+                },
+              },
+            ],
+            lastMessage: {
+              content: element.lastMessage ? element.lastMessage.text : "",
+              senderId: element.lastMessage ? element.lastMessage.sender : "",
+              username: element.lastMessage ? element.lastMessage.name : "",
+              timestamp: element.lastMessage
+                ? new Date(element.lastMessage.sentAt * 1000)
+                : "",
+              // timestamp: "10:20",
+
+              saved: true,
+              distributed: true,
+              seen: true,
+              new: true,
+            },
+          };
+        }
+
+        newRooms.push(roomObject);
+      });
+      this.previousLastLoadedMessage = true;
+      this.rooms = newRooms;
+      this.roomId = this.rooms[0].roomId;
+      this.messagesLoaded = true;
+      this.roomsLoaded = true;
+    },
+    checkObj(element) {
+      const exportObject = {
+        content: element.text.name,
+        // content: "element.lastMessage.text",
+        senderId: "superhero2",
+        // senderId: element.lastMessage.sender.uid,
+        username: "element.lastMessage.sender.name",
+        // username: element.lastMessage.sender.name,
+        timestamp: new Date(),
+        // timestamp: new Date(element.lastMessage.sentAt * 1000),
+        saved: true,
+        distributed: false,
+        seen: false,
+        new: true,
+      };
+      console.log(element.lastMessage);
+      return exportObject;
+    },
+  },
+  created() {
+    this.listningforMessage();
+  },
+  beforeDestroy() {
+    // let listenerID = "UNIQUE_LISTENER_ID";
+    // CometChat.removeMessageListener(listenerID);
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.window-container {
-  width: 100%;
-}
-.window-mobile {
-  form {
-    padding: 0 10px 10px;
-  }
-}
-form {
-  padding-bottom: 20px;
-}
-input {
-  padding: 5px;
-  width: 140px;
-  height: 21px;
-  border-radius: 4px;
-  border: 1px solid #d2d6da;
-  outline: none;
-  font-size: 14px;
-  vertical-align: middle;
-  &::placeholder {
-    color: #9ca6af;
-  }
-}
-button {
-  background: #202f27;
-  color: #fff;
-  outline: none;
-  cursor: pointer;
-  border-radius: 4px;
-  padding: 8px 12px;
-  margin-left: 10px;
-  border: none;
-  font-size: 14px;
-  transition: 0.3s;
-  vertical-align: middle;
-  &:hover {
-    opacity: 0.8;
-  }
-  &:active {
-    opacity: 0.6;
-  }
-  &:disabled {
-    cursor: initial;
-    background: #c6c9cc;
-    opacity: 0.6;
-  }
-}
-.button-cancel {
-  color: #a8aeb3;
-  background: none;
-  margin-left: 5px;
-}
-select {
-  vertical-align: middle;
-  height: 33px;
-  width: 152px;
-  font-size: 13px;
-  margin: 0 !important;
-}
+@import "./Helper/chatContainer.scss";
 </style>

@@ -94,7 +94,7 @@ export default {
       items: [
         { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
         { title: "Home", icon: "mdi-image", route: "/" },
-        { title: "Profile", icon: "mdi-border-color", route: "profile" },
+        { title: "Profile", icon: "mdi-border-color", route: "profileEdit" },
       ],
     };
   },
@@ -120,6 +120,12 @@ export default {
     },
     logout() {
       this.logoutUser();
+    },
+  },
+  watch: {
+    // whenever question changes, this function will run
+    getUser(newQuestion) {
+      if (newQuestion) this.$router.push("/");
     },
   },
 };
