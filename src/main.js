@@ -15,7 +15,7 @@ new Vue({
   vuetify,
   router,
   mounted() {
-    let appID = "209307dfb8b0f057";
+    let appID = "211689aa8d66a78c";
     let region = "us";
     let appSetting = new CometChat.AppSettingsBuilder()
       .subscribePresenceForAllUsers()

@@ -37,13 +37,13 @@ export const rooms = [
     unreadCount: 4,
     index: 3,
     lastMessage: {
-      content: "match la zu ",
-      senderId: 12394,
-      username: "Ahmad",
+      content: "Last message received",
+      senderId: 1234,
+      username: "John Doe",
       timestamp: "10:20",
       saved: true,
       distributed: false,
-      seen: false,
+      seen: true,
       new: true,
     },
     users: [
@@ -55,13 +55,13 @@ export const rooms = [
       },
 
       {
-        _id: 12394,
+        _id: 1234,
         username: "Ahmad",
         avatar: require("@/assets/images/avatars/avatarYoda.jpeg"),
-        status: { state: "offline", lastChanged: "today, 14:30" },
+        status: { state: "online", lastChanged: "today, 14:30" },
       },
     ],
-    typingUsers: [],
+    typingUsers: [211, 1212],
   },
 ];
 // currentUser: {

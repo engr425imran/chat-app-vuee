@@ -78,7 +78,7 @@ export default {
     check(name) {
       this.loading = true;
       var UID = name;
-      var authKey = "9575a64d6d797110475e29a512d1440b1e4bb16e";
+      var authKey = "25226e843db138c8148e28a0881aaa56ab0bbbf6";
 
       CometChat.getLoggedinUser().then(
         (user) => {
