@@ -28,8 +28,8 @@
       </button>
       <button class="button-cancel" @click="removeRoomId = null">Cancel</button>
     </form>
-    <Button @click="checkObj()" class="check">display message</Button>
-    <Button @click="checkingSplice()" class="check">splice</Button>
+    <!-- <Button @click="checkObj()" class="check">display message</Button> -->
+    <!-- <Button @click="checkingSplice()" class="check">splice</Button> -->
     <Button @click="displayUsers()" class="check">users</Button>
     <Button @click="getConverstionforUser()" class="check">converstion</Button>
     <chat-window
@@ -432,7 +432,7 @@ export default {
         messageObject["timestamp"] = this.formatTime(element.sentAt);
         messageObject["date"] = this.formatDate(element.sentAt);
         messageObject["saved"] = true;
-        messageObject["new"] = false;
+        messageObject["new"] = true;
         messageObject["distributed"] =
           element.deliveredAt && element.sender.uid === this.currentUser.uid
             ? true
