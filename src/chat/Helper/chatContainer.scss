@@ -58,7 +58,27 @@
     font-size: 13px;
     margin: 0 !important;
   }
-  .check {
+  .checlk {
     background-color: #c6c9cc;
     padding: 8px;
   }
+  .button-chat {
+    // background-color: rgb(36, 9, 9);
+    padding: 10px;
+  }
+  .isActive {
+    background-color: #5E9FE0;
+    border-radius: 4px;
+    border: 2px solid #526431;
+    color: #fff;
+  }
+  .checck  {
+    width: 120px;
+    height: 40px;
+    // border-radius: 4px;
+    // border: 1px solid #08131e;
+    // outline:auto;
+    // font-size: 14px;
+    // // vertical-align: middle;
+  }
+ 

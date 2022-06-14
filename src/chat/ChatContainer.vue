@@ -28,15 +28,34 @@
       </button>
       <button class="button-cancel" @click="removeRoomId = null">Cancel</button>
     </form>
-    <Button @click="checkObj()" class="check">message</Button>
-    <!-- <Button @click="checkingSplice()" class="check">splice</Button> -->
-    <Button @click="displayUsers()" class="check">users</Button>
-    <Button @click="getConverstionforUser()" class="check">converstion</Button>
+    <v-card>
+      <div class="button-chat">
+        <!-- <input @click="check()"  class="check">message</> -->
+        <!-- <Button @click="checkingSplice()" class="check">splice</Button> -->
+        <input
+          type="button"
+          @click="displayUsers()"
+          :class="{ isActive: conversationTabSelected === false }"
+          class="checck"
+          value="users"
+        />
+        <input
+          type="button"
+          style="margin-left: 20px"
+          @click="getConverstionforUser()"
+          class="checck"
+          :class="{ isActive: conversationTabSelected === true }"
+          value="converstion"
+        />
+      </div>
+    </v-card>
+
     <chat-window
       :rooms="rooms"
       :room-id="roomId"
       :height="screenHeight"
       :styles="styles"
+      :theme="theme ? 'light' : 'dark'"
       :room-action="roomActions"
       :menu-actions="menuActions"
       :rooms-loaded="roomsLoaded"
@@ -87,13 +106,14 @@ export default {
     ChatWindow,
   },
   props: {
-    theme: { type: String, default: "light" },
+    theme: { type: Boolean, default: true },
     isDevice: { type: Boolean, required: true },
     currentUser: { type: Object, required: true },
   },
   data() {
     return {
       roomId: null,
+      audio: require("@/assets/audio/notifi.wav"),
       messages: [],
       rooms: [],
       styles: { container: { borderRadius: "4px" } },
@@ -110,6 +130,7 @@ export default {
       lastLoadedMessage: true,
       loadedRooms: true,
       inviteRoomId: null,
+      conversationTabSelected: null,
       removeRoomId: null,
       addRoomUsername: "",
       roomActions: [
@@ -152,12 +173,15 @@ export default {
     // --------------------------------------   Get Conversation For User   ---------------------------------------------
     //      ---------------------------------    ++++ display Users  ++++   ---------------------------------------------
     displayUsers() {
+      this.conversationTabSelected = false;
+      this.loadingRooms = true;
+
       const users = new CometChat.UsersRequestBuilder().setLimit(5);
       const usersRequest = users.build();
       usersRequest.fetchNext().then((usersList) => {
         var newRooms = [];
         var roomObject;
-        console.log(usersList);
+        // console.log(usersList);
         usersList.forEach((element) => {
           roomObject = {};
           roomObject["roomId"] = element.uid;
@@ -196,6 +220,8 @@ export default {
     //      ---------------------------------   ||| *** Users ||| ***   -----------------------------------------------------
 
     getConverstionforUser() {
+      this.conversationTabSelected = true;
+      this.loadingRooms = true;
       let limit = 30;
       let conversationsRequest = new CometChat.ConversationsRequestBuilder()
         .setLimit(limit)
@@ -216,27 +242,27 @@ export default {
     displayConversation(conversationList) {
       var newRooms = [];
       var roomObject;
-      // console.log(conversationList);
       conversationList.forEach((element) => {
         if (element.conversationType === "group") {
-          roomObject = {
-            roomId: element.conversationWith.guid,
-            roomName: element.conversationWith.name,
-            avatar: element.conversationWith.icon,
-            unreadCount: element.unreadMessageCount,
-            users: [],
-            lastMessage: {
-              content: element.lastMessage ? element.lastMessage.text : "",
-              senderId: element.lastMessage ? element.lastMessage.sender : "",
-              username: element.lastMessage ? element.lastMessage.name : "",
-              timestamp: "Set me",
-              date: "set me",
-              saved: true,
-              distributed: false,
-              seen: true,
-              new: false,
-            },
-          };
+          return;
+          // roomObject = {
+          //   roomId: element.conversationWith.guid,
+          //   roomName: element.conversationWith.name,
+          //   avatar: element.conversationWith.icon,
+          //   unreadCount: element.unreadMessageCount,
+          //   users: [],
+          //   lastMessage: {
+          //     content: element.lastMessage ? element.lastMessage.text : "",
+          //     senderId: element.lastMessage ? element.lastMessage.sender : "",
+          //     username: element.lastMessage ? element.lastMessage.name : "",
+          //     timestamp: "Set me",
+          //     date: "set me",
+          //     saved: true,
+          //     distributed: false,
+          //     seen: true,
+          //     new: false,
+          //   },
+          // };
         } else {
           roomObject = {
             roomId: element.conversationWith.uid,
@@ -245,7 +271,7 @@ export default {
             uid: element.conversationWith.uid,
             status: element.conversationWith.status,
             unreadCount: this.setNewMessageCountInState(element),
-            // unreadCount: element.unreadMessageCount,
+            // unreadCount: 4,
             users: [
               {
                 _id: this.currentUser.uid,
@@ -286,12 +312,13 @@ export default {
 
         newRooms.push(roomObject);
       });
-      this.previousLastLoadedMessage = true;
-      this.rooms = newRooms;
       // console.log(newRooms);
-      this.roomId = this.rooms[0].roomId;
-      this.messagesLoaded = true;
-      this.roomsLoaded = true;
+      console.log("rooms fetched");
+      // this.previousLastLoadedMessage = true;
+      this.rooms = newRooms;
+      // this.roomId = this.rooms[0].roomId;
+      // this.messagesLoaded = true;
+      // this.roomsLoaded = true;
     },
     setMessageAsNewOrOld(element) {
       if (
@@ -302,24 +329,22 @@ export default {
       if (element.lastMessage.readAt) false;
       return true;
     },
+    setNewMessageCountInState(element) {
+      if (element.unreadMessageCount > 0) {
+        this.unreadMessageCountPresent = true;
+        console.log(
+          "unread message is present in certain room =>",
+          this.unreadMessageCountPresent
+        );
+        return element.unreadMessageCount;
+      }
+      return element.unreadMessageCount;
+    },
     // --------------------------------------   ********************   ---------------------------------------------
 
     // --------------------------------------   Get  Messages User   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
     async getOldMessagesBetweenUser(roomId) {
-      // let currentRooms = this.rooms;
-      // const messageArrayLength = this.messages.length;
-      // if (messageArrayLength) {
-      // let lastMessage = this.meessage[messageArrayLength - 1];
-      // console.log(roomId, messageArrayLength);
-      // }
-      // const room = currentRooms.find(function (element) {
-      //   return element.roomId == roomId;
-      // });
-      // console.log(room.lastMessage._id == messages);
-      // if (room.lastMessage._id) {
-
-      // }
       let UID = roomId;
       let limit = 5;
       let messagesRequest = new CometChat.MessagesRequestBuilder()
@@ -330,6 +355,7 @@ export default {
       messagesRequest.fetchPrevious().then(
         (messages) => {
           this.addOldMessagesToSateToMessagesArray(messages, roomId);
+          // console.log(messages);
         },
         (error) => {
           console.log("Message fetching failed with error:", error);
@@ -337,18 +363,26 @@ export default {
       );
     },
     addOldMessagesToSateToMessagesArray(messages, roomId) {
+      // addOldMessagesToSateToMessagesArray(messages, roomId) {
       var oldConverstion = [];
-      // console.log(messages);
       messages.forEach((element, index) => {
         var messageObject = {};
         messageObject["_id"] = element.id;
         messageObject["indexId"] = index + 1;
         messageObject["content"] = element.text;
-        messageObject["senderId"] = element.sender.uid;
+        messageObject["senderId"] = element.rawMessage.sender;
+        messageObject["username"] =
+          element.rawMessage.sender == this.currentUser.uid
+            ? this.currentUser.name
+            : element.receiver.name;
         messageObject["timestamp"] = this.formatTime(element.sentAt);
         messageObject["date"] = this.formatDate(element.sentAt);
         messageObject["saved"] = true;
         messageObject["new"] = true;
+        messageObject["converstionWith"] =
+          element.receiverId == this.currentUser.uid
+            ? element.sender.uid
+            : element.receiverId;
         messageObject["distributed"] =
           element.deliveredAt && element.sender.uid === this.currentUser.uid
             ? true
@@ -360,10 +394,10 @@ export default {
         messageObject["avatar"] = element.sender.avatar;
         oldConverstion.push(messageObject);
       });
-      this.messages = oldConverstion;
-      oldConverstion = [];
-      this.markAsRead(roomId);
       this.messagesLoaded = true;
+      this.messages = oldConverstion;
+      console.log("messages added to  array Called From Message functio");
+      this.markAsRead(roomId);
     },
     //      ---------------------------------    **************   -----------------------------------------------------
 
@@ -385,7 +419,7 @@ export default {
       );
       CometChat.sendMessage(textMessage).then(
         (message) => {
-          // console.log("Message sent successfully:", message);
+          console.log("Message sent successfully:");
           const messagePushToState = {
             _id: message.id,
             indexId: message.id,
@@ -412,16 +446,15 @@ export default {
 
     // --------------------------------------   Recive Message Functons   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
-    listenMessages(room) {
-      console.log("listning to message", room);
-    },
+
     listningforMessage(room) {
+      console.log("listing for message");
       let listenerID = "UNIQUE_LISTENER_ID";
       CometChat.addMessageListener(
         listenerID,
         new CometChat.MessageListener({
           onTextMessageReceived: (textMessage) => {
-            if (room.roomId !== textMessage.sender.uid) return;
+            console.log("message recived");
             const message = {
               _id: textMessage.rawMessage.id,
               indexId: textMessage.rawMessage.id,
@@ -435,9 +468,16 @@ export default {
               distributed: true,
               new: true,
             };
-            this.messages.push(message);
-            this.updateRoomLastMessage(room.roomId, message);
+            if (room.roomId == textMessage.sender.uid) {
+              this.messages.push(message);
+              this.updateRoomLastMessage(textMessage, message, room.roomId);
+              this.markAsRead(textMessage);
+              return;
+            }
+
+            this.updateRoomLastMessage(textMessage, message, room.roomId);
             this.markAsRead(textMessage);
+
             // addReciveMessages(textMessage);
           },
         })
@@ -463,31 +503,23 @@ export default {
       // this.messages.filter();
       console.log(roomId);
     },
-    setNewMessageCountInState(element) {
-      if (element.unreadMessageCount > 0) {
-        this.unreadMessageCountPresent = true;
-        return element.unreadCount;
-      }
-      return element.unreadCount;
-    },
+
     // --------------------------------------    **************   ---------------------------------------------
 
     // --------------------------------------   Room CRUD Functons   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
 
-    updateRoomLastMessage(roomId, meessage) {
+    updateRoomLastMessage(textMessage, message, roomId) {
       let currentRooms = this.rooms;
       currentRooms.forEach((element, index) => {
-        console.log(element.roomId, roomId);
-        if (element.roomId == roomId) {
-          currentRooms[index].lastMessage = meessage;
-          const addRoomElement = currentRooms[index];
-          if (index == 0) {
-            this.rooms = currentRooms;
-            return;
-          }
-          this.updateRoomsArray(addRoomElement);
-          return;
+        if (element.roomId == textMessage.sender.uid) {
+          currentRooms[index].unreadCount = 1;
+          currentRooms[index].lastMessage = message;
+          currentRooms[index].users[1].status.state = textMessage.sender.status;
+          if (roomId == textMessage.sender.uid && index == 0) return;
+          const removeRoomMoveFirst = currentRooms.splice(index, 1);
+          let newOrder = [removeRoomMoveFirst[0], ...currentRooms];
+          this.rooms = newOrder;
         }
       });
     },
@@ -498,12 +530,11 @@ export default {
       this.resetForms();
       this.addNewRoom = true;
     },
-    updateRoomsArray(roomElement) {
-      let currentRooms = this.rooms;
-      currentRooms.splice(0, 1);
-      currentRooms.splice(0, 0, roomElement);
-      this.rooms = currentRooms;
-    },
+    // updateRoomsArray(roomElement) {
+    //   let currentRooms = this.rooms;
+    //   const roomsToMange = [roomElement, ...currentRooms];
+    //   this.rooms = roomsToMange;
+    // },
     async createRoom(form) {
       this.disableForm = true;
       // const { id } = await firestoreService.addUser({
@@ -554,35 +585,32 @@ export default {
       return false;
     },
     markAsRead(textMessage) {
+      console.log(textMessage);
       if (textMessage.rawMessage) {
         var messageId = textMessage.rawMessage.id;
         var receiverId = textMessage.sender.uid;
         var receiverType = "user";
         var senderId = textMessage.sender.uid;
-        CometChat.markAsRead(messageId, receiverId, receiverType, senderId);
-        const currentRoomsInState = this.rooms;
-        const newArrayRooms = currentRoomsInState.map(function (room) {
-          if (room.roomId === textMessage.sender.uid) {
-            console.log(room.roomId);
-            room.unreadCount = 0;
-          }
-          return room;
-        });
-        this.rooms = newArrayRooms;
-        console.log("message marked as read || the user was on chat window");
-        return;
-      }
-      if (this.unreadMessageCountPresent) {
-        const message = this.messages[this.messages.length - 1];
-        console.log(message);
         CometChat.markAsRead(
-          message._id,
-          message.senderId,
-          "user",
-          message.senderId
+          messageId,
+          receiverId,
+          receiverType,
+          senderId
         ).then(
           () => {
-            console.log("mark as read success.");
+            const currentRoomsInState = this.rooms;
+            const newArrayRooms = currentRoomsInState.map(function (room) {
+              if (room.roomId === textMessage.sender.uid) {
+                console.log(room.roomId);
+                room.unreadCount = 0;
+              }
+              return room;
+            });
+            this.rooms = newArrayRooms;
+            console.log(
+              "message marked as read || the user was on chat window"
+            );
+            return;
           },
           (error) => {
             console.log(
@@ -591,17 +619,43 @@ export default {
             );
           }
         );
-        const currentRoomsInState = this.rooms;
-        const newArrayRooms = currentRoomsInState.map(function (room) {
-          if (room.roomId === message.senderId) {
-            console.log(room.roomId);
-            room.unreadCount = 0;
+      }
+      if (this.unreadMessageCountPresent) {
+        console.log("unread message is present");
+        const message = this.messages[this.messages.length - 1];
+        console.log(message);
+        CometChat.markAsRead(
+          message._id,
+          message.converstionWith,
+          "user",
+          message.converstionWith
+        ).then(
+          () => {
+            //     console.log("mark as read success.");
+            const currentRoomsInState = this.rooms;
+            const newArrayRooms = currentRoomsInState.map(function (room) {
+              if (room.roomId == message.converstionWith) {
+                room.unreadCount = 0;
+              }
+              return room;
+            });
+            console.log(newArrayRooms);
+            this.rooms = newArrayRooms;
+            //     console.log(this.rooms);
+
+            console.log(
+              " marked as read || the user has just open chat window"
+            );
+            return;
+          },
+          (error) => {
+            console.log(
+              "An error occurred when marking the message as read.",
+              error
+            );
+            return;
           }
-          return room;
-        });
-        this.rooms = newArrayRooms;
-        console.log(" marked as read || the user has just open chat window");
-        return;
+        );
       }
       console.log("no meessage to read");
     },
@@ -649,14 +703,15 @@ export default {
 
     // --------------------------------------    **************   ---------------------------------------------
 
-    checkObj() {
-      console.log(this.messages);
+    check() {
+      var audio = new Audio(this.audio);
+      audio.play();
     },
     // -------------- ENd OF Methods object---------------
   },
-  created() {
-    this.listningforMessage();
-  },
+  // created() {
+  //   this.listningforMessage();
+  // },
 };
 </script>
 

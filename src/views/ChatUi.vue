@@ -40,6 +40,7 @@
 
       <chat-container
         v-if="showChat"
+        :theme="theme"
         :is-device="isDevice"
         @show-demo-options="showDemoOptions = $event"
         :currentUser="currentUser"
@@ -59,7 +60,7 @@ export default {
   },
   data() {
     return {
-      theme: "light",
+      theme: true,
       showChat: true,
       currentUser: null,
       username: localStorage.getItem("username") || "Not Logged In",
@@ -75,7 +76,8 @@ export default {
   },
   methods: {
     themeChange() {
-      console.log("theme");
+      this.theme = !this.theme;
+      console.log(this.theme);
       // this.theme = !this.theme;
     },
     logout() {
