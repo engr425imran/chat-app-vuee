@@ -11,7 +11,7 @@ const state = {
     ? JSON.parse(localStorage.getItem("access_token"))
     : null,
   loadingStatus: false,
-  errorMessage: "",
+  errorMessage: "sss",
 };
 
 const getters = {

@@ -30,8 +30,7 @@
     </form>
     <v-card>
       <div class="button-chat">
-        <!-- <input @click="check()"  class="check">message</> -->
-        <!-- <Button @click="checkingSplice()" class="check">splice</Button> -->
+        <input type="button" @click="check()" class="check" value="check" />
         <input
           type="button"
           @click="displayUsers()"
@@ -149,7 +148,9 @@ export default {
   },
   computed: {
     screenHeight() {
-      return this.isDevice ? window.innerHeight + "px" : "calc(100vh - 80px)";
+      return this.isDevice
+        ? window.innerHeight - 40 + "px"
+        : "calc(100vh - 80px)";
     },
   },
 
@@ -455,6 +456,7 @@ export default {
         new CometChat.MessageListener({
           onTextMessageReceived: (textMessage) => {
             console.log("message recived");
+            this.playMessageSound();
             const message = {
               _id: textMessage.rawMessage.id,
               indexId: textMessage.rawMessage.id,
@@ -700,10 +702,17 @@ export default {
       return formatime;
     },
     imran,
+    check() {
+      console.log("ssss");
+      document.title = "new title";
+      // console.log(
+      //   this.isDevice ? window.innerHeight + "px" : "calc(100vh - 80px)"
+      // );
+    },
 
     // --------------------------------------    **************   ---------------------------------------------
 
-    check() {
+    playMessageSound() {
       var audio = new Audio(this.audio);
       audio.play();
     },
