@@ -1,0 +1,190 @@
+import { CometChat } from "@cometchat-pro/chat";
+
+const state = {
+  rooms: [],
+  errorMessage: "sss",
+  conversationTabSelected: null,
+  loadingRooms: false,
+  unreadMessageCountPresent: null,
+  roomId: null,
+  unreadCountInState: null,
+};
+// -------------------------------------- +++++++   **************  +++++++  ---------------------------------------------
+
+const getters = {
+  getRooms: (state) => state.rooms,
+  getErrorMessage: (state) => state.errorMessage,
+  getLoadingRooms: (state) => state.loadingRooms,
+  getConversationTabSelected: (state) => state.conversationTabSelected,
+  getUnreadMessageCountPresent: (state) => state.unreadMessageCountPresent,
+  getRoomId: (state) => state.roomId,
+  getUnreadCountInState: (state) => state.unreadCountInState,
+};
+
+// -------------------------------------- +++++++   **************  +++++++  ---------------------------------------------
+
+const actions = {
+  getConverstionforUserr: ({ dispatch, commit }) => {
+    commit("SET_CONVERSATION_TAB_SELECTED", true);
+    commit("SET_LOADING_ROOMS", true);
+    let limit = 30;
+    let conversationsRequest = new CometChat.ConversationsRequestBuilder()
+      .setLimit(limit)
+      .build();
+
+    conversationsRequest.fetchNext().then(
+      (conversationList) => {
+        dispatch("displayConversation", conversationList);
+      },
+      (error) => {
+        console.log("Conversations list fetching failed with error:", error);
+      }
+    );
+  },
+
+  displayConversation: ({ commit, rootGetters }, conversationList) => {
+    var newRooms = [];
+    var roomObject;
+    conversationList.forEach((element) => {
+      if (element.conversationType === "group") {
+        return;
+      } else {
+        roomObject = {
+          roomId: element.conversationWith.uid + "sss",
+          roomName: element.conversationWith.name,
+          avatar: element.conversationWith.avatar,
+          uid: element.conversationWith.uid,
+          status: element.conversationWith.status,
+          unreadCount: 1,
+
+          // unreadCount: dispatch("setNewMessageCountInStatee", element),
+          users: [
+            {
+              _id: rootGetters["home/getCometUser"].uid,
+              username: rootGetters["home/getCometUser"].name,
+              avatar: rootGetters["home/getCometUser"].avatar,
+              status: {
+                state: rootGetters["home/getCometUser"].status,
+                lastChanged: "live",
+              },
+            },
+            {
+              _id: element.conversationWith.uid,
+              username: element.conversationWith.name,
+              avatar: element.conversationWith.avatar,
+              status: {
+                state: element.conversationWith.status,
+                lastChanged: new Date(
+                  element.conversationWith.lastActiveAt * 1000
+                ).toLocaleString("en-us", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  day: "2-digit",
+                }),
+              },
+            },
+          ],
+          lastMessage: {
+            _id: element.lastMessage.id,
+            content: element.lastMessage.text,
+            senderId: element.lastMessage.sender.uid,
+            username: element.lastMessage.sender.name,
+            timestamp: new Date(
+              element.lastMessage.sentAt * 1000
+            ).toLocaleString("en-us", {
+              hour: "numeric",
+              minute: "numeric",
+            }),
+            // timestamp: dispatch("formatTime", element.lastMessage.sentAt),
+            date: "today, 10:45",
+            saved: true,
+            distributed: element.lastMessage.deliveredAt ? true : false,
+            seen:
+              element.lastMessage.readAt &&
+              element.lastMessage.receiverId !==
+                rootGetters["home/getCometUser"].uid
+                ? true
+                : false,
+            new:
+              element.lastMessage.receiverId ==
+                rootGetters["home/getCometUser"].uid ||
+              element.lastMessage.sender.uid ==
+                rootGetters["home/getCometUser"].uid
+                ? false
+                : true,
+          },
+        };
+      }
+
+      newRooms.push(roomObject);
+    });
+    console.log("rooms fetched from 2nd function");
+    commit("SET_ROOMS", newRooms);
+  },
+
+  setNewMessageCountInStatee: ({ commit }, element) => {
+    if (element.unreadMessageCount > 0) {
+      commit("SET_UNREAD_MESSAGE_COUNT", true);
+      console.log(
+        "unread message is present in certain room =>",
+        this.getUnreadMessageCountPresent
+      );
+      return element.unreadMessageCount;
+    }
+    return element.unreadMessageCount;
+
+    // console.log(context.rootGetters["home/getCometUser"]);
+    // console.log(context.rootState.auth.errorMessage);
+  },
+
+  // --------------------------------------    **************   ---------------------------------------------
+  //         ------------------------------   Genral Function   ------------------------------------------
+
+  formatTime(utcTime) {
+    const time = new Date(utcTime * 1000).toLocaleString("en-us", {
+      hour: "numeric",
+      minute: "numeric",
+    });
+    return time;
+  },
+  formatDate(utcTime) {
+    const dd = new Date(utcTime * 1000).toLocaleString("en-us", {
+      day: "numeric",
+      month: "long",
+    });
+    const formatime = dd.split(" ").reverse().join(" ");
+    return formatime;
+  },
+};
+
+// -------------------------------------- +++++++   **************  +++++++  ---------------------------------------------
+
+const mutations = {
+  SET_USER: (state, payload) => {
+    state.errorMessage = payload;
+  },
+  SET_ROOMS: (state, payload) => {
+    console.log(payload);
+    state.rooms = payload;
+  },
+  SET_LOADING_ROOMS: (state, payload) => {
+    state.loadingRooms = payload;
+  },
+  SET_CONVERSATION_TAB_SELECTED: (state, payload) => {
+    state.conversationTabSelected = payload;
+  },
+  SET_UNREAD_MESSAGE_COUNT: (state, payload) => {
+    state.unreadMessageCount = payload;
+  },
+};
+
+const modules = {};
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations,
+  modules,
+};

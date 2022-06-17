@@ -1,15 +1,17 @@
 import router from "@/router";
 import { CometChat } from "@cometchat-pro/chat";
 const state = {
-  usercomet: "",
+  usercomet: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null,
   loading: false,
 };
 const getters = {
-  getUsername: (state) => state.usercomet,
+  getCometUser: (state) => state.usercomet,
   getLoading: (state) => state.loading,
 };
 const actions = {
-  check({ commit }, payload) {
+  loginUsingCometChat({ commit }, payload) {
     commit("SET_LOADING_STATUS", true);
     var UID = payload;
     var authKey = "25226e843db138c8148e28a0881aaa56ab0bbbf6";
@@ -35,6 +37,19 @@ const actions = {
       }
     );
   },
+  logout: ({ commit }) => {
+    CometChat.logout().then(
+      () => {
+        console.log("Logout completed successfully");
+        localStorage.removeItem("user");
+        commit("REMOVE_USER", null);
+        router.push("/");
+      },
+      (error) => {
+        console.log("Logout failed with exception:", { error });
+      }
+    );
+  },
 };
 const mutations = {
   SET_USERCOMET: (state, payload) => {
@@ -43,6 +58,9 @@ const mutations = {
   },
   SET_LOADING_STATUS: (state, payload) => {
     state.loading = payload;
+  },
+  REMOVE_USER: (state, payload) => {
+    state.usercomet = payload;
   },
 };
 export default {

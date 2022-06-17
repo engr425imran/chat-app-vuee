@@ -61,6 +61,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-container> </v-container>
   </div>
 </template>
 
@@ -77,9 +78,9 @@ export default {
     ...mapGetters("home", ["getLoading"]),
   },
   methods: {
-    ...mapActions("home", ["check"]),
+    ...mapActions("home", ["loginUsingCometChat"]),
     loginCometChat(name) {
-      this.check(name);
+      this.loginUsingCometChat(name);
     },
   },
 };
