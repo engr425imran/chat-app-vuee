@@ -1,15 +1,26 @@
 import { CometChat } from "@cometchat-pro/chat";
-const state = {};
-const getters = {};
+const state = {
+  audio: require("@/assets/audio/notifi.wav"),
+};
+const getters = {
+  getAudio: (state) => state.audio,
+};
 const actions = {
   listningforMessagee: ({ commit, dispatch }, room) => {
+    // listningforMessagee: () => {
     let listenerID = "UNIQUE_LISTENER_ID";
     CometChat.addMessageListener(
       listenerID,
       new CometChat.MessageListener({
+        onTypingStarted: (typingIndicator) => {
+          console.log("Typing started :", typingIndicator);
+        },
+        onTypingEnded: (typingIndicator) => {
+          console.log("Typing ended :", typingIndicator);
+        },
         onTextMessageReceived: (textMessage) => {
-          console.log("message recived", textMessage);
-          // this.playMessageSound();
+          // console.log("message recived", textMessage);
+          // dispatch("playMessageSound");
           const message = {
             _id: textMessage.rawMessage.id,
             indexId: textMessage.rawMessage.id,
@@ -41,13 +52,21 @@ const actions = {
           if (room.roomId == textMessage.sender.uid) {
             commit("messages/PUSH_MESSAGE", message, { root: true });
             dispatch("updateRoomLastMessage", payload);
+            dispatch("messages/markAsReadd", textMessage, { root: true });
             return;
           }
           dispatch("updateRoomLastMessage", payload);
-          // this.markAsRead(textMessage);
+          // dispatch("messages/markAsReadd", payload, { root: true });
         },
       })
     );
+  },
+
+  playMessageSound({ getter }) {
+    console.log("why i am not shoing");
+    var audio = new Audio(getter.getAudio);
+    audio.play();
+    document.title = "1 New Message recived";
   },
   updateRoomLastMessage: ({ commit, rootGetters }, payload) => {
     let currentRooms = rootGetters["conversation/getRooms"];

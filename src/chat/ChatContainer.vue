@@ -28,11 +28,11 @@
       </button>
       <button class="button-cancel" @click="removeRoomId = null">Cancel</button>
     </form>
-    <v-card style="nav-header">
+    <v-card elevation="3" style="nav-header">
       <div class="button-chat">
         <input
           type="button"
-          @click="displayUsers()"
+          @click="playMessageSound()"
           class="checck"
           value="hightCheck"
         />
@@ -53,7 +53,6 @@
         />
       </div>
     </v-card>
-    <br />
     <!-- :height="screenHeight" -->
 
     <chat-window
@@ -62,7 +61,6 @@
       :theme="theme ? 'light' : 'dark'"
       :current-user-id="currentUser.uid"
       :rooms="getRooms"
-      :room-id="getRoomId"
       :room-action="roomActions"
       :rooms-loaded="roomsLoaded"
       :loading-rooms="getLoadingRoomsInitial"
@@ -70,11 +68,13 @@
       :messages-loaded="getMessagesLoaded"
       :message-selection-actions="messageSelectionActions"
       :menu-actions="menuActions"
+      :message-actions="messageActions"
       @add-room="addRoom"
       @toggle-rooms-list="$emit('show-demo-options', $event.opened)"
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"
       @delete-message="deleteMessage"
+      @typing-message="typingMessage"
     >
     </chat-window>
   </div>
@@ -108,9 +108,6 @@ export default {
       previousLastLoadedMessage: null,
       messagesLoadedForSpecific: null,
       roomsLoaded: true,
-      messagesLoaded: false,
-      loadingRooms: true,
-      unreadMessageCountPresent: false,
       addNewRoom: null,
       isChatRecivingUserIsOnline: false,
       lastLoadedMessage: true,
@@ -119,6 +116,26 @@ export default {
       // conversationTabSelected: null,
       removeRoomId: null,
       addRoomUsername: "",
+      messageActions: [
+        {
+          name: "replyMessage",
+          title: "Reply BHAU",
+        },
+        {
+          name: "editMessage",
+          title: "Edit Message",
+          onlyMe: true,
+        },
+        {
+          name: "deleteMessage",
+          title: "Delete Message",
+          onlyMe: true,
+        },
+        {
+          name: "selectMessages",
+          title: "Select",
+        },
+      ],
       roomActions: [
         { name: "inviteUser", title: "Invite User" },
         { name: "removeUser", title: "Remove User" },
@@ -143,10 +160,13 @@ export default {
       "getMessagesLoaded",
     ]),
     ...mapGetters("messages", ["getMessages"]),
+    // screenHeight() {
+    //   return this.isDevice
+    //     ? window.innerHeight - 140 + "px"
+    //     : "calc(100vh - 180px)";
+    // },
     screenHeight() {
-      return this.isDevice
-        ? window.innerHeight - 40 + "px"
-        : "calc(100vh - 80px)";
+      return "calc(85vh - 70px)";
     },
   },
 
@@ -155,13 +175,15 @@ export default {
     ...mapActions("messages", ["getOldMessagesBetweenUserr", "markAsReadd"]),
     ...mapActions("users", ["displayUserss"]),
     ...mapActions("messages/sendMessage", ["sendMessagee"]),
-    ...mapActions("messages/reciveMessage", ["listningforMessagee"]),
-
+    ...mapActions("messages/receiveMessage", ["listningforMessagee"]),
+    ...mapActions("messages/deleteMessage", ["delete"]),
+    heightCheck() {
+      console.log(window.innerHeight);
+    },
     fetchMessages({ room }) {
       console.log("i am fetch message", room);
       this.getOldMessagesBetweenUser(room.roomId);
       this.listningforMessage(room);
-      // this.markAsReadd();
     },
     // --------------------------------------   Get Conversation For User   ---------------------------------------------
     //      ---------------------------------    ++++ display Users  ++++   ---------------------------------------------
@@ -174,28 +196,6 @@ export default {
       this.getConverstionforUserr();
     },
     //      ---------------------------------    **************   -----------------------------------------------------
-
-    setMessageAsNewOrOld(element) {
-      if (
-        element.lastMessage.receiverId == this.currentUser.uid ||
-        element.lastMessage.sender.uid == this.currentUser.uid
-      )
-        return false;
-      if (element.lastMessage.readAt) false;
-      return true;
-    },
-    setNewMessageCountInState(element) {
-      if (element.unreadMessageCount > 0) {
-        this.unreadMessageCountPresent = true;
-        console.log(
-          "unread message is present in certain room =>",
-          this.unreadMessageCountPresent
-        );
-        return element.unreadMessageCount;
-      }
-      return element.unreadMessageCount;
-    },
-    // --------------------------------------   ********************   ---------------------------------------------
 
     // --------------------------------------   Get  Messages User   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
@@ -219,25 +219,34 @@ export default {
     listningforMessage(room) {
       this.listningforMessagee(room);
     },
-    markMessageAsDeliverd(message) {
-      var messageId = message.id;
-      var receiverId = this.currentUser.uid;
-      var receiverType = "user";
-      var senderId = this.currentUser.uid;
-      CometChat.markAsDelivered(messageId, receiverId, receiverType, senderId);
-      console.log("message mark as deliverd");
-    },
     deleteMessage({ message, roomId }) {
+      let payload = {
+        messageId: message._id,
+        roomId,
+      };
+      this.delete(payload);
       // const newArr = this.messages.filter(function (stateMessage) {
       //   return stateMessage._id !== message._id;
       // });
-      this.messages.forEach((element) => {
-        if (element._id == message._id) {
-          element.content = "this message has been deleted";
-        }
-      });
+      // this.messages.forEach((element) => {
+      //   if (element._id == message._id) {
+      //     element.content = "this message has been deleted";
+      //   }
+      // });
       // this.messages.filter();
-      console.log(roomId);
+      // console.log(roomId);
+    },
+
+    typingMessage({ roomId, message }) {
+      console.log(roomId, message);
+      let receiverId = "superhero3";
+      let receiverType = CometChat.RECEIVER_TYPE.USER;
+
+      let typingNotification = new CometChat.TypingIndicator(
+        receiverId,
+        receiverType
+      );
+      CometChat.startTyping(typingNotification);
     },
 
     // --------------------------------------    **************   ---------------------------------------------
@@ -245,9 +254,6 @@ export default {
     // --------------------------------------   Room CRUD Functons   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
 
-    updateRoomLastMessage() {
-      // done
-    },
     fetchMoreRooms() {
       console.log("fetchMoreRooms");
     },
@@ -255,11 +261,6 @@ export default {
       this.resetForms();
       this.addNewRoom = true;
     },
-    // updateRoomsArray(roomElement) {
-    //   let currentRooms = this.rooms;
-    //   const roomsToMange = [roomElement, ...currentRooms];
-    //   this.rooms = roomsToMange;
-    // },
     async createRoom(form) {
       this.disableForm = true;
       // const { id } = await firestoreService.addUser({
@@ -288,34 +289,9 @@ export default {
       this.fetchMoreRooms();
     },
 
-    // --------------------------------------    **************   ---------------------------------------------
-
-    // --------------------------------------   utility  Functons   ---------------------------------------------
-    //         ------------------------------   Conversation   ------------------------------------------
-
-    // --------------------------------------    **************   ---------------------------------------------
-
-    //         ------------------------------   Send Message   ------------------------------------------
-    // --------------------------------------    **************   ---------------------------------------------
-    setMessageStateToDeliverd(element) {
-      if (element.lastMessage.deliveredAt) return true;
-      return false;
-    },
-    setMessageStateToSeen(element) {
-      if (
-        element.lastMessage.readAt &&
-        element.lastMessage.receiverId !== this.currentUser.uid
-      )
-        return true;
-      return false;
-    },
     markAsRead() {
       this.markAsReadd();
-      console.log("no meessage to read");
     },
-    //         ------------------------------   Recive Message   ------------------------------------------
-    // --------------------------------------    **************   ---------------------------------------------
-    //         ------------------------------   Genral Message   ------------------------------------------
 
     resetForms() {
       this.disableForm = false;
@@ -339,18 +315,12 @@ export default {
     },
     uniqueId,
     imran,
-    // check() {
-    //   console.log("ssss");
-    //   document.title = "new title";
-    //   // console.log(
-    //   //   this.isDevice ? window.innerHeight + "px" : "calc(100vh - 80px)"
-    //   // );
-    // },
 
     // --------------------------------------    **************   ---------------------------------------------
 
     playMessageSound() {
       var audio = new Audio(this.audio);
+      document.title = "New Message Recived";
       audio.play();
     },
     // -------------- ENd OF Methods object---------------

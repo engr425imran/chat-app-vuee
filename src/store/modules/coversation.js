@@ -28,7 +28,7 @@ const actions = {
     commit("SET_CONVERSATION_TAB_SELECTED", true);
     commit("SET_INITIAL_STAGE_ROOMS_LOADING", true);
     commit("SET_MESSAGE_LOADED", false);
-    let limit = 4;
+    let limit = 14;
     let conversationsRequest = new CometChat.ConversationsRequestBuilder()
       .setLimit(limit)
       .build();
@@ -90,19 +90,21 @@ const actions = {
         ];
         roomObject["lastMessage"] = {
           _id: element.lastMessage.id,
-          content: element.lastMessage.text,
+          content: element.lastMessage.text ? element.lastMessage.text : "",
           senderId: element.lastMessage.sender.uid,
           username: element.lastMessage.sender.name,
-          timestamp: new Date(element.lastMessage.sentAt * 1000).toLocaleString(
-            "en-us",
-            {
-              hour: "numeric",
-              minute: "numeric",
-            }
-          ),
+          timestamp: new Date(
+            element.lastMessage.deletedAt
+              ? element.lastMessage.deletedAt
+              : element.lastMessage.sentAt * 1000
+          ).toLocaleString("en-us", {
+            hour: "numeric",
+            minute: "numeric",
+          }),
           // timestamp: dispatch("formatTime", element.lastMessage.sentAt),
           date: "today, 10:45",
           saved: true,
+          deleted: element.lastMessage.deletedAt ? true : false,
           distributed: element.lastMessage.deliveredAt ? true : false,
           seen:
             element.lastMessage.readAt &&
@@ -118,6 +120,7 @@ const actions = {
               ? false
               : true,
         };
+        roomObject["typingUsers"] = [];
       }
       newRooms.push(roomObject);
     });
@@ -164,6 +167,7 @@ const mutations = {
     state.messageLoaded = true;
     state.loadingRoomsInitial = false;
     state.rooms = payload;
+    // state.roomId = payload[0].roomId;
   },
   SET_INITIAL_STAGE_ROOMS_LOADING: (state, payload) => {
     state.loadingRoomsInitial = payload;

@@ -45,15 +45,11 @@ const actions = {
         };
         // this.messages.push(messagePushToState);
         commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
-        // this.markMessageAsDeliverd(message);
       },
       (error) => {
         console.log("Message sending failed with error:", error);
       }
     );
-
-    console.log(payload);
-    commit("CHECK", "cc");
   },
 };
 const mutations = {

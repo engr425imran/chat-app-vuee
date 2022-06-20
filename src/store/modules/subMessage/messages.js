@@ -1,6 +1,7 @@
 import { CometChat } from "@cometchat-pro/chat";
 import sendMessage from "./sendMessage";
-import reciveMessage from "./reciveMessage";
+import receiveMessage from "./receiveMessage";
+import deleteMessage from "./deleteMessage";
 const state = {
   messages: [],
 };
@@ -9,8 +10,9 @@ const getters = {
 };
 const actions = {
   async getOldMessagesBetweenUserr({ commit, dispatch }, roomId) {
+    // async getOldMessagesBetweenUserr({ commit }, roomId) {
     let UID = roomId;
-    let limit = 5;
+    let limit = 14;
     let messagesRequest = new CometChat.MessagesRequestBuilder()
       .setUID(UID)
       .setLimit(limit)
@@ -22,8 +24,8 @@ const actions = {
           messages,
           roomId,
         };
+        // console.log(payload);
         dispatch("addOldMessagesToSateToMessagesArray", payload);
-        console.log();
       },
       (error) => {
         console.log("Message fetching failed with error:", error);
@@ -38,13 +40,25 @@ const actions = {
     { commit, dispatch, rootGetters },
     payload
   ) {
-    // addOldMessagesToSateToMessagesArray(messages, roomId) {
+    let messageCount = payload.messages.length;
+    if (messageCount == 0) {
+      console.log("///// =========");
+      commit("conversation/SET_MESSAGE_LOADED", true, { root: true });
+      commit("SET_MESSAGES", []);
+      commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", false, {
+        root: true,
+      });
+      return;
+    }
     var oldConverstion = [];
     payload.messages.forEach((element, index) => {
+      if (element.category === "action") return;
       var messageObject = {};
       messageObject["_id"] = element.id;
       messageObject["indexId"] = index + 1;
-      messageObject["content"] = element.text;
+      messageObject["content"] = element.text
+        ? element.text
+        : "this message deleted";
       messageObject["senderId"] = element.rawMessage.sender;
       messageObject["username"] =
         element.rawMessage.sender == rootGetters["home/getCometUser"].uid
@@ -60,6 +74,7 @@ const actions = {
         .reverse()
         .join(" ");
       messageObject["saved"] = true;
+      messageObject["deleted"] = element.deletedAt ? true : false;
       messageObject["new"] = true;
       messageObject["converstionWith"] =
         element.receiverId == rootGetters["home/getCometUser"].uid
@@ -78,44 +93,39 @@ const actions = {
       messageObject["avatar"] = element.sender.avatar;
       oldConverstion.push(messageObject);
     });
-    commit("conversation/SET_MESSAGE_LOADED", true, { root: true });
     commit("SET_MESSAGES", oldConverstion);
     console.log("messages added to  array Called From Message functio");
     dispatch("markAsReadd", payload.roomId);
-    // this.markAsRead(roomId);
+    commit("conversation/SET_MESSAGE_LOADED", true, { root: true });
   },
 
   markAsReadd({ rootGetters, commit, getters }, textMessage) {
-    // markAsReadd({ rootGetters }, textMessage) {
     let currentRoomsInState = rootGetters["conversation/getRooms"];
-    currentRoomsInState.find;
-
     if (textMessage.rawMessage) {
-      // var messageId = textMessage.rawMessage.id;
-      // var receiverId = textMessage.sender.uid;
-      // var receiverType = "user";
-      // var senderId = textMessage.sender.uid;
-      // CometChat.markAsRead(messageId, receiverId, receiverType, senderId).then(
-      //   () => {
-      //     const newArrayRooms = currentRoomsInState.map(function (room) {
-      //       if (room.roomId === textMessage.sender.uid) {
-      //         console.log(room.roomId);
-      //         room.unreadCount = 0;
-      //       }
-      //       return room;
-      //     });
-      //     commit("SET_ROOMS", newArrayRooms, { root: true });
-      //     console.log("message marked as read || the user was on chat window");
-      //     return;
-      //   },
-      //   (error) => {
-      //     console.log(
-      //       "An error occurred when marking the message as read.",
-      //       error
-      //     );
-      //     return;
-      //   }
-      // );
+      var messageId = textMessage.rawMessage.id;
+      var receiverId = textMessage.sender.uid;
+      var receiverType = "user";
+      var senderId = textMessage.sender.uid;
+      CometChat.markAsRead(messageId, receiverId, receiverType, senderId).then(
+        () => {
+          const newArrayRooms = currentRoomsInState.map(function (room) {
+            if (room.roomId === textMessage.sender.uid) {
+              room.unreadCount = 0;
+            }
+            return room;
+          });
+          commit("conversation/SET_ROOMS", newArrayRooms, { root: true });
+          console.log("message marked as read || the user was on chat window");
+          return;
+        },
+        (error) => {
+          console.log(
+            "An error occurred when marking the message as read.",
+            error
+          );
+          return;
+        }
+      );
     }
     const room = currentRoomsInState.filter(function (room) {
       return room.roomId == textMessage;
@@ -146,9 +156,9 @@ const actions = {
             "An error occurred when marking the message as read.",
             error
           );
+          return;
         }
       );
-      return;
     }
     console.log("no meessage to read");
   },
@@ -163,7 +173,8 @@ const mutations = {
 };
 const modules = {
   sendMessage,
-  reciveMessage,
+  receiveMessage,
+  deleteMessage,
 };
 export default {
   namespaced: true,
