@@ -148,7 +148,6 @@ const actions = {
             return room;
           });
           commit("conversation/SET_ROOMS", newArrayRooms, { root: true });
-          //     console.log(this.rooms);
           console.log(" marked as read || the user has just open chat window");
         },
         (error) => {

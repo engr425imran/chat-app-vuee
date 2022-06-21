@@ -164,9 +164,8 @@ const mutations = {
     state.errorMessage = payload;
   },
   SET_ROOMS: (state, payload) => {
-    state.messageLoaded = true;
-    state.loadingRoomsInitial = false;
     state.rooms = payload;
+    state.messageLoaded = true;
     // state.roomId = payload[0].roomId;
   },
   SET_INITIAL_STAGE_ROOMS_LOADING: (state, payload) => {
@@ -179,6 +178,7 @@ const mutations = {
     state.unreadMessageIsPresent = payload;
   },
   SET_MESSAGE_LOADED: (state, payload) => {
+    state.loadingRoomsInitial = false;
     state.messageLoaded = payload;
   },
 };

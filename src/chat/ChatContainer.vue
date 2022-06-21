@@ -147,9 +147,9 @@ export default {
         { name: "deleteRoom", title: "Delete Rooms" },
       ],
       menuActions: [
-        { name: "inviteUser", title: "Invite User" },
-        { name: "removeUser", title: "Remove User" },
-        { name: "deleteRoom", title: "Delete Room" },
+        { name: "inviteUser", title: "Check Function" },
+        // { name: "removeUser", title: "Remove User" },
+        // { name: "deleteRoom", title: "Delete Room" },
       ],
       messageSelectionActions: [{ name: "deleteMessages", title: "Delete" }],
       roomMessage: "",
