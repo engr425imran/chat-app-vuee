@@ -1,6 +1,7 @@
 import { CometChat } from "@cometchat-pro/chat";
 const state = {
   audio: require("@/assets/audio/notifi.wav"),
+  check: "ddd",
 };
 const getters = {
   getAudio: (state) => state.audio,
@@ -13,14 +14,15 @@ const actions = {
       listenerID,
       new CometChat.MessageListener({
         onTypingStarted: (typingIndicator) => {
-          console.log("Typing started :", typingIndicator);
+          const id = typingIndicator.sender.uid;
+          dispatch("startTypingIndicatorForUser", id);
         },
         onTypingEnded: (typingIndicator) => {
-          console.log("Typing ended :", typingIndicator);
+          const id = typingIndicator.sender.uid;
+          dispatch("endTypingIndicatorForUser", id);
         },
+
         onTextMessageReceived: (textMessage) => {
-          // console.log("message recived", textMessage);
-          // dispatch("playMessageSound");
           const message = {
             _id: textMessage.rawMessage.id,
             indexId: textMessage.rawMessage.id,
@@ -84,8 +86,35 @@ const actions = {
       }
     });
   },
+
+  startTypingIndicatorForUser: ({ rootGetters, commit }, payload) => {
+    let currentRooms = rootGetters["conversation/getRooms"];
+    let updatedRoomsArray = currentRooms.map((element) => {
+      if (element.roomId == payload) {
+        element.typingUsers = [payload];
+        return element;
+      }
+      return element;
+    });
+    commit("conversation/SET_ROOMS", updatedRoomsArray, { root: true });
+  },
+  endTypingIndicatorForUser: ({ rootGetters, commit }, payload) => {
+    let currentRooms = rootGetters["conversation/getRooms"];
+    let updatedRoomsArray = currentRooms.map((element) => {
+      if (element.roomId == payload) {
+        element.typingUsers = [];
+        return element;
+      }
+      return element;
+    });
+    commit("conversation/SET_ROOMS", updatedRoomsArray, { root: true });
+  },
 };
-const mutations = {};
+const mutations = {
+  SET_CHECK: (state, payload) => {
+    state.check = payload;
+  },
+};
 export default {
   namespaced: true,
   state,

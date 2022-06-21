@@ -6,7 +6,7 @@ const getters = {
   getSent: (state) => state.sent,
 };
 const actions = {
-  sendMessagee: async ({ commit, rootGetters }, payload) => {
+  sendMessagee: async ({ commit, rootGetters, dispatch }, payload) => {
     var rooms = rootGetters["conversation/getRooms"];
     const room = rooms.find((ele) => ele.roomId == payload.roomId);
     let receiverID = payload.roomId;
@@ -19,6 +19,7 @@ const actions = {
     );
     CometChat.sendMessage(textMessage).then(
       (message) => {
+        dispatch("endTypingUserActivity", payload.roomId);
         console.log("Message sent successfully:");
         const messagePushToState = {
           _id: message.id,
@@ -51,9 +52,19 @@ const actions = {
       }
     );
   },
+  endTypingUserActivity: ({ commit }, payload) => {
+    // let receiverId = "UID";
+    let receiverType = CometChat.RECEIVER_TYPE.USER;
+    let typingNotification = new CometChat.TypingIndicator(
+      payload,
+      receiverType
+    );
+    CometChat.endTyping(typingNotification);
+    commit("SET_CHECK", "gap");
+  },
 };
 const mutations = {
-  CHECK: (state, payload) => {
+  SET_CHECK: (state, payload) => {
     state.sent = payload;
   },
 };

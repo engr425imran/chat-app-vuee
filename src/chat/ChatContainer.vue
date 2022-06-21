@@ -30,12 +30,12 @@
     </form>
     <v-card elevation="3" style="nav-header">
       <div class="button-chat">
-        <input
+        <!-- <input
           type="button"
           @click="playMessageSound()"
           class="checck"
           value="hightCheck"
-        />
+        /> -->
         <input
           type="button"
           @click="displayUsers()"
@@ -69,6 +69,8 @@
       :message-selection-actions="messageSelectionActions"
       :menu-actions="menuActions"
       :message-actions="messageActions"
+      :show-audio="false"
+      :text-formatting="textFormatting"
       @add-room="addRoom"
       @toggle-rooms-list="$emit('show-demo-options', $event.opened)"
       @fetch-messages="fetchMessages"
@@ -103,8 +105,16 @@ export default {
       audio: require("@/assets/audio/notifi.wav"),
       messages: [],
       styles: { container: { borderRadius: "4px" } },
-      // messages: messages,
-      // rooms: rooms,
+
+      textFormatting: {
+        disabled: false,
+        italic: "_",
+        bold: "*",
+        strike: "~",
+        underline: "°",
+        multilineCode: "```",
+        inlineCode: "``",
+      },
       previousLastLoadedMessage: null,
       messagesLoadedForSpecific: null,
       roomsLoaded: true,
@@ -112,15 +122,10 @@ export default {
       isChatRecivingUserIsOnline: false,
       lastLoadedMessage: true,
       loadedRooms: true,
-      inviteRoomId: null,
-      // conversationTabSelected: null,
       removeRoomId: null,
+      inviteRoomId: null,
       addRoomUsername: "",
       messageActions: [
-        {
-          name: "replyMessage",
-          title: "Reply BHAU",
-        },
         {
           name: "editMessage",
           title: "Edit Message",
@@ -225,21 +230,11 @@ export default {
         roomId,
       };
       this.delete(payload);
-      // const newArr = this.messages.filter(function (stateMessage) {
-      //   return stateMessage._id !== message._id;
-      // });
-      // this.messages.forEach((element) => {
-      //   if (element._id == message._id) {
-      //     element.content = "this message has been deleted";
-      //   }
-      // });
-      // this.messages.filter();
-      // console.log(roomId);
     },
 
     typingMessage({ roomId, message }) {
-      console.log(roomId, message);
-      let receiverId = "superhero3";
+      console.log(message);
+      let receiverId = roomId;
       let receiverType = CometChat.RECEIVER_TYPE.USER;
 
       let typingNotification = new CometChat.TypingIndicator(
