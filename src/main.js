@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+const appID = process.env.VUE_APP_COMET_APP_ID;
+const region = process.env.VUE_APP_COMET_REGION;
 // import axios from "axios";
 // const user = localStorage.getItem("user");
 import { CometChat } from "@cometchat-pro/chat";
@@ -15,8 +17,6 @@ new Vue({
   vuetify,
   router,
   mounted() {
-    let appID = "211689aa8d66a78c";
-    let region = "us";
     let appSetting = new CometChat.AppSettingsBuilder()
       .subscribePresenceForAllUsers()
       .setRegion(region)

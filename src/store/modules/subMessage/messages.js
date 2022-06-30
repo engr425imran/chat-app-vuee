@@ -61,8 +61,8 @@ const actions = {
         : "this message deleted";
       messageObject["senderId"] = element.rawMessage.sender;
       messageObject["username"] =
-        element.rawMessage.sender == rootGetters["home/getCometUser"].uid
-          ? rootGetters["home/getCometUser"].name
+        element.rawMessage.sender == rootGetters["auth/getUser"].uid
+          ? rootGetters["auth/getUser"].name
           : element.receiver.name;
       messageObject["timestamp"] = new Date(element.sentAt).toLocaleString(
         "en-us",
@@ -77,17 +77,16 @@ const actions = {
       messageObject["deleted"] = element.deletedAt ? true : false;
       messageObject["new"] = true;
       messageObject["converstionWith"] =
-        element.receiverId == rootGetters["home/getCometUser"].uid
+        element.receiverId == rootGetters["auth/getUser"].uid
           ? element.sender.uid
           : element.receiverId;
       messageObject["distributed"] =
         element.deliveredAt &&
-        element.sender.uid === rootGetters["home/getCometUser"].uid
+        element.sender.uid === rootGetters["auth/getUser"].uid
           ? true
           : false;
       messageObject["seen"] =
-        element.sentAt &&
-        element.sender.uid === rootGetters["home/getCometUser"].uid
+        element.sentAt && element.sender.uid === rootGetters["auth/getUser"].uid
           ? true
           : false;
       messageObject["avatar"] = element.sender.avatar;

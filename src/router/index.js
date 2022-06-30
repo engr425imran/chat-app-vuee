@@ -1,5 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import Register from "../views/RegisterView.vue";
+
 import HomeView from "../views/HomeView.vue";
 import ChatLogin from "../views/ChatLogin.vue";
 import ChatUi from "../views/ChatUi.vue";
@@ -14,6 +16,12 @@ const routes = [
     name: "home",
     component: HomeView,
     meta: { requiresAuth: true },
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
+    meta: { requiresAuth: false },
   },
   {
     path: "/login",
@@ -47,18 +55,18 @@ const router = new VueRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ["/login"];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem("user");
-//   // trying to access a restricted page + not logged in
-//   // redirect to login page
-//   if (authRequired && !loggedIn) {
-//     next("/login");
-//   } else if (to.name === "LoginView" && loggedIn) {
-//     next("/");
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login", "/register"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("user");
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next("/login");
+  } else if (to.name === "LoginView" && loggedIn) {
+    next("/");
+  } else {
+    next();
+  }
+});
 export default router;
