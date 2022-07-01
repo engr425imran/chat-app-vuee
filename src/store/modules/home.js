@@ -1,5 +1,6 @@
 import router from "@/router";
 import { CometChat } from "@cometchat-pro/chat";
+const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
 const state = {
   usercomet: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
@@ -14,14 +15,12 @@ const actions = {
   loginUsingCometChat({ commit }, payload) {
     commit("SET_LOADING_STATUS", true);
     var UID = payload;
-    var authKey = "25226e843db138c8148e28a0881aaa56ab0bbbf6";
     CometChat.getLoggedinUser().then(
       (user) => {
         if (!user) {
           CometChat.login(UID, authKey).then(
             (user) => {
               localStorage.setItem("user", JSON.stringify(user));
-              this.loading = false;
               commit("SET_USERCOMET", user);
               router.push("/chatUIPage");
             },
@@ -37,19 +36,6 @@ const actions = {
       }
     );
   },
-  logout: ({ commit }) => {
-    CometChat.logout().then(
-      () => {
-        console.log("Logout completed successfully");
-        localStorage.removeItem("user");
-        commit("REMOVE_USER", null);
-        router.push("/");
-      },
-      (error) => {
-        console.log("Logout failed with exception:", { error });
-      }
-    );
-  },
 };
 const mutations = {
   SET_USERCOMET: (state, payload) => {
@@ -58,9 +44,6 @@ const mutations = {
   },
   SET_LOADING_STATUS: (state, payload) => {
     state.loading = payload;
-  },
-  REMOVE_USER: (state, payload) => {
-    state.usercomet = payload;
   },
 };
 export default {

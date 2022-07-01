@@ -60,15 +60,14 @@ const actions = {
         // dispatch("setNewMessageCountInStatee", element.unreadMessageCount);
         // ---------------------------------------------------------------------------
         roomObject["unreadCount"] = element.unreadMessageCount;
-
-        // unreadCount: dispatch("setNewMessageCountInStatee", element),
         roomObject["users"] = [
           {
-            _id: rootGetters["home/getCometUser"].uid,
-            username: rootGetters["home/getCometUser"].name,
-            avatar: rootGetters["home/getCometUser"].avatar,
+            _id: rootGetters["auth/getUser"].uid,
+            username: rootGetters["auth/getUser"].first_name,
+            // username: "usernameeee",
+            avatar: rootGetters["auth/getUser"].avatar,
             status: {
-              state: rootGetters["home/getCometUser"].status,
+              state: rootGetters["auth/getUser"].status,
               lastChanged: "live",
             },
           },
@@ -101,22 +100,18 @@ const actions = {
             hour: "numeric",
             minute: "numeric",
           }),
-          // timestamp: dispatch("formatTime", element.lastMessage.sentAt),
           date: "today, 10:45",
           saved: true,
           deleted: element.lastMessage.deletedAt ? true : false,
           distributed: element.lastMessage.deliveredAt ? true : false,
           seen:
             element.lastMessage.readAt &&
-            element.lastMessage.receiverId !==
-              rootGetters["home/getCometUser"].uid
+            element.lastMessage.receiverId !== rootGetters["auth/getUser"].uid
               ? true
               : false,
           new:
-            element.lastMessage.receiverId ==
-              rootGetters["home/getCometUser"].uid ||
-            element.lastMessage.sender.uid ==
-              rootGetters["home/getCometUser"].uid
+            element.lastMessage.receiverId == rootGetters["auth/getUser"].uid ||
+            element.lastMessage.sender.uid == rootGetters["auth/getUser"].uid
               ? false
               : true,
         };
@@ -129,13 +124,6 @@ const actions = {
 
     commit("SET_ROOMS", newRooms);
   },
-
-  // setNewMessageCountInStatee: ({ commit }, element) => {
-  //   if (element.unreadMessageCount > 0) {
-  //     commit("SET_UNREAD_MESSAGE_PRESENT", true);
-  //   }
-  //   console.log(element);
-  // },
 
   // --------------------------------------    **************   ---------------------------------------------
   //         ------------------------------   Genral Function   ------------------------------------------

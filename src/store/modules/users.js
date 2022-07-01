@@ -29,11 +29,11 @@ const actions = {
           roomObject["uid"] = element.uid;
           roomObject["users"] = [
             {
-              _id: rootGetters["home/getCometUser"].uid,
-              username: rootGetters["home/getCometUser"].name,
-              avatar: rootGetters["home/getCometUser"].avatar,
+              _id: rootGetters["auth/getUser"].uid,
+              username: rootGetters["auth/getUser"].name,
+              avatar: rootGetters["auth/getUser"].avatar,
               status: {
-                state: rootGetters["home/getCometUser"].status,
+                state: rootGetters["auth/getUser"].status,
                 lastChanged: "live",
               },
             },

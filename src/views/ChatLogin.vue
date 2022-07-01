@@ -1,8 +1,5 @@
 <template>
-  <v-container
-    class="d-flex main-container justify-center align-center"
-    fluid="true"
-  >
+  <v-container class="d-flex main-container justify-center align-center" fluid>
     <div>
       <div class="d-flex justify-center">
         <img
@@ -15,8 +12,8 @@
       </div>
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
         <v-card
-          :min-height="495"
-          :max-width="$vuetify.breakpoint.xs ? 310 : 495"
+          :max-height="480"
+          :max-width="$vuetify.breakpoint.xs ? 340 : 489"
           class="text-center card-body"
           outlined
           elevation="0"
@@ -29,7 +26,7 @@
           />
           <div
             class="d-flex justify-center align-center"
-            style="margin-top: 42px"
+            style="margin-top: 30px"
           >
             <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
             <span
@@ -91,7 +88,7 @@ export default {
     return {
       user: {
         email: "",
-        // email: "test@shifl.com",
+        // email: "imran@test.com",
         // password: "password",
         password: "",
       },
@@ -104,6 +101,12 @@ export default {
     ...mapActions("auth", ["loginUser"]),
     login() {
       this.loginUser(this.user);
+    },
+    check() {
+      let user = { id: 1, name: "imran", lastname: "lname", uid: 12121 };
+      let user1 = { id: 2, name: "khan", avatar: "nishta" };
+      user = { ...user, ...user1 };
+      console.log(user);
     },
   },
 };
@@ -136,7 +139,7 @@ export default {
 }
 
 .google-signin-button {
-  margin-top: 42px;
+  margin-top: 30px;
   width: 100%;
   height: 40px;
   background: #ffffff;
@@ -153,6 +156,6 @@ export default {
   line-height: 26px;
 }
 .card-body {
-  padding: 15px;
+  padding: 25px;
 }
 </style>

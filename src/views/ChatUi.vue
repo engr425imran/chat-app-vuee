@@ -13,14 +13,14 @@
       </span>
       <select>
         <option>
-          {{ getCometUser.uid }}
+          {{ getUser.first_name }}
         </option>
       </select>
       <div v-if="showOptions" class="button-theme">
         <button class="button-light" @click="themeChange()">theme</button>
-        <button class="button-dark" @click="logout()">logout</button>
+        <button class="button-dark" @click="logoutUser()">logout</button>
         <v-card
-          :img="getCometUser.avatar"
+          :img="getUser.avatar"
           rounded="circle"
           height="40"
           style="margin-left: 10px"
@@ -34,7 +34,7 @@
         :theme="theme"
         :is-device="isDevice"
         @show-demo-options="showDemoOptions = $event"
-        :currentUser="getCometUser"
+        :currentUser="getUser"
       />
       <div class="version-container">v1.0.0</div>
     </div>
@@ -53,20 +53,19 @@ export default {
       theme: true,
       showChat: true,
       currentUser: null,
-      username: localStorage.getItem("username") || "Not Logged In",
       isDevice: false,
       showDemoOptions: true,
       updatingData: false,
     };
   },
   computed: {
-    ...mapGetters("home", ["getCometUser"]),
+    ...mapGetters("auth", ["getUser"]),
     showOptions() {
       return !this.isDevice || this.showDemoOptions;
     },
   },
   methods: {
-    ...mapActions("home", ["logout"]),
+    ...mapActions("auth", ["logoutUser"]),
     themeChange() {
       this.theme = !this.theme;
     },

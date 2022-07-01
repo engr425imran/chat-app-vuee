@@ -24,10 +24,10 @@ const actions = {
         const messagePushToState = {
           _id: message.id,
           indexId: message.id,
-          senderId: rootGetters["home/getCometUser"].uid,
+          senderId: rootGetters["auth/getUser"].uid,
           content: payload.content,
-          username: rootGetters["home/getCometUser"].username,
-          avatar: rootGetters["home/getCometUser"].avatar,
+          username: rootGetters["auth/getUser"].username,
+          avatar: rootGetters["auth/getUser"].avatar,
           timestamp: new Date(message.sentAt * 1000).toLocaleString("en-us", {
             hour: "numeric",
             minute: "numeric",
