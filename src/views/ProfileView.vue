@@ -83,9 +83,7 @@ export default {
   computed: {
     ...mapGetters("auth", ["getUser", "getLoadingStatus"]),
   },
-  methods: {
-    loginUser() {},
-  },
+  methods: {},
   created() {},
 };
 </script>

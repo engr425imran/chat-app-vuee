@@ -3,10 +3,8 @@ import Vuex from "vuex";
 import auth from "./modules/auth";
 import messages from "./modules/subMessage/messages";
 import conversation from "./modules/coversation";
-import home from "./modules/home";
 import register from "./modules/register";
 import users from "./modules/users";
-// import imran from "./modules/sub/imran";
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {},
@@ -18,8 +16,6 @@ export default new Vuex.Store({
     auth,
     messages,
     conversation,
-    home,
     users,
-    // imran,
   },
 });

@@ -1,6 +1,5 @@
 import router from "@/router";
-// const BACKEND_APP_URL = process.env.VUE_APP_HEROKU_APP_URL;
-const LOCAL_BACKEND_APP_URL = process.env.VUE_APP_LOCAL_APP_URL;
+const VUE_APP_API_URL = process.env.VUE_APP_API_URL;
 const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
 import axios from "axios";
 import { CometChat } from "@cometchat-pro/chat";
@@ -27,7 +26,7 @@ const actions = {
       password: payload.password,
     };
     await axios
-      .post(`${LOCAL_BACKEND_APP_URL}/api/chat/user/login`, body)
+      .post(`${VUE_APP_API_URL}/chat/user/login`, body)
       // .post("http://localhost:8000/api/user/login", body)
       .then((res) => {
         console.log(res.data);
@@ -71,8 +70,7 @@ const actions = {
   },
   logoutUser: async ({ commit, state, dispatch }) => {
     await axios
-      .get("http://localhost:8000/api/chat/user/logout", {
-        // .get(`${VUE_APP_LOCAL_APP_URL}/user/logout`, {
+      .get(`${VUE_APP_API_URL}/chat/user/logout`, {
         headers: { Authorization: `Bearer ${state.token}` },
       })
       .then(() => {

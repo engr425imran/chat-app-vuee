@@ -30,12 +30,6 @@
     </form>
     <v-card elevation="3" style="nav-header">
       <div class="button-chat">
-        <!-- <input
-          type="button"
-          @click="playMessageSound()"
-          class="checck"
-          value="hightCheck"
-        /> -->
         <input
           type="button"
           @click="displayUsers()"

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h2>Please Select One Of dummy Account</h2>
+    <h2>Here Is the Home Page For User</h2>
 
     <v-container>
       <div style="margin-left: 50%">
         <v-progress-circular
-          v-if="getLoading"
+          v-if="loading"
           :size="70"
           :width="7"
           color="purple"
@@ -14,44 +14,17 @@
       </div>
       <v-row style="margin-top: 30px">
         <v-col cols="4">
-          <button @click="loginCometChat('SUPERHERO1')" style="width: 100%">
+          <button style="width: 100%">
             <v-card class="text-center card-body" elevation="2" tile>
-              <p>SUPERHERO1</p>
-              <img src="@/assets/users/user1.jpg" height="40px" />
-            </v-card>
-          </button>
-        </v-col>
-        <v-col cols="4">
-          <button @click="loginCometChat('SUPERHERO2')" style="width: 100%">
-            <v-card class="text-center card-body" elevation="2" tile>
-              <p>SUPERHERO2</p>
-              <img
-                src="@/assets/images/avatars/avatarLuke.jpeg"
-                height="40px"
-              />
-            </v-card>
-          </button>
-        </v-col>
-        <v-col cols="4">
-          <button @click="loginCometChat('SUPERHERO3')" style="width: 100%">
-            <v-card class="text-center card-body" elevation="2" tile>
-              <p>SUPERHERO3</p>
-              <img src="@/assets/users/user1.jpg" height="40px" />
-            </v-card>
-          </button>
-        </v-col>
-        <v-col cols="4">
-          <button @click="loginCometChat('SUPERHERO4')" style="width: 100%">
-            <v-card class="text-center card-body" elevation="2" tile>
-              <p>SUPERHERO4</p>
+              <p>Some Random Text</p>
               <img src="@/assets/images/avatars/avatar.jpeg" height="40px" />
             </v-card>
           </button>
         </v-col>
         <v-col cols="4">
-          <button @click="loginCometChat('SUPERHERO5')" style="width: 100%">
+          <button style="width: 100%">
             <v-card class="text-center card-body" elevation="2" tile>
-              <p>SUPERHERO5</p>
+              <p>Some Random Text</p>
               <img
                 src="@/assets/images/avatars/avatarLeia.jpeg"
                 height="40px"
@@ -61,12 +34,11 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container> </v-container>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+// import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -75,12 +47,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("home", ["getLoading"]),
+    // ...mapGetters("home", ["getLoading"]),
   },
   methods: {
-    ...mapActions("home", ["loginUsingCometChat"]),
+    // ...mapActions("home", ["loginUsingCometChat"]),
     loginCometChat(name) {
-      this.loginUsingCometChat(name);
+      console.log(name);
+      // this.loginUsingCometChat(name);
     },
   },
 };

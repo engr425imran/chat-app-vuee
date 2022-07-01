@@ -73,6 +73,14 @@
             </v-progress-circular>
             <span> Login </span>
           </button>
+          <p style="margin-top: 20px">
+            Create A New Account ?<span class="change-submit"
+              ><input
+                type="button"
+                value="Register"
+                @click="changeToRegister()"
+            /></span>
+          </p>
         </v-card>
       </v-sheet>
     </div>
@@ -80,6 +88,7 @@
 </template>
 
 <script>
+import router from "@/router";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -102,11 +111,8 @@ export default {
     login() {
       this.loginUser(this.user);
     },
-    check() {
-      let user = { id: 1, name: "imran", lastname: "lname", uid: 12121 };
-      let user1 = { id: 2, name: "khan", avatar: "nishta" };
-      user = { ...user, ...user1 };
-      console.log(user);
+    changeToRegister() {
+      router.push("/register");
     },
   },
 };
@@ -157,5 +163,11 @@ export default {
 }
 .card-body {
   padding: 25px;
+}
+.change-submit {
+  font-size: 20px;
+  margin-left: 15px;
+  font-weight: 700;
+  color: #db6969;
 }
 </style>
