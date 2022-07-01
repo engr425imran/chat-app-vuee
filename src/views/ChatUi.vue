@@ -18,7 +18,7 @@
       </select>
       <div v-if="showOptions" class="button-theme">
         <button class="button-light" @click="themeChange()">theme</button>
-        <button class="button-dark" @click="logoutUser()">logout</button>
+        <!-- <button class="button-dark" @click="logoutUser()">logout</button> -->
         <v-card
           :img="getUser.avatar"
           rounded="circle"

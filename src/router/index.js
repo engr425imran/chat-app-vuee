@@ -65,6 +65,8 @@ router.beforeEach((to, from, next) => {
     next("/login");
   } else if (to.name === "LoginView" && loggedIn) {
     next("/");
+  } else if (to.name === "Register" && loggedIn) {
+    next("/");
   } else {
     next();
   }

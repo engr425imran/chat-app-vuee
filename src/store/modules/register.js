@@ -1,7 +1,6 @@
 import router from "@/router";
 import { CometChat } from "@cometchat-pro/chat";
-// const LOCAL_BACKEND_APP_URL = process.env.VUE_APP_LOCAL_APP_URL;
-const LOCAL_BACKEND_APP_URL_API = process.env.VUE_APP_LOCAL_APP_URL_API;
+const VUE_APP_API_URL = process.env.VUE_APP_API_URL;
 
 import axios from "axios";
 const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
@@ -16,7 +15,7 @@ const actions = {
   registerUser: async ({ commit, dispatch }, payload) => {
     commit("auth/SET_LOADING_STATUS", true, { root: true });
     await axios
-      .post(`${LOCAL_BACKEND_APP_URL_API}/chat/user/create`, payload)
+      .post(`${VUE_APP_API_URL}/chat/user/create`, payload)
       .then((res) => {
         console.log(res.data, "User Registed With backend");
         commit("auth/SET_ACCESS_TOKEN", res.data.token, { root: true });
@@ -98,11 +97,7 @@ const actions = {
       cometChatAuthToken: payload.authToken,
     };
     axios
-      .post(
-        LOCAL_BACKEND_APP_URL_API + "/chat/user/addCometChatInfo",
-        data,
-        config
-      )
+      .post(VUE_APP_API_URL + "/chat/user/addCometChatInfo", data, config)
       .then((res) => {
         let Cuser = res.data.user;
         const user = { ...payload, ...Cuser };

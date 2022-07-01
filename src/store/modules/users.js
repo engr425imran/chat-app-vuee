@@ -13,7 +13,7 @@ const actions = {
       root: true,
     });
 
-    const users = new CometChat.UsersRequestBuilder().setLimit(5);
+    const users = new CometChat.UsersRequestBuilder().setLimit(15);
     const usersRequest = users.build();
     usersRequest
       .fetchNext()

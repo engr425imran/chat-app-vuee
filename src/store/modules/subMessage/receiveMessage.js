@@ -1,7 +1,6 @@
 import { CometChat } from "@cometchat-pro/chat";
 const state = {
   audio: require("@/assets/audio/notifi.wav"),
-  check: "ddd",
 };
 const getters = {
   getAudio: (state) => state.audio,

@@ -5,21 +5,26 @@
         <img
           class=""
           alt="shfil logo"
-          width="203px"
-          height="50px"
+          width="180px"
+          height="40px"
           src="@/assets/images/logo.png"
         />
       </div>
       <v-sheet style="margin-top: 20px" outlined color="#0171A1" rounded>
         <v-card
-          :max-height="600"
+          :max-height="620"
           :min-width="$vuetify.breakpoint.xs ? 350 : 510"
           class="text-center card-body"
           outlined
           elevation="0"
         >
           <p class="heading">Register To Shifl Chat bot</p>
-
+          <p>
+            already have account ?
+            <span class="change-submit"
+              ><input type="button" value="Login" @click="changeToLogin()"
+            /></span>
+          </p>
           <div>
             <div class="justify-center">
               <input
@@ -94,7 +99,7 @@
               style="margin-right: 3px"
             >
             </v-progress-circular>
-            <span> Login </span>
+            <span> Register </span>
           </button>
         </v-card>
       </v-sheet>
@@ -105,6 +110,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
+import router from "@/router";
 
 export default {
   data() {
@@ -165,15 +171,8 @@ export default {
         .catch((e) => console.log(e));
       // this.file = event.target.files[0];
     },
-    checkk() {
-      const data = new FormData();
-      data.append("file", "");
-      axios
-        .post("http://localhost:8000/api/up", data)
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((e) => console.log(e));
+    changeToLogin() {
+      router.push("/login");
     },
     cb() {
       const reader = new FileReader();
@@ -251,5 +250,10 @@ input[type="file"] {
 }
 .card-body {
   padding: 15px;
+}
+.change-submit {
+  font-size: 18px;
+  font-weight: 700;
+  color: #db6969;
 }
 </style>
