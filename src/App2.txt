@@ -38,11 +38,11 @@
       </v-menu>
     </v-app-bar>
     <v-navigation-drawer
+      class="d-flex d-sm"
       v-model="drawer"
       v-if="getUser !== '' && getUser !== null"
       app
     >
-      <!-- -->
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6"> Shifl Chat </v-list-item-title>
@@ -86,14 +86,13 @@
 
 import { mapGetters, mapActions } from "vuex";
 export default {
-  components: {},
   data() {
     return {
       drawer: null,
       isMobile: false,
       items: [
-        { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
         { title: "Home", icon: "mdi-image", route: "/" },
+        { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
         { title: "Profile", icon: "mdi-border-color", route: "profileEdit" },
       ],
     };
@@ -111,7 +110,6 @@ export default {
         this.isMobile = false;
         this.activeColor = "white";
       }
-
       if (window.innerWidth > 1023 && window.innerWidth < 1201) {
         this.isTablet = true;
       } else {
@@ -122,12 +120,11 @@ export default {
       this.logoutUser();
     },
   },
-  watch: {
-    // whenever question changes, this function will run
-    getUser(newQuestion) {
-      if (newQuestion) this.$router.push("/");
-    },
-  },
+  // watch: {
+  //   getUser(newQuestion) {
+  //     if (newQuestion) this.$router.push("/");
+  //   },
+  // },
 };
 </script>
 

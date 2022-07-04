@@ -19,7 +19,7 @@ const actions = {
       .then((res) => {
         console.log(res.data, "User Registed With backend");
         commit("auth/SET_ACCESS_TOKEN", res.data.token, { root: true });
-        localStorage.setItem("access_token", JSON.stringify(res.data.token));
+        localStorage.setItem("access_token", res.data.token);
         dispatch("regiterUserCometChat", res.data.user);
       })
       .catch((error) => {

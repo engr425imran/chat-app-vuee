@@ -27,19 +27,16 @@ const actions = {
     };
     await axios
       .post(`${VUE_APP_API_URL}/chat/user/login`, body)
-      // .post("http://localhost:8000/api/user/login", body)
       .then((res) => {
         console.log(res.data);
-        localStorage.setItem(
-          "access_token",
-          JSON.stringify(res.data.access_token)
-        );
+        localStorage.setItem("access_token", res.data.access_token);
+        commit("SET_ACCESS_TOKEN", res.data.access_token);
         dispatch("loginUserToCometChat", res.data.user);
-        // commit("SET_LOADING_STATUS", false);
       })
       .catch((error) => {
-        if (error.response.data.message)
+        if (error.response.data.message) {
           commit("SET_ERROR_MESSAGE", error.response.data.message);
+        }
         commit("SET_LOADING_STATUS", false);
       });
   },
@@ -68,28 +65,31 @@ const actions = {
       }
     );
   },
-  logoutUser: async ({ commit, state, dispatch }) => {
+  logoutUser: async ({ commit, getters, dispatch }) => {
     await axios
       .get(`${VUE_APP_API_URL}/chat/user/logout`, {
-        headers: { Authorization: `Bearer ${state.token}` },
+        headers: { Authorization: `Bearer ${getters.getToken}` },
       })
       .then(() => {
         localStorage.removeItem("user");
-        localStorage.removeItem("access_token");
-        dispatch("logout");
-        commit("REMOVE_USER");
+        dispatch("logout", "check");
       })
       .catch((e) => {
         console.log(e);
+        commit("CHECK", "sds");
       });
   },
-  logout: () => {
+  logout: ({ commit }, payload) => {
     CometChat.logout().then(
       () => {
         console.log("Logout completed successfully");
+        commit("REMOVE_USER", null);
+        localStorage.removeItem("access_token");
+        console.log(payload);
         router.push("/login");
       },
       (error) => {
+        console.log(commit);
         console.log("Logout failed with exception:", { error });
       }
     );
@@ -117,6 +117,9 @@ const mutations = {
   },
   SET_ACCESS_TOKEN: (state, payload) => {
     state.accessToken = payload;
+  },
+  CHECK: () => {
+    console.log("cc");
   },
 };
 export default {

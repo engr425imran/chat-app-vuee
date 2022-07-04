@@ -1,10 +1,7 @@
 <template>
-  <v-container
-    class="d-flex main-container justify-center align-center"
-    fluid="true"
-  >
+  <v-container class="d-flex main-container justify-center align-center" fluid>
     <div>
-      <div class="d-flex justify-center">
+      <!-- <div class="d-flex justify-center">
         <img
           class=""
           alt="shfil logo"
@@ -12,7 +9,7 @@
           height="50px"
           src="@/assets/images/logo.png"
         />
-      </div>
+      </div> -->
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
         <v-card
           :min-height="476"

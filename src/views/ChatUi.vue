@@ -13,7 +13,7 @@
       </span>
       <select>
         <option>
-          {{ getUser.first_name }}
+          {{ getUser.name }}
         </option>
       </select>
       <div v-if="showOptions" class="button-theme">

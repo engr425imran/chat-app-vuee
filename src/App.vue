@@ -8,10 +8,11 @@
         @click="drawer = !drawer"
         color="black"
       />
+      <!-- <v-spacer></v-spacer> -->
+
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
+          class="shrink ml-2"
           contain
           src="@/assets/images/logo.svg"
           transition="scale-transition"
@@ -20,6 +21,21 @@
       </div>
 
       <v-spacer></v-spacer>
+      <template v-if="!isMobile">
+        <v-tabs
+          background-color="green darken-4"
+          center-active
+          dark
+          align-with-title
+        >
+          <v-tabs-slider color="green"></v-tabs-slider>
+          <v-tab v-for="item in items" :key="item.title" link :to="item.route">
+            {{ item.title }}
+          </v-tab>
+        </v-tabs>
+      </template>
+      <v-spacer></v-spacer>
+
       <v-menu left offset-y bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-card rounded="circle">
@@ -42,7 +58,6 @@
       v-if="getUser !== '' && getUser !== null"
       app
     >
-      <!-- -->
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6"> Shifl Chat </v-list-item-title>
@@ -88,8 +103,9 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-      drawer: null,
+      drawer: false,
       isMobile: false,
+      activeColor: "blue",
       items: [
         { title: "Home", icon: "mdi-image", route: "/" },
         { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
@@ -105,15 +121,18 @@ export default {
     onResize() {
       if (window.innerWidth < 1024) {
         this.isMobile = true;
-        this.activeColor = "#0171A1";
+        this.activeColor = "red";
       } else {
         this.isMobile = false;
-        this.activeColor = "white";
+        this.drawer = false;
+        // this.activeColor = "white";
       }
       if (window.innerWidth > 1023 && window.innerWidth < 1201) {
+        // console.log("table yam");
         this.isTablet = true;
       } else {
         this.isTablet = false;
+        // console.log("laptop yam");
       }
     },
     logout() {
