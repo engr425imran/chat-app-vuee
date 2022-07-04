@@ -10,6 +10,8 @@ const getters = {
 };
 const actions = {
   async getOldMessagesBetweenUserr({ commit, dispatch }, roomId) {
+    commit("conversation/SET_MESSAGE_LOADED", false, { root: true });
+
     // async getOldMessagesBetweenUserr({ commit }, roomId) {
     let UID = roomId;
     let limit = 14;
@@ -56,6 +58,7 @@ const actions = {
       var messageObject = {};
       messageObject["_id"] = element.id;
       messageObject["indexId"] = index + 1;
+      messageObject["CONVERSATION_STARTED"] = "20 Dec";
       messageObject["content"] = element.text
         ? element.text
         : "this message deleted";

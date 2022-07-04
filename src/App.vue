@@ -23,7 +23,7 @@
       <v-spacer></v-spacer>
       <template v-if="!isMobile">
         <v-tabs
-          background-color="green darken-4"
+          background-color="light-blue darken-2"
           center-active
           dark
           align-with-title

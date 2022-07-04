@@ -72,6 +72,9 @@
       @delete-message="deleteMessage"
       @typing-message="typingMessage"
     >
+      <!-- <template #room-header="{ room, userStatus }">
+        {{ room.roomName }} - {{ userStatus }}
+      </template> -->
     </chat-window>
   </div>
 </template>

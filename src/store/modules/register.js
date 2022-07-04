@@ -1,6 +1,7 @@
 import router from "@/router";
 import { CometChat } from "@cometchat-pro/chat";
-const VUE_APP_API_URL = process.env.VUE_APP_API_URL;
+const VUE_APP_API_URL = process.env.VUE_APP_SHFIL_BACKEND_URL;
+// const VUE_APP_API_URL = process.env.VUE_APP_API_URL;
 
 import axios from "axios";
 const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
