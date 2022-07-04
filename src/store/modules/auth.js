@@ -1,6 +1,5 @@
 import router from "@/router";
-// const VUE_APP_API_URL = process.env.VUE_APP_API_URL;
-// const VUE_APP_API_URL = process.env.VUE_APP_SHFIL_BACKEND_URL;
+const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
 const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
 import axios from "axios";
 import { CometChat } from "@cometchat-pro/chat";
@@ -35,8 +34,12 @@ const actions = {
         dispatch("loginUserToCometChat", res.data.user);
       })
       .catch((error) => {
-        if (error.response.data.message) {
+        if (error.request) {
+          commit("SET_ERROR_MESSAGE", "Something went wrong on server");
+        } else if (error.response) {
           commit("SET_ERROR_MESSAGE", error.response.data.message);
+        } else {
+          commit("SET_ERROR_MESSAGE", "error occured ");
         }
         commit("SET_LOADING_STATUS", false);
       });

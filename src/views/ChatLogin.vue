@@ -18,7 +18,7 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Sign in to Shifl chat bot</p>
+          <p class="heading">Sign in to Shifl chat bot.</p>
           <input
             type="button"
             value="Google Account"
