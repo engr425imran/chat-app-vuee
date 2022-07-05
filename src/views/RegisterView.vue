@@ -13,7 +13,7 @@
       <v-sheet style="margin-top: 20px" outlined color="#0171A1" rounded>
         <v-card
           :max-height="620"
-          :min-width="$vuetify.breakpoint.xs ? 350 : 510"
+          :min-width="$vuetify.breakpoint.xs ? 330 : 510"
           class="text-center card-body"
           outlined
           elevation="0"

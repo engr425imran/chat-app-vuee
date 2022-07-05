@@ -13,12 +13,12 @@
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
         <v-card
           :max-height="490"
-          :max-width="$vuetify.breakpoint.xs ? 340 : 489"
+          :max-width="$vuetify.breakpoint.xs ? 330 : 489"
           class="text-center card-body"
           outlined
           elevation="0"
         >
-          <p class="heading">Sign in to Shifl chat bot.</p>
+          <p class="heading">Sign in to Shifl chat bot</p>
           <input
             type="button"
             value="Google Account"
