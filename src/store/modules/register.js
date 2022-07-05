@@ -14,6 +14,7 @@ const getters = {
 const actions = {
   registerUser: async ({ commit, dispatch }, payload) => {
     commit("auth/SET_LOADING_STATUS", true, { root: true });
+    commit("auth/SET_DISABLED_INPUT", true, { root: true });
     await axios
       .post(`${VUE_APP_API_URL}/chat/user/create`, payload)
       .then((res) => {
@@ -42,6 +43,7 @@ const actions = {
           );
         }
         commit("auth/SET_LOADING_STATUS", false, { root: true });
+        commit("auth/SET_DISABLED_INPUT", false, { root: true });
       });
   },
   regiterUserCometChat({ commit, dispatch }, payload) {
@@ -62,6 +64,7 @@ const actions = {
       },
       (error) => {
         commit("auth/SET_LOADING_STATUS", false, { root: true });
+        commit("auth/SET_DISABLED_INPUT", false, { root: true });
 
         console.log("error", error);
       }
@@ -103,8 +106,11 @@ const actions = {
         const user = { ...payload, ...Cuser };
         localStorage.setItem("user", JSON.stringify(user));
         commit("auth/SET_USER", user, { root: true });
+        commit("auth/SET_DISABLED_INPUT", false, { root: true });
+        commit("auth/SET_LOADING_STATUS", false, { root: true });
+
         console.log(user);
-        router.push("/chatUiPage");
+        router.push("/");
       })
       .catch((e) => {
         commit("auth/SET_LOADING_STATUS", false, { root: true });

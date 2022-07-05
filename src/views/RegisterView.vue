@@ -32,6 +32,7 @@
                 type="text"
                 class="card-input"
                 placeholder="Enter First Name"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -40,6 +41,7 @@
                 type="text"
                 class="card-input"
                 placeholder="Enter Last Name"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -48,6 +50,7 @@
                 type="email"
                 class="card-input"
                 placeholder="Enter email Address"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -56,6 +59,7 @@
                 type="password"
                 class="card-input"
                 placeholder="Enter Password"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -64,6 +68,7 @@
                 type="password"
                 class="card-input"
                 placeholder="Confirm Password"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -72,6 +77,7 @@
                 type="text"
                 class="card-input"
                 placeholder="country code"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -80,6 +86,7 @@
                 type="number"
                 class="card-input"
                 placeholder="Number"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center">
@@ -109,7 +116,6 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import axios from "axios";
 import router from "@/router";
 
 export default {
@@ -128,7 +134,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["getLoadingStatus", "getErrorMessage", "getUser"]),
+    ...mapGetters("auth", [
+      "getLoadingStatus",
+      "getErrorMessage",
+      "getUser",
+      "getDisableInput",
+    ]),
     ...mapGetters("register", ["getImage"]),
   },
   methods: {
@@ -156,20 +167,6 @@ export default {
         this.previewImage = e.target.result;
         console.log(this.previewImage);
       };
-      let config = {
-        header: {
-          "Content-Type": "image/png",
-        },
-      };
-      const data = new FormData();
-      data.append("file", this.previewImage);
-      axios
-        .post("http://localhost:8000/api/up", data, config)
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((e) => console.log(e));
-      // this.file = event.target.files[0];
     },
     changeToLogin() {
       router.push("/login");

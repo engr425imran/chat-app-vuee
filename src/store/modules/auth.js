@@ -60,7 +60,7 @@ const actions = {
               commit("SET_USER", UpdateUser);
               commit("SET_LOADING_STATUS", false);
               commit("SET_DISABLED_INPUT", true);
-              router.push("/chatUIPage");
+              router.push("/");
             },
             (error) => {
               commit("SET_LOADING_STATUS", false);
