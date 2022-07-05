@@ -12,7 +12,7 @@
       </div>
       <v-sheet style="margin-top: 54px" outlined color="#0171A1" rounded>
         <v-card
-          :max-height="480"
+          :max-height="490"
           :max-width="$vuetify.breakpoint.xs ? 340 : 489"
           class="text-center card-body"
           outlined
@@ -44,17 +44,19 @@
             <div class="justify-center">
               <input
                 v-model="user.email"
-                type="text"
+                type="email"
                 class="card-input"
                 placeholder="Enter email Address"
+                :disabled="getDisableInput"
               />
             </div>
             <div class="justify-center" style="margin-top: 12px">
               <input
                 v-model="user.password"
-                type="text"
+                type="password"
                 class="card-input"
                 placeholder="Enter Password"
+                :disabled="getDisableInput"
               />
             </div>
           </div>
@@ -73,7 +75,7 @@
             </v-progress-circular>
             <span> Login </span>
           </button>
-          <p style="margin-top: 20px">
+          <p style="margin-top: 15px">
             Create A New Account ?<span class="change-submit"
               ><input
                 type="button"
@@ -97,14 +99,16 @@ export default {
     return {
       user: {
         email: "",
-        // email: "imran@test.com",
-        // password: "password",
         password: "",
       },
     };
   },
   computed: {
-    ...mapGetters("auth", ["getLoadingStatus", "getErrorMessage"]),
+    ...mapGetters("auth", [
+      "getLoadingStatus",
+      "getErrorMessage",
+      "getDisableInput",
+    ]),
   },
   methods: {
     ...mapActions("auth", ["loginUser"]),

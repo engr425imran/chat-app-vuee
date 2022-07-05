@@ -11,9 +11,11 @@ const state = {
   accessToken: localStorage.getItem("access_token") || null,
   loading: false,
   errorMessage: "",
+  disableInput: false,
 };
 const getters = {
   getUser: (state) => state.user,
+  getDisableInput: (state) => state.disableInput,
   getToken: (state) => state.accessToken,
   getLoadingStatus: (state) => state.loading,
   getErrorMessage: (state) => state.errorMessage,
@@ -21,6 +23,7 @@ const getters = {
 const actions = {
   loginUser: async ({ commit, dispatch }, payload) => {
     commit("SET_LOADING_STATUS", true);
+    commit("SET_DISABLED_INPUT", true);
     const body = {
       email: payload.email,
       password: payload.password,
@@ -35,12 +38,13 @@ const actions = {
       })
       .catch((error) => {
         if (error.request) {
-          commit("SET_ERROR_MESSAGE", "Something went wrong on server");
+          commit("SET_ERROR_MESSAGE", "server is unreachable sorry");
         } else if (error.response) {
           commit("SET_ERROR_MESSAGE", error.response.data.message);
         } else {
           commit("SET_ERROR_MESSAGE", "error occured ");
         }
+        commit("SET_DISABLED_INPUT", false);
         commit("SET_LOADING_STATUS", false);
       });
   },
@@ -55,6 +59,7 @@ const actions = {
               localStorage.setItem("user", JSON.stringify(UpdateUser));
               commit("SET_USER", UpdateUser);
               commit("SET_LOADING_STATUS", false);
+              commit("SET_DISABLED_INPUT", true);
               router.push("/chatUIPage");
             },
             (error) => {
@@ -65,6 +70,7 @@ const actions = {
         }
       },
       (error) => {
+        commit("SET_DISABLED_INPUT", false);
         console.log("Something went wrong", error);
       }
     );
@@ -122,8 +128,8 @@ const mutations = {
   SET_ACCESS_TOKEN: (state, payload) => {
     state.accessToken = payload;
   },
-  CHECK: () => {
-    console.log("cc");
+  SET_DISABLED_INPUT: (state, payload) => {
+    state.disableInput = payload;
   },
 };
 export default {
