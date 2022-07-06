@@ -1,0 +1,51 @@
+.main-container {
+    background-color: #e5e5e5;
+    width: 100%;
+    height: 100%;
+  }
+  .card-main {
+    border-width: 1;
+    border-color: black;
+  }
+  .card-input {
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #c4c4c4;
+    border-radius: 5px;
+  }
+  .button-submit {
+    margin-top: 5px;
+    width: 100%;
+    padding: 6px;
+    background-color: #0171a1;
+    color: #fff;
+    border-radius: 5px;
+  }
+  
+  .google-signin-button {
+    margin-top: 30px;
+    width: 100%;
+    height: 40px;
+    background: #ffffff;
+    color: #0171a1;
+    border: 1px solid #0171a1;
+    border-radius: 5px;
+  }
+  .heading {
+    margin-top: 43px;
+    color: #58677a;
+    font-family: "Inter";
+    font-size: 22px;
+    font-weight: 600, semi Bold;
+    line-height: 26px;
+  }
+  .card-body {
+    padding: 25px;
+  }
+  .change-submit {
+    font-size: 20px;
+    margin-left: 15px;
+    font-weight: 700;
+    color: #db6969;
+  }

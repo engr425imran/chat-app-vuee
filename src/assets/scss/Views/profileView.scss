@@ -1,0 +1,67 @@
+.button-avatar {
+    color: transparent;
+  }
+  
+  .button-avatar::-webkit-file-upload-button {
+    margin: 5px 89px;
+    cursor: pointer;
+    height: 40px;
+    width: 127px;
+    padding: 12px;
+    background-color: #fff;
+    color: #0171a1;
+    border: 1px solid #0171a1;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 400, Regular;
+    line-height: 14px;
+  }
+  
+  .main-container {
+    background-color: #e5e5e5;
+    width: 100%;
+    height: 100%;
+  }
+  .card-main {
+    border-width: 1;
+    border-color: black;
+  }
+  .card-input {
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #c4c4c4;
+    border-radius: 5px;
+  }
+  .button-submit {
+    margin-top: 14px;
+    font-family: "Poppins";
+    font-weight: 400, Regular;
+    font-size: 12px;
+    line-height: 19px;
+    width: 100%;
+    padding: 6px;
+    background-color: #0171a1;
+    color: #fff;
+    border-radius: 5px;
+  }
+  
+  .heading {
+    margin-top: 33px;
+    color: #58677a;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 600, semi Bold;
+    line-height: 19px;
+  }
+  .sub-heading {
+    margin-top: 5px;
+    color: #0171a1;
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 400, Regular;
+    line-height: 14px;
+  }
+  .card-body {
+    padding: 20px;
+  }

@@ -1,6 +1,7 @@
 import { CometChat } from "@cometchat-pro/chat";
 const state = {
-  audio: require("@/assets/audio/notifi.wav"),
+  audio: "some value",
+  check: null,
 };
 const getters = {
   getAudio: (state) => state.audio,
@@ -22,6 +23,7 @@ const actions = {
         },
 
         onTextMessageReceived: (textMessage) => {
+          dispatch("playMessageSound", textMessage.sender.name);
           const message = {
             _id: textMessage.rawMessage.id,
             indexId: textMessage.rawMessage.id,
@@ -63,11 +65,16 @@ const actions = {
     );
   },
 
-  playMessageSound({ getter }) {
-    console.log("why i am not shoing");
-    var audio = new Audio(getter.getAudio);
+  playMessageSound({ commit }, payload) {
+    const audio = new Audio(require("@/assets/audio/notifi.wav"));
+    const currntDocumentTitle = document.title;
+    document.title = "New Message " + payload;
     audio.play();
-    document.title = "1 New Message recived";
+    setTimeout(() => {
+      document.title = currntDocumentTitle;
+    }, 3000);
+    console.log(document.title);
+    commit("SET_CHECK", true);
   },
   updateRoomLastMessage: ({ commit, rootGetters }, payload) => {
     let currentRooms = rootGetters["conversation/getRooms"];
