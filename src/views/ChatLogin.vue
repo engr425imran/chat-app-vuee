@@ -26,7 +26,7 @@
           />
           <div
             class="d-flex justify-center align-center"
-            style="margin-top: 30px"
+            style="margin-top: 25px"
           >
             <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
             <span
@@ -40,7 +40,7 @@
             >
             <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
           </div>
-          <div style="margin-top: 43px">
+          <div style="margin-top: 35px">
             <div class="justify-center">
               <input
                 v-model="user.email"
@@ -60,7 +60,7 @@
               />
             </div>
           </div>
-          <p style="margin-top: 8px; color: #ea3f3f; font-size: 13px">
+          <p style="margin-top: 2px; color: #ea3f3f; font-size: 13px">
             {{ getErrorMessage }}
           </p>
           <button @click="login()" class="button-submit">
@@ -75,7 +75,7 @@
             </v-progress-circular>
             <span> Login </span>
           </button>
-          <p style="margin-top: 15px">
+          <p style="margin-top: 10px">
             Create A New Account ?<span class="change-submit"
               ><input
                 type="button"
@@ -91,6 +91,7 @@
 
 <script>
 import router from "@/router";
+// import Swal from "sweetalert2";
 import { mapGetters, mapActions } from "vuex";
 
 export default {

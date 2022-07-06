@@ -70,10 +70,11 @@ const actions = {
         "en-us",
         { hour: "numeric", minute: "numeric" }
       );
-      messageObject["date"] = new Date(element.sentAt).toLocaleString("en-us", {
-        day: "2-digit",
-        month: "short",
-      });
+      // messageObject["date"] = new Date(element.sentAt).toLocaleString("en-us", {
+      //   day: "2-digit",
+      //   month: "short",
+      // });
+      messageObject["date"] = "some problem here to be fixed";
       messageObject["saved"] = true;
       messageObject["deleted"] = element.deletedAt ? true : false;
       messageObject["new"] = true;

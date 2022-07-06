@@ -10,7 +10,7 @@
           src="@/assets/images/logo.png"
         />
       </div>
-      <v-sheet style="margin-top: 20px" outlined color="#0171A1" rounded>
+      <v-sheet style="margin-top: 15px" outlined color="#0171A1" rounded>
         <v-card
           :max-height="620"
           :min-width="$vuetify.breakpoint.xs ? 330 : 510"
@@ -18,7 +18,7 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Register To Shifl Chat bot</p>
+          <p class="heading-register">Register To Shifl Chat bot</p>
           <p>
             already have account ?
             <span class="change-submit"

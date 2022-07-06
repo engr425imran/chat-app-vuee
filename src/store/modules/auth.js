@@ -22,6 +22,11 @@ const getters = {
 };
 const actions = {
   loginUser: async ({ commit, dispatch }, payload) => {
+    if (!payload.email.length && !payload.password.length) {
+      commit("SET_ERROR_MESSAGE", "field is required ");
+      return;
+    }
+
     commit("SET_LOADING_STATUS", true);
     commit("SET_DISABLED_INPUT", true);
     const body = {
@@ -37,10 +42,10 @@ const actions = {
         dispatch("loginUserToCometChat", res.data.user);
       })
       .catch((error) => {
-        if (error.request) {
-          commit("SET_ERROR_MESSAGE", "server is unreachable sorry");
-        } else if (error.response) {
+        if (error.response) {
           commit("SET_ERROR_MESSAGE", error.response.data.message);
+        } else if (error.request) {
+          commit("SET_ERROR_MESSAGE", "server is unreachable sorry");
         } else {
           commit("SET_ERROR_MESSAGE", "error occured ");
         }

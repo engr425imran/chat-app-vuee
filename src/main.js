@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+// import VueSweetalert2 from "vue-sweetalert2";
+
 const appID = process.env.VUE_APP_COMET_APP_ID;
 const region = process.env.VUE_APP_COMET_REGION;
 // import axios from "axios";
@@ -11,6 +13,7 @@ import { CometChat } from "@cometchat-pro/chat";
 Vue.config.productionTip = false;
 // axios.defaults.withCredentials = true;
 // axios.defaults.headers.common.Accept = "application/json";
+// Vue.use(VueSweetalert2);
 
 new Vue({
   store,

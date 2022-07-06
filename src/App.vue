@@ -34,10 +34,9 @@
         </v-tabs>
       </template>
       <v-spacer></v-spacer>
-
-      <v-menu left offset-y bottom>
+      <v-menu left offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-card rounded="circle">
+          <v-card rounded="circle" style="background-color: red">
             <v-btn icon v-bind="attrs" v-on="on">
               <v-icon>mdi-account</v-icon>
             </v-btn>
