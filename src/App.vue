@@ -8,7 +8,6 @@
         @click="drawer = !drawer"
         color="black"
       />
-      <!-- <v-spacer></v-spacer> -->
 
       <div class="d-flex align-center">
         <v-img
@@ -85,13 +84,10 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Sizes your content based upon application components -->
     <v-main>
       <!-- Provides the application the proper gutter -->
-      <v-container>
-        <!-- If using vue-router -->
-        <router-view></router-view>
-      </v-container>
+      <!-- If using vue-router -->
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>

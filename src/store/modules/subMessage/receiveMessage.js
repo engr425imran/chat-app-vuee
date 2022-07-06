@@ -31,10 +31,14 @@ const actions = {
             username: textMessage.sender.name,
             avatar: textMessage.sender.avatar,
             content: textMessage.data.text,
-            date: new Date(textMessage.sentAt * 1000).toLocaleString("en-us", {
-              hour: "numeric",
-              minute: "numeric",
-            }),
+            date: new Date(textMessage.sentAt * 1000)
+              .toLocaleString("en-us", {
+                day: "numeric",
+                month: "short",
+              })
+              .split(" ")
+              .reverse()
+              .join(" "),
             timestamp: new Date(textMessage.sentAt * 1000)
               .toLocaleString("en-us", {
                 hour: "numeric",
@@ -59,7 +63,6 @@ const actions = {
             return;
           }
           dispatch("updateRoomLastMessage", payload);
-          // dispatch("messages/markAsReadd", payload, { root: true });
         },
       })
     );

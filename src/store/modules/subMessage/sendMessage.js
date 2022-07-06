@@ -41,7 +41,7 @@ const actions = {
             .reverse()
             .join(" "),
           saved: true,
-          distributed: room.status === "online" ? true : false,
+          distributed: room.users[1].status.state === "online" ? true : false,
           seen: false,
         };
         // this.messages.push(messagePushToState);
