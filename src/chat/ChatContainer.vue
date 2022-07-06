@@ -63,7 +63,6 @@
       :message-selection-actions="messageSelectionActions"
       :menu-actions="menuActions"
       :message-actions="messageActions"
-      :show-audio="false"
       :text-formatting="textFormatting"
       @add-room="addRoom"
       @toggle-rooms-list="$emit('show-demo-options', $event.opened)"

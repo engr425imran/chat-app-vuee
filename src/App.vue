@@ -34,6 +34,7 @@
         </v-tabs>
       </template>
       <v-spacer></v-spacer>
+      <!-- <a class="btn btn-primary" href="#signup">Sign Up</a> -->
       <v-menu left offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-card rounded="circle">
