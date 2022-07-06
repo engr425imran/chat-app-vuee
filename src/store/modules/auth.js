@@ -26,7 +26,7 @@ const actions = {
       commit("SET_ERROR_MESSAGE", "field is required ");
       return;
     }
-
+    commit("auth/SET_DISABLED_INPUT", true, { root: true });
     commit("SET_LOADING_STATUS", true);
     commit("SET_DISABLED_INPUT", true);
     const body = {
@@ -36,8 +36,8 @@ const actions = {
     await axios
       .post(`${VUE_APP_API_URL}/chat/user/login`, body)
       .then((res) => {
-        console.log(res.data);
         localStorage.setItem("access_token", res.data.access_token);
+        commit("auth/SET_DISABLED_INPUT", false, { root: true });
         commit("SET_ACCESS_TOKEN", res.data.access_token);
         dispatch("loginUserToCometChat", res.data.user);
       })

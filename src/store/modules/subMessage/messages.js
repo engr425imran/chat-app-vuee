@@ -44,7 +44,6 @@ const actions = {
   ) {
     let messageCount = payload.messages.length;
     if (messageCount == 0) {
-      console.log("///// =========");
       commit("conversation/SET_MESSAGE_LOADED", true, { root: true });
       commit("SET_MESSAGES", []);
       commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", false, {
@@ -66,15 +65,17 @@ const actions = {
         element.rawMessage.sender == rootGetters["auth/getUser"].uid
           ? rootGetters["auth/getUser"].name
           : element.receiver.name;
-      messageObject["timestamp"] = new Date(element.sentAt).toLocaleString(
-        "en-us",
-        { hour: "numeric", minute: "numeric" }
-      );
-      // messageObject["date"] = new Date(element.sentAt).toLocaleString("en-us", {
-      //   day: "2-digit",
-      //   month: "short",
-      // });
-      messageObject["date"] = "some problem here to be fixed";
+      messageObject["timestamp"] = new Date(
+        element.sentAt * 1000
+      ).toLocaleString("en-us", { hour: "numeric", minute: "numeric" });
+      messageObject["date"] = new Date(element.readAt * 1000)
+        .toLocaleString("en-us", {
+          day: "2-digit",
+          month: "short",
+        })
+        .split(" ")
+        .reverse()
+        .join(" ");
       messageObject["saved"] = true;
       messageObject["deleted"] = element.deletedAt ? true : false;
       messageObject["new"] = true;
