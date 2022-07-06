@@ -1,45 +1,43 @@
 <template>
-  <div>
-    <h2>Here Is the Home Page For User</h2>
+  <v-theme-provider dark>
+    <base-section id="social" class="accent text-center" space="56">
+      <base-icon class="mb-8"> mdi-twitter </base-icon>
 
-    <v-container>
-      <div style="margin-left: 50%">
-        <v-progress-circular
-          v-if="loading"
-          :size="70"
-          :width="7"
-          color="purple"
-          indeterminate
-        ></v-progress-circular>
-      </div>
-      <v-row style="margin-top: 30px">
-        <v-col cols="4">
-          <button style="width: 100%">
-            <v-card class="text-center card-body" elevation="2" tile>
-              <p>Some Random Text</p>
-              <img src="@/assets/images/avatars/avatar.jpeg" height="40px" />
-            </v-card>
-          </button>
-        </v-col>
-        <v-col cols="4">
-          <button style="width: 100%">
-            <v-card class="text-center card-body" elevation="2" tile>
-              <p>Some Random Text</p>
-              <img
-                src="@/assets/images/avatars/avatarLeia.jpeg"
-                height="40px"
-              />
-            </v-card>
-          </button>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+      <base-section-heading color="transparent" title="Social Media">
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Excepturi
+        aspernatur recusandae aut repudiandae illo error obcaecati dolores
+        voluptate, tempore.
+      </base-section-heading>
+
+      <a
+        class="d-inline-block mb-8"
+        href="https://vuetifyjs.com"
+        style="text-decoration: none"
+        target="_blank"
+      >
+        https://vuetifyjs.com
+      </a>
+
+      <div class="py-4" />
+
+      <v-btn
+        class="font-weight-bold"
+        color="white"
+        href="https://twitter.com/vuetifyjs"
+        light
+        min-width="168"
+        target="_blank"
+        x-large
+      >
+        Follow Us
+
+        <v-icon right> mdi-open-in-new </v-icon>
+      </v-btn>
+    </base-section>
+  </v-theme-provider>
 </template>
 
 <script>
-// import { mapActions, mapGetters } from "vuex";
-
 export default {
   data() {
     return {

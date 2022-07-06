@@ -64,7 +64,6 @@ const actions = {
           {
             _id: rootGetters["auth/getUser"].uid,
             username: rootGetters["auth/getUser"].first_name,
-            // username: "usernameeee",
             avatar: rootGetters["auth/getUser"].avatar,
             status: {
               state: rootGetters["auth/getUser"].status,

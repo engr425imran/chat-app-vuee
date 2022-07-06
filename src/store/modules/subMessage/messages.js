@@ -26,7 +26,7 @@ const actions = {
           messages,
           roomId,
         };
-        console.log(payload);
+        // console.log(payload);
         dispatch("addOldMessagesToSateToMessagesArray", payload);
       },
       (error) => {

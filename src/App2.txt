@@ -8,10 +8,10 @@
         @click="drawer = !drawer"
         color="black"
       />
+
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
+          class="shrink ml-2"
           contain
           src="@/assets/images/logo.svg"
           transition="scale-transition"
@@ -20,7 +20,21 @@
       </div>
 
       <v-spacer></v-spacer>
-      <v-menu left offset-y bottom>
+      <template v-if="!isMobile">
+        <v-tabs
+          background-color="light-blue darken-2"
+          center-active
+          dark
+          align-with-title
+        >
+          <v-tabs-slider color="green"></v-tabs-slider>
+          <v-tab v-for="item in items" :key="item.title" link :to="item.route">
+            {{ item.title }}
+          </v-tab>
+        </v-tabs>
+      </template>
+      <v-spacer></v-spacer>
+      <v-menu left offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-card rounded="circle">
             <v-btn icon v-bind="attrs" v-on="on">
@@ -38,7 +52,6 @@
       </v-menu>
     </v-app-bar>
     <v-navigation-drawer
-      class="d-flex d-sm"
       v-model="drawer"
       v-if="getUser !== '' && getUser !== null"
       app
@@ -70,26 +83,25 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Sizes your content based upon application components -->
     <v-main>
       <!-- Provides the application the proper gutter -->
-      <v-container>
-        <!-- If using vue-router -->
-        <router-view></router-view>
-      </v-container>
+      <!-- If using vue-router -->
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
 // import DrawerMenu from "./components/DrawerMenu.vue";
+import Swal from "sweetalert2";
 
 import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-      drawer: null,
+      drawer: false,
       isMobile: false,
+      activeColor: "blue",
       items: [
         { title: "Home", icon: "mdi-image", route: "/" },
         { title: "Chat", icon: "mdi-view-dashboard", route: "chatUIPage" },
@@ -105,19 +117,35 @@ export default {
     onResize() {
       if (window.innerWidth < 1024) {
         this.isMobile = true;
-        this.activeColor = "#0171A1";
+        this.activeColor = "red";
       } else {
         this.isMobile = false;
-        this.activeColor = "white";
+        this.drawer = false;
+        // this.activeColor = "white";
       }
       if (window.innerWidth > 1023 && window.innerWidth < 1201) {
+        // console.log("table yam");
         this.isTablet = true;
       } else {
         this.isTablet = false;
+        // console.log("laptop yam");
       }
     },
     logout() {
-      this.logoutUser();
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Loggout Out!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Logout!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.logoutUser();
+          // Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
+      });
     },
   },
   // watch: {

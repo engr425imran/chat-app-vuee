@@ -36,7 +36,7 @@
       <v-spacer></v-spacer>
       <v-menu left offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-card rounded="circle" style="background-color: red">
+          <v-card rounded="circle">
             <v-btn icon v-bind="attrs" v-on="on">
               <v-icon>mdi-account</v-icon>
             </v-btn>
@@ -93,6 +93,7 @@
 
 <script>
 // import DrawerMenu from "./components/DrawerMenu.vue";
+import Swal from "sweetalert2";
 
 import { mapGetters, mapActions } from "vuex";
 export default {
@@ -123,15 +124,27 @@ export default {
         // this.activeColor = "white";
       }
       if (window.innerWidth > 1023 && window.innerWidth < 1201) {
-        // console.log("table yam");
         this.isTablet = true;
       } else {
         this.isTablet = false;
-        // console.log("laptop yam");
       }
     },
     logout() {
-      this.logoutUser();
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Loggout Out!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Logout!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.logoutUser();
+
+          // Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
+      });
     },
   },
   // watch: {

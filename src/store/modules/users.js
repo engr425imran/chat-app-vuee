@@ -37,6 +37,7 @@ const actions = {
                 lastChanged: "live",
               },
             },
+
             {
               _id: element.uid,
               username: element.name,
@@ -48,6 +49,7 @@ const actions = {
                 ).toLocaleString("en-us", {
                   hour: "numeric",
                   minute: "numeric",
+                  day: "2-digit",
                 }),
               },
             },
