@@ -26,7 +26,7 @@ const actions = {
           messages,
           roomId,
         };
-        // console.log(payload);
+        console.log(payload);
         dispatch("addOldMessagesToSateToMessagesArray", payload);
       },
       (error) => {
@@ -58,7 +58,6 @@ const actions = {
       var messageObject = {};
       messageObject["_id"] = element.id;
       messageObject["indexId"] = index + 1;
-      messageObject["CONVERSATION_STARTED"] = "20 Dec";
       messageObject["content"] = element.text
         ? element.text
         : "this message deleted";
@@ -71,11 +70,10 @@ const actions = {
         "en-us",
         { hour: "numeric", minute: "numeric" }
       );
-      messageObject["date"] = new Date(element.sentAt)
-        .toLocaleString("en-us", { day: "numeric", month: "short" })
-        .split(" ")
-        .reverse()
-        .join(" ");
+      messageObject["date"] = new Date(element.sentAt).toLocaleString("en-us", {
+        day: "2-digit",
+        month: "short",
+      });
       messageObject["saved"] = true;
       messageObject["deleted"] = element.deletedAt ? true : false;
       messageObject["new"] = true;
