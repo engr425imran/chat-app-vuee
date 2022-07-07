@@ -1,11 +1,15 @@
 import { CometChat } from "@cometchat-pro/chat";
+import axios from "axios";
+const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
 
 const state = {
   irma: "khan",
 };
+
 const getters = {
   getIk: (state) => state.irma,
 };
+
 const actions = {
   displayUserss: ({ commit, rootGetters }) => {
     commit("conversation/SET_CONVERSATION_TAB_SELECTED", false, { root: true });
@@ -63,6 +67,28 @@ const actions = {
         commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", false, {
           root: true,
         });
+      });
+  },
+
+  async updateUserProfile({ commit, rootGetters }, payload) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${rootGetters["auth/getToken"]}`,
+      },
+    };
+
+    await axios
+      .post(`${VUE_APP_API_URL}/chat/user/update-avatar`, payload, config)
+      .then((res) => {
+        let user = rootGetters["auth/getUser"];
+        user.avatar = res.data.newPath;
+        // localStorage.removeItem("user");
+        commit("auth/SET_USER", user, { root: true });
+        // dispatch("logout", "check");
+      })
+      .catch((e) => {
+        console.log(e);
+        // commit("CHECK", "sds");
       });
   },
   checl() {

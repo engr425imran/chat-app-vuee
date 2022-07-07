@@ -27,11 +27,11 @@
                 alt="shfil logo"
                 width="100"
                 height="100"
-                :src="getUser.avatar"
+                :src="updateAvatar ? updateAvatar : getUser.avatar"
               ></v-img>
             </div>
           </div>
-          <input type="file" class="button-avatar" />
+          <input type="file" class="button-avatar" @change="setAvatar" />
           <!-- <input type="file" class="custom-file-input" /> -->
           <div style="margin-top: 24px">
             <input
@@ -74,21 +74,28 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-      loading: true,
-      // audio: require("@/assets/audio/notfi.wav"),
+      updateAvatar: null,
+      formAvatar: null,
     };
   },
   computed: {
     ...mapGetters("auth", ["getUser", "getLoadingStatus"]),
   },
   methods: {
-    ...mapActions("messages/receiveMessage", ["playMessageSound"]),
+    ...mapActions("users", ["updateUserProfile"]),
     submit() {
-      this.playMessageSound();
-      // console.log("sss");
-      // let audio = new Audio(require("@/assets/audio/notifi.wav"));
-      // audio.play();
-      // console.log(audio);
+      const form = new FormData();
+      form.append("avatar", this.formAvatar);
+      this.updateUserProfile(form);
+    },
+    setAvatar(event) {
+      const image = event.target.files[0];
+      this.formAvatar = image;
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = (e) => {
+        this.updateAvatar = e.target.result;
+      };
     },
   },
   created() {},

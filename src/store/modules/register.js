@@ -8,9 +8,11 @@ const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
 const state = {
   image: "",
 };
+
 const getters = {
   getImage: (state) => state.image,
 };
+
 const actions = {
   registerUser: async ({ commit, dispatch }, payload) => {
     commit("auth/SET_LOADING_STATUS", true, { root: true });
