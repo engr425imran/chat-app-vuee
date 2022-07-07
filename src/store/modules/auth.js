@@ -37,7 +37,7 @@ const actions = {
       .post(`${VUE_APP_API_URL}/chat/user/login`, body)
       .then((res) => {
         localStorage.setItem("access_token", res.data.access_token);
-        commit("auth/SET_DISABLED_INPUT", false, { root: true });
+        commit("SET_DISABLED_INPUT", false);
         commit("SET_ACCESS_TOKEN", res.data.access_token);
         dispatch("loginUserToCometChat", res.data.user);
       })
@@ -64,7 +64,7 @@ const actions = {
               localStorage.setItem("user", JSON.stringify(UpdateUser));
               commit("SET_USER", UpdateUser);
               commit("SET_LOADING_STATUS", false);
-              commit("SET_DISABLED_INPUT", true);
+              commit("SET_DISABLED_INPUT", false);
               router.push("/");
             },
             (error) => {

@@ -76,18 +76,28 @@ const actions = {
         Authorization: `Bearer ${rootGetters["auth/getToken"]}`,
       },
     };
+    commit("auth/SET_LOADING_STATUS", true, { root: true });
+    commit("auth/SET_DISABLED_INPUT", true, { root: true });
 
     await axios
       .post(`${VUE_APP_API_URL}/chat/user/update-avatar`, payload, config)
       .then((res) => {
         let user = rootGetters["auth/getUser"];
         user.avatar = res.data.newPath;
-        // localStorage.removeItem("user");
+        console.log(res.data.newPath, user);
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(user));
         commit("auth/SET_USER", user, { root: true });
+        commit("auth/SET_LOADING_STATUS", false, { root: true });
+        commit("auth/SET_DISABLED_INPUT", false, { root: true });
+
         // dispatch("logout", "check");
       })
       .catch((e) => {
         console.log(e);
+        commit("auth/SET_LOADING_STATUS", false, { root: true });
+        commit("auth/SET_DISABLED_INPUT", false, { root: true });
+
         // commit("CHECK", "sds");
       });
   },

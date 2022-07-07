@@ -49,7 +49,11 @@
               placeholder="Enter Password"
             />
           </div>
-          <button class="button-submit" @click="submit">
+          <button
+            :disabled="getDisableInput"
+            class="button-submit"
+            @click="submit"
+          >
             <span>
               <v-progress-circular
                 :size="15"
@@ -79,7 +83,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["getUser", "getLoadingStatus"]),
+    ...mapGetters("auth", ["getUser", "getLoadingStatus", "getDisableInput"]),
   },
   methods: {
     ...mapActions("users", ["updateUserProfile"]),
