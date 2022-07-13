@@ -1,4 +1,5 @@
 import { CometChat } from "@cometchat-pro/chat";
+import Swal from "sweetalert2";
 
 const state = {
   rooms: [],
@@ -36,9 +37,11 @@ const actions = {
     conversationsRequest.fetchNext().then(
       (conversationList) => {
         dispatch("displayConversation", conversationList);
+        if (conversationList.length == 0) dispatch("displayAlertBox");
       },
       (error) => {
         console.log("Conversations list fetching failed with error:", error);
+        alert("some error occured while fetching conversation");
       }
     );
   },
@@ -127,20 +130,16 @@ const actions = {
   // --------------------------------------    **************   ---------------------------------------------
   //         ------------------------------   Genral Function   ------------------------------------------
 
-  formatTime(utcTime) {
-    const time = new Date(utcTime * 1000).toLocaleString("en-us", {
-      hour: "numeric",
-      minute: "numeric",
+  displayAlertBox: () => {
+    Swal.fire({
+      title: "You Have No Conversation Yet!",
+      text: "Send Someone Message From Users Tab",
+      icon: "warning",
+      // showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "OK!",
     });
-    return time;
-  },
-  formatDate(utcTime) {
-    const dd = new Date(utcTime * 1000).toLocaleString("en-us", {
-      day: "numeric",
-      month: "long",
-    });
-    const formatime = dd.split(" ").reverse().join(" ");
-    return formatime;
   },
 };
 

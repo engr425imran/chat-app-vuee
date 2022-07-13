@@ -1,4 +1,5 @@
 import { CometChat } from "@cometchat-pro/chat";
+import mediaMessage from "./sendMessage/mediaMessage.js";
 const state = {
   sent: "intial",
 };
@@ -6,7 +7,7 @@ const getters = {
   getSent: (state) => state.sent,
 };
 const actions = {
-  sendMessagee: async ({ commit, rootGetters, dispatch }, payload) => {
+  sendTextMessage: async ({ commit, rootGetters, dispatch }, payload) => {
     var rooms = rootGetters["conversation/getRooms"];
     const room = rooms.find((ele) => ele.roomId == payload.roomId);
     let receiverID = payload.roomId;
@@ -52,6 +53,29 @@ const actions = {
       }
     );
   },
+
+  sendMediaMessage: ({ commit }, payload) => {
+    let receiverID = payload.uid;
+    let messageType = CometChat.MESSAGE_TYPE.AUDIO;
+    let receiverType = CometChat.RECEIVER_TYPE.USER;
+    let mediaMessage = new CometChat.MediaMessage(
+      receiverID,
+      payload.files,
+      messageType,
+      receiverType
+    );
+
+    CometChat.sendMediaMessage(mediaMessage).then(
+      (message) => {
+        console.log("Media message sent successfully", message);
+      },
+      (error) => {
+        commit("SET_CHECK", "bilkul");
+        console.log("Media message sending failed with error", error);
+      }
+    );
+  },
+
   endTypingUserActivity: ({ commit }, payload) => {
     // let receiverId = "UID";
     let receiverType = CometChat.RECEIVER_TYPE.USER;
@@ -68,10 +92,15 @@ const mutations = {
     state.sent = payload;
   },
 };
+
+const modules = {
+  mediaMessage,
+};
 export default {
   namespaced: true,
   state,
   getters,
   actions,
   mutations,
+  modules,
 };

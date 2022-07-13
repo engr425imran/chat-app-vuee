@@ -58,7 +58,7 @@
       :room-action="roomActions"
       :rooms-loaded="roomsLoaded"
       :loading-rooms="getLoadingRoomsInitial"
-      :messages="getMessages"
+      :messages="messages"
       :messages-loaded="getMessagesLoaded"
       :message-selection-actions="messageSelectionActions"
       :menu-actions="menuActions"
@@ -69,8 +69,9 @@
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"
       @delete-message="deleteMessage"
-      @typing-message="typingMessage"
     >
+      <!-- @typing-message="typingMessage" -->
+
       <!-- <template #room-header="{ room, userStatus }">
         {{ room.roomName }} - {{ userStatus }}
       </template> -->
@@ -161,11 +162,6 @@ export default {
       "getMessagesLoaded",
     ]),
     ...mapGetters("messages", ["getMessages"]),
-    // screenHeight() {
-    //   return this.isDevice
-    //     ? window.innerHeight - 140 + "px"
-    //     : "calc(100vh - 180px)";
-    // },
     screenHeight() {
       return "calc(85vh - 70px)";
     },
@@ -174,8 +170,17 @@ export default {
   methods: {
     ...mapActions("conversation", ["getConverstionforUserr"]),
     ...mapActions("messages", ["getOldMessagesBetweenUserr", "markAsReadd"]),
+    ...mapActions("messages/sendMessage/mediaMessage", [
+      "sendAudioMessage",
+      "dispalyImage",
+      "sendImageMessage",
+      "check",
+    ]),
     ...mapActions("users", ["displayUserss"]),
-    ...mapActions("messages/sendMessage", ["sendMessagee"]),
+    ...mapActions("messages/sendMessage", [
+      "sendTextMessage",
+      "sendMediaMessage",
+    ]),
     ...mapActions("messages/receiveMessage", ["listningforMessagee"]),
     ...mapActions("messages/deleteMessage", ["delete"]),
     heightCheck() {
@@ -197,7 +202,6 @@ export default {
       this.getConverstionforUserr();
     },
     //      ---------------------------------    **************   -----------------------------------------------------
-
     // --------------------------------------   Get  Messages User   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
     async getOldMessagesBetweenUser(roomId) {
@@ -208,9 +212,72 @@ export default {
     // --------------------------------------   Send Message Functons   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
 
-    async sendMessage({ content, roomId }) {
-      this.sendMessagee({ content, roomId });
+    async sendMessage({ content, roomId, files }) {
+      // if (files) {
+      const messagePushToState = {
+        _id: Math.floor(Math.random() * 1000),
+        indexId: Math.floor(Math.random() * 100),
+        senderId: "Sasa",
+        content: content ? content : "Sss",
+        timestamp: "10 20 am",
+        date: "8 jul",
+        saved: true,
+        distributed: false,
+        seen: false,
+        files: [
+          // {
+          //   name: "My Replied File",
+          //   size: 67351,
+          //   type: "png",
+          //   audio: true,
+          //   duration: 14.4,
+          //   // url: "https://firebasestorage.googleapis.com/...",
+          //   // preview: require("@/assets/images/logo.png"),
+          // },
+          {
+            audio: true,
+            type: files[0].type,
+            size: files[0].blob.size,
+            duration: files[0].duration,
+            preview: files[0].localUrl,
+            url: files[0].localUrl,
+          },
+        ],
+      };
+      this.messages.push(messagePushToState);
+      // }
+      console.log(roomId, files);
     },
+    // async sendMessage({ content, roomId, files }) {
+    //   if (files) {
+    //     console.log(files);
+    //     let file = new Object();
+    //     file.duration = files[0].duration;
+    //     file.name = files[0].name;
+    //     file.size = files[0].size;
+    //     file.mimeType = files[0].type;
+    //     file.extension = files[0].type;
+    //     file.url = files[0].localUrl;
+    //     file.preview = files[0].localUrl;
+    //     let payload = {
+    //       receiverID: roomId,
+    //       file,
+    //     };
+    //     if (files[0].audio === true) {
+    //       payload.file.audio = true;
+    //       payload.file.duration = files[0].duration;
+    //       this.sendAudioMessage(payload);
+    //       return;
+    //     }
+    //     // url: "https://pngimg.com/uploads/mario/mario_PNG125.png",
+    //     // this.sendImageMessage(payload);
+    //     this.check(payload);
+    //     // this.dispalyImage(payload);
+    //     return;
+    //   }
+
+    //   this.sendTextMessage({ content, roomId });
+    // },
 
     // --------------------------------------    **************   ---------------------------------------------
 
@@ -309,11 +376,6 @@ export default {
 
     // --------------------------------------    **************   ---------------------------------------------
 
-    playMessageSound() {
-      var audio = new Audio(this.audio);
-      document.title = "New Message Recived";
-      audio.play();
-    },
     // -------------- ENd OF Methods object---------------
   },
   // created() {

@@ -14,7 +14,7 @@ const actions = {
 
     // async getOldMessagesBetweenUserr({ commit }, roomId) {
     let UID = roomId;
-    let limit = 14;
+    let limit = 5;
     let messagesRequest = new CometChat.MessagesRequestBuilder()
       .setUID(UID)
       .setLimit(limit)
@@ -68,7 +68,7 @@ const actions = {
       messageObject["timestamp"] = new Date(
         element.sentAt * 1000
       ).toLocaleString("en-us", { hour: "numeric", minute: "numeric" });
-      messageObject["date"] = new Date(element.readAt * 1000)
+      messageObject["date"] = new Date(element.sentAt * 1000)
         .toLocaleString("en-us", {
           day: "2-digit",
           month: "short",
