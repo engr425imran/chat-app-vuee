@@ -171,9 +171,7 @@ export default {
     ...mapActions("conversation", ["getConverstionforUserr"]),
     ...mapActions("messages", ["getOldMessagesBetweenUserr", "markAsReadd"]),
     ...mapActions("messages/sendMessage/mediaMessage", [
-      "sendAudioMessage",
-      "dispalyImage",
-      "sendImageMessage",
+      "sendAudioToBackend",
       "sendImageToBackend",
     ]),
     ...mapActions("users", ["displayUserss"]),
@@ -216,11 +214,10 @@ export default {
       if (files) {
         console.log(files);
         let file = new Object();
-        file.duration = files[0].duration;
         file.name = files[0].name;
         file.size = files[0].size;
-        file.mimeType = files[0].type;
         file.extension = files[0].type;
+        file.mimeType = files[0].type;
         let blob = await fetch(files[0].localUrl).then((r) => r.blob());
         file.source = blob;
         file.preview = files[0].localUrl;
@@ -231,38 +228,15 @@ export default {
         if (files[0].audio === true) {
           payload.file.audio = true;
           payload.file.duration = files[0].duration;
-          this.sendAudioMessage(payload);
+          this.sendAudioToBackend(payload);
           return;
         }
         this.sendImageToBackend(payload);
-        // this.sendImageMessage(payload);
-        // this.check(payload);
-        // this.dispalyImage(payload);
         return;
       }
 
       this.sendTextMessage({ content, roomId });
     },
-    // async sendMessage({ files }) {
-    //   const config = {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   };
-    //   console.log(files[0]);
-    //   let blob = await fetch(files[0].localUrl).then((r) => r.blob());
-    //   let data = new FormData();
-    //   data.append("avatar", blob);
-    //   axios
-    //     .post("http://localhost:8000/api/chat/user/files", data)
-    //     .post("http://localhost:8000/api/chat/user/files", data, config)
-    //     .then((res) => {
-    //       console.log(res.data);
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //     });
-    // },
 
     // --------------------------------------    **************   ---------------------------------------------
 
@@ -275,8 +249,10 @@ export default {
     deleteMessage({ message, roomId }) {
       let payload = {
         messageId: message._id,
+        message: message,
         roomId,
       };
+      // console.log(payload, message);
       this.delete(payload);
     },
 

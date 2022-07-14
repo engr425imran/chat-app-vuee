@@ -14,7 +14,7 @@ const actions = {
 
     // async getOldMessagesBetweenUserr({ commit }, roomId) {
     let UID = roomId;
-    let limit = 5;
+    let limit = 15;
     let messagesRequest = new CometChat.MessagesRequestBuilder()
       .setUID(UID)
       .setLimit(limit)
@@ -54,10 +54,7 @@ const actions = {
     }
     var oldConverstion = [];
     payload.messages.forEach((element, index) => {
-      if (element.action === "deleted") {
-        console.log(element);
-        return;
-      }
+      if (element.action === "deleted") return;
       var messageObject = {};
       messageObject["_id"] = element.id;
       messageObject["indexId"] = index + 1;
@@ -95,11 +92,15 @@ const actions = {
           ? true
           : false;
       messageObject["avatar"] = element.sender.avatar;
-      if (element.type === "image" && !element.deletedAt) {
-        console.log(element, index);
+      if (
+        (element.type === "image" && !element.deletedAt) ||
+        (element.type === "audio" && !element.deletedAt)
+      ) {
         messageObject["files"] = [
           {
             name: element.data.attachments[0].name,
+            audio: element.type === "audio" ? true : false,
+            // duration: element.type === "audio" ? true:false,
             size: element.data.attachments[0].size,
             type: element.data.attachments[0].mimeType,
             url: element.data.attachments[0].url,
