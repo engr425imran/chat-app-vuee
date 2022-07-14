@@ -21,9 +21,10 @@ const actions = {
           const id = typingIndicator.sender.uid;
           dispatch("endTypingIndicatorForUser", id);
         },
-
         onTextMessageReceived: (textMessage) => {
           dispatch("playMessageSound", textMessage.sender.name);
+          dispatch("checkIfUsersOrConversationTabIsSelected");
+
           const message = {
             _id: textMessage.rawMessage.id,
             indexId: textMessage.rawMessage.id,
@@ -66,6 +67,16 @@ const actions = {
         },
       })
     );
+  },
+
+  checkIfUsersOrConversationTabIsSelected({ rootGetters, dispatch }) {
+    const status = rootGetters["conversation/getConversationTabSelected"];
+    console.log(status, "sss");
+
+    if (status === null) {
+      console.log(status);
+      dispatch("conversation/getConverstionforUserr", "dd", { root: true });
+    }
   },
 
   playMessageSound({ commit }, payload) {

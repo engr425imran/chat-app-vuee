@@ -337,9 +337,9 @@ export default {
 
     // -------------- ENd OF Methods object---------------
   },
-  // created() {
-  //   this.listningforMessage();
-  // },
+  created() {
+    this.listningforMessage();
+  },
 };
 </script>
 

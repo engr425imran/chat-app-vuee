@@ -25,7 +25,8 @@ const getters = {
 // -------------------------------------- +++++++   **************  +++++++  ---------------------------------------------
 
 const actions = {
-  getConverstionforUserr: ({ dispatch, commit }) => {
+  getConverstionforUserr: ({ dispatch, commit }, payload) => {
+    console.log(payload);
     commit("SET_CONVERSATION_TAB_SELECTED", true);
     commit("SET_INITIAL_STAGE_ROOMS_LOADING", true);
     commit("SET_MESSAGE_LOADED", false);
