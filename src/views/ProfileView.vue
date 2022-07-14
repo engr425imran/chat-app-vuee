@@ -99,6 +99,7 @@ export default {
       reader.readAsDataURL(image);
       reader.onload = (e) => {
         this.updateAvatar = e.target.result;
+        console.log(e.target);
       };
     },
   },

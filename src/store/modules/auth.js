@@ -136,6 +136,9 @@ const mutations = {
   SET_DISABLED_INPUT: (state, payload) => {
     state.disableInput = payload;
   },
+  CHECK: () => {
+    console.log("sss");
+  },
 };
 export default {
   namespaced: true,

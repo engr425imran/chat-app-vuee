@@ -58,7 +58,7 @@
       :room-action="roomActions"
       :rooms-loaded="roomsLoaded"
       :loading-rooms="getLoadingRoomsInitial"
-      :messages="getMessages"
+      :messages="messages"
       :messages-loaded="getMessagesLoaded"
       :message-selection-actions="messageSelectionActions"
       :menu-actions="menuActions"
@@ -82,9 +82,9 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import ChatWindow from "vue-advanced-chat";
+import { imran, uniqueId } from "./Helper/helperFunction";
 import "vue-advanced-chat/dist/vue-advanced-chat.css";
 import { CometChat } from "@cometchat-pro/chat";
-// import axios from "axios";
 
 export default {
   name: "Chat-Container",
@@ -174,7 +174,8 @@ export default {
       "sendAudioMessage",
       "dispalyImage",
       "sendImageMessage",
-      "sendImageToBackend",
+      "check",
+      "saveFile",
     ]),
     ...mapActions("users", ["displayUserss"]),
     ...mapActions("messages/sendMessage", [
@@ -212,56 +213,77 @@ export default {
     // --------------------------------------   Send Message Functons   ---------------------------------------------
     //      ---------------------------------    **************   ---------------------------------------------
 
-    async sendMessage({ content, roomId, files }) {
-      if (files) {
-        console.log(files);
-        let file = new Object();
-        file.duration = files[0].duration;
-        file.name = files[0].name;
-        file.size = files[0].size;
-        file.mimeType = files[0].type;
-        file.extension = files[0].type;
-        let blob = await fetch(files[0].localUrl).then((r) => r.blob());
-        file.source = blob;
-        file.preview = files[0].localUrl;
-        let payload = {
-          receiverID: roomId,
-          file,
-        };
-        if (files[0].audio === true) {
-          payload.file.audio = true;
-          payload.file.duration = files[0].duration;
-          this.sendAudioMessage(payload);
-          return;
-        }
-        this.sendImageToBackend(payload);
-        // this.sendImageMessage(payload);
-        // this.check(payload);
-        // this.dispalyImage(payload);
-        return;
-      }
-
-      this.sendTextMessage({ content, roomId });
-    },
-    // async sendMessage({ files }) {
-    //   const config = {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
+    // async sendMessage({ content, roomId, files }) {
+    //   // if (files) {
+    //   const messagePushToState = {
+    //     _id: Math.floor(Math.random() * 1000),
+    //     indexId: Math.floor(Math.random() * 100),
+    //     senderId: "Sasa",
+    //     content: content ? content : "Sss",
+    //     timestamp: "10 20 am",
+    //     date: "8 jul",
+    //     saved: true,
+    //     distributed: false,
+    //     seen: false,
+    //     files: [
+    //       // {
+    //       //   name: "My Replied File",
+    //       //   size: 67351,
+    //       //   type: "png",
+    //       //   audio: true,
+    //       //   duration: 14.4,
+    //       //   // url: "https://firebasestorage.googleapis.com/...",
+    //       //   // preview: require("@/assets/images/logo.png"),
+    //       // },
+    //       {
+    //         audio: true,
+    //         type: files[0].type,
+    //         size: files[0].blob.size,
+    //         duration: files[0].duration,
+    //         preview: files[0].localUrl,
+    //         url: files[0].localUrl,
+    //       },
+    //     ],
     //   };
-    //   console.log(files[0]);
-    //   let blob = await fetch(files[0].localUrl).then((r) => r.blob());
-    //   let data = new FormData();
-    //   data.append("avatar", blob);
-    //   axios
-    //     .post("http://localhost:8000/api/chat/user/files", data)
-    //     .post("http://localhost:8000/api/chat/user/files", data, config)
-    //     .then((res) => {
-    //       console.log(res.data);
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //     });
+    //   this.messages.push(messagePushToState);
+    //   // }
+    //   console.log(roomId, files);
+    // },
+    // async sendMessage({ content, roomId, files }) {
+    //   if (files) {
+    //     console.log(files);
+
+    //     let file = new Object();
+    //     file.duration = files[0].duration;
+    //     file.name = files[0].name;
+    //     file.size = files[0].size;
+    //     file.mimeType = files[0].type;
+    //     file.extension = files[0].type;
+    //     file.url = files[0].localUrl;
+    //     file.preview = files[0].localUrl;
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(files[0]);
+    //     reader.onload = (e) => {
+    //       file.avatar = e.target.result;
+    //       // console.log(e.target.result);
+    //     };
+    //     let payload = {
+    //       receiverID: roomId,
+    //       file,
+    //     };
+    //     if (files[0].audio === true) {
+    //       payload.file.audio = true;
+    //       payload.file.duration = files[0].duration;
+    //       this.sendAudioMessage(payload);
+    //       return;
+    //     }
+    //     // this.sendImageMessage(payload);
+    //     this.saveFile(payload);
+    //     // this.dispalyImage(payload);
+    //     return;
+    //   }
+
+    //   this.sendTextMessage({ content, roomId });
     // },
 
     // --------------------------------------    **************   ---------------------------------------------
@@ -356,6 +378,8 @@ export default {
     resetRooms() {
       console.log("ddd");
     },
+    uniqueId,
+    imran,
 
     // --------------------------------------    **************   ---------------------------------------------
 

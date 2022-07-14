@@ -1,7 +1,11 @@
 import { CometChat } from "@cometchat-pro/chat";
+import axios from "axios";
+const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
+
 const state = {
   check: "ddd",
 };
+
 const getters = {
   getCheck: (state) => state.check,
 };
@@ -73,6 +77,27 @@ const actions = {
     );
   },
 
+  sendImageToBackend: ({ commit, dispatch }, payload) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    let data = new FormData();
+    data.append("avatar", payload.file.source);
+    axios
+      .post("http://localhost:8000/api/chat/user/files", data, config)
+      .then((res) => {
+        console.log(res.data);
+        payload.file.url = res.data.filePath;
+        dispatch("sendImageMessage", payload);
+      })
+      .catch((e) => {
+        console.log(e);
+        commit("SET_CHECK", "sss");
+      });
+  },
+  // sendImageMessage: ({ commit }, payload) => {
   sendImageMessage: ({ commit, rootGetters }, payload) => {
     var rooms = rootGetters["conversation/getRooms"];
     const room = rooms.find((ele) => ele.roomId == payload.receiverID);
@@ -95,7 +120,7 @@ const actions = {
           _id: mediaMessage.id,
           indexId: mediaMessage.id,
           senderId: rootGetters["auth/getUser"].uid,
-          content: "",
+          content: mediaMessage.text ? mediaMessage.text : "",
           username: rootGetters["auth/getUser"].username,
           avatar: rootGetters["auth/getUser"].avatar,
           timestamp: new Date(mediaMessage.sentAt * 1000).toLocaleString(
@@ -116,19 +141,16 @@ const actions = {
           saved: true,
           distributed: room.users[1].status.state === "online" ? true : false,
           seen: false,
-          files: [payload.file],
-          // files: [
-          //   {
-          //     name: 'My File',
-          //     size: 67351,
-          //     type: 'png',
-          //     audio: true,
-          //     duration: 14.4,
-          //     url: 'https://firebasestorage.googleapis.com/...',
-          //     preview: 'data:image/png;base64,iVBORw0KGgoAA...',
-          //     progress: 88
-          //   }
-          // ],
+          // files: [payload.file],
+          files: [
+            {
+              name: mediaMessage.data.attachments[0].name,
+              size: mediaMessage.data.attachments[0].size,
+              type: mediaMessage.data.attachments[0].mimeType,
+              url: mediaMessage.data.attachments[0].url,
+              preview: mediaMessage.data.attachments[0].url,
+            },
+          ],
         };
         commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
       },
@@ -181,6 +203,14 @@ const actions = {
     commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
   },
   check: ({ commit, rootGetters }, payload) => {
+    axios
+      .post(`${VUE_APP_API_URL}/chat/user/files`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     const message = {
       _id: 7890,
       indexId: 12092,
@@ -212,6 +242,26 @@ const actions = {
 
     commit("messages/PUSH_MESSAGE", message, { root: true });
     console.log(payload);
+  },
+  saveFile({ commit, rootGetters }, payload) {
+    const config = {
+      headers: { Authorization: `Bearer ${rootGetters["auth/getToken"]}` },
+    };
+    console.log(payload);
+    // const data = {
+    //   avatar: payload.file.url,
+    // };
+    let data = new FormData();
+    data.append("avatar", "fileB");
+    axios
+      .post(`${VUE_APP_API_URL}/chat/user/files`, data, config)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((e) => {
+        commit("SET_CHECK", "sss");
+        console.log(e);
+      });
   },
 };
 

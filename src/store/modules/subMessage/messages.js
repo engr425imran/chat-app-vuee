@@ -22,6 +22,7 @@ const actions = {
 
     messagesRequest.fetchPrevious().then(
       (messages) => {
+        console.log(messages);
         let payload = {
           messages,
           roomId,
@@ -53,13 +54,14 @@ const actions = {
     }
     var oldConverstion = [];
     payload.messages.forEach((element, index) => {
-      if (element.category === "action") return;
+      if (element.action === "deleted") {
+        console.log(element);
+        return;
+      }
       var messageObject = {};
       messageObject["_id"] = element.id;
       messageObject["indexId"] = index + 1;
-      messageObject["content"] = element.text
-        ? element.text
-        : "this message deleted";
+      messageObject["content"] = element.text ? element.text : "";
       messageObject["senderId"] = element.rawMessage.sender;
       messageObject["username"] =
         element.rawMessage.sender == rootGetters["auth/getUser"].uid
@@ -93,6 +95,18 @@ const actions = {
           ? true
           : false;
       messageObject["avatar"] = element.sender.avatar;
+      if (element.type === "image" && !element.deletedAt) {
+        console.log(element, index);
+        messageObject["files"] = [
+          {
+            name: element.data.attachments[0].name,
+            size: element.data.attachments[0].size,
+            type: element.data.attachments[0].mimeType,
+            url: element.data.attachments[0].url,
+            preview: element.data.attachments[0].url,
+          },
+        ];
+      }
       oldConverstion.push(messageObject);
     });
     commit("SET_MESSAGES", oldConverstion);
