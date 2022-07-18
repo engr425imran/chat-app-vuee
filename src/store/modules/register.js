@@ -105,8 +105,8 @@ const actions = {
     axios
       .post(VUE_APP_API_URL + "/chat/user/addCometChatInfo", data, config)
       .then((res) => {
-        let Cuser = res.data.user;
-        const user = { ...payload, ...Cuser };
+        let fullUserObjectWithCometChatAuthToken = res.data.user;
+        const user = { ...payload, ...fullUserObjectWithCometChatAuthToken };
         localStorage.setItem("user", JSON.stringify(user));
         commit("auth/SET_USER", user, { root: true });
         commit("auth/SET_DISABLED_INPUT", false, { root: true });

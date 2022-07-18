@@ -9,7 +9,7 @@ const getters = {
 const actions = {
   sendTextMessage: async ({ commit, rootGetters, dispatch }, payload) => {
     var rooms = rootGetters["conversation/getRooms"];
-    const room = rooms.find((ele) => ele.roomId == payload.roomId);
+    let room = rooms.find((ele) => ele.roomId == payload.roomId);
     let receiverID = payload.roomId;
     let messageText = payload.content;
     let receiverType = CometChat.RECEIVER_TYPE.USER;
@@ -45,33 +45,16 @@ const actions = {
           distributed: room.users[1].status.state === "online" ? true : false,
           seen: false,
         };
-        // this.messages.push(messagePushToState);
+        room.lastMessage = messagePushToState;
+        const removeOutdatedRoom = rooms.filter(
+          (roomObjec) => roomObjec.uid !== room.uid
+        );
+        const newUpdatedRoomArray = [room, ...removeOutdatedRoom];
         commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
+        commit("conversation/SET_ROOMS", newUpdatedRoomArray, { root: true });
       },
       (error) => {
         console.log("Message sending failed with error:", error);
-      }
-    );
-  },
-
-  sendMediaMessage: ({ commit }, payload) => {
-    let receiverID = payload.uid;
-    let messageType = CometChat.MESSAGE_TYPE.AUDIO;
-    let receiverType = CometChat.RECEIVER_TYPE.USER;
-    let mediaMessage = new CometChat.MediaMessage(
-      receiverID,
-      payload.files,
-      messageType,
-      receiverType
-    );
-
-    CometChat.sendMediaMessage(mediaMessage).then(
-      (message) => {
-        console.log("Media message sent successfully", message);
-      },
-      (error) => {
-        commit("SET_CHECK", "bilkul");
-        console.log("Media message sending failed with error", error);
       }
     );
   },

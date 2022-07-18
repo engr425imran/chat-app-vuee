@@ -91,7 +91,6 @@ const actions = {
             },
           },
         ];
-        // roomObject["lastMessage"] = {
         roomObject["lastMessage"] = new Object();
         (roomObject["lastMessage"]["_id"] = element.lastMessage.id),
           (roomObject["lastMessage"]["content"] = element.lastMessage.text
@@ -131,8 +130,7 @@ const actions = {
         if (element.lastMessage.data.attachments) {
           let files = [];
           let filesObj = {
-            // name: element.lastMessage.data.attachments[0].name,
-            name: "element.lastMessage.data.attachments[0].name",
+            name: element.lastMessage.data.attachments[0].name,
             audio: element.type === "audio" ? true : false,
             size: element.lastMessage.data.attachments[0].size,
             duration: element.lastMessage.metadata
@@ -144,20 +142,6 @@ const actions = {
           files.push(filesObj);
           roomObject["lastMessage"]["files"] = files;
         }
-        // files: [
-        //   {
-        //     name: element.lastMessage.attachments[0].name,
-        //     type: element.lastMessage.attachments[0].mimeType,
-        //     audio:
-        //       element.lastMessage.attachments[0].extension === "mp3"
-        //         ? true
-        //         : false,
-        //     url: element.lastMessage.attachments[0].url,
-        //   },
-        // ],
-        // };
-        // console.log(element);
-
         roomObject["typingUsers"] = [];
       }
       newRooms.push(roomObject);
@@ -208,6 +192,9 @@ const mutations = {
     state.loadingRoomsInitial = false;
     state.messageLoaded = payload;
   },
+  // SET_UPDATED_ROOM:(state, payload) => {
+  //   state.room
+  // }
 };
 
 const modules = {};

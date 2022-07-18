@@ -93,7 +93,13 @@ const actions = {
             },
           ],
         };
+        room.lastMessage = messagePushToState;
+        const removeOutdatedRoom = rooms.filter(
+          (roomObjec) => roomObjec.uid !== room.uid
+        );
         commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
+        const newUpdatedRoomArray = [room, ...removeOutdatedRoom];
+        commit("conversation/SET_ROOMS", newUpdatedRoomArray, { root: true });
       },
       (error) => {
         commit("SET_CHECK", "SS");
@@ -194,6 +200,14 @@ const actions = {
         });
         messagePushToState["files"] = files;
         commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
+        if (rooms[0].uid !== room.uid) {
+          room.lastMessage = messagePushToState;
+          const removeOutdatedRoom = rooms.filter(
+            (roomObjec) => roomObjec.uid !== room.uid
+          );
+          const newUpdatedRoomArray = [room, ...removeOutdatedRoom];
+          commit("conversation/SET_ROOMS", newUpdatedRoomArray, { root: true });
+        }
       },
       (error) => {
         console.log("error in sending message", error);
