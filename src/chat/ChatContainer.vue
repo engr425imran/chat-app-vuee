@@ -172,7 +172,9 @@ export default {
     ...mapActions("messages", ["getOldMessagesBetweenUserr", "markAsReadd"]),
     ...mapActions("messages/sendMessage/mediaMessage", [
       "sendAudioToBackend",
+      "sendImageToBackendd",
       "sendImageToBackend",
+      "sendMultipleMeid",
     ]),
     ...mapActions("users", ["displayUserss"]),
     ...mapActions("messages/sendMessage", [
@@ -212,32 +214,39 @@ export default {
 
     async sendMessage({ content, roomId, files }) {
       if (files) {
-        console.log(files);
-        let file = new Object();
-        file.name = files[0].name;
-        file.size = files[0].size;
-        file.extension = files[0].type;
-        file.mimeType = files[0].type;
-        let blob = await fetch(files[0].localUrl).then((r) => r.blob());
-        file.source = blob;
-        file.preview = files[0].localUrl;
+        const arrageFiles = this.formattedFiles(files);
         let payload = {
           receiverID: roomId,
-          file,
+          arrageFiles,
         };
         if (files[0].audio === true) {
-          payload.file.audio = true;
-          payload.file.duration = files[0].duration;
+          payload.arrageFiles[0].audio = true;
+          payload.arrageFiles[0].extension = "mp3";
+          payload.arrageFiles[0].duration = files[0].duration;
+          console.log("ss", payload.arrageFiles[0]);
           this.sendAudioToBackend(payload);
           return;
         }
+
         this.sendImageToBackend(payload);
         return;
       }
-
       this.sendTextMessage({ content, roomId });
     },
 
+    formattedFiles(files) {
+      const formattedFiles = [];
+      files.forEach((file) => {
+        let messageFile = new Object();
+        messageFile.name = file.name;
+        messageFile.size = file.size;
+        messageFile.mimeType = file.type;
+        messageFile.extension = file.extension;
+        messageFile.source = file.blob;
+        formattedFiles.push(messageFile);
+      });
+      return formattedFiles;
+    },
     // --------------------------------------    **************   ---------------------------------------------
 
     // --------------------------------------   Recive Message Functons   ---------------------------------------------

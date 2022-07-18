@@ -96,7 +96,11 @@
           <p style="margin-top: 8px; color: #ea3f3f; font-size: 13px">
             {{ getErrorMessage }}
           </p>
-          <button @click="registerUserTo()" class="button-submit">
+          <button
+            :disabled="getDisableInput"
+            @click="registerUserTo()"
+            class="button-submit"
+          >
             <v-progress-circular
               :size="15"
               color="#fff"

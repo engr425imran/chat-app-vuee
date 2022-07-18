@@ -142,8 +142,24 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.logoutUser();
-
-          // Swal.fire("Deleted!", "Your file has been deleted.", "success");
+          Swal.fire({
+            title: "logging Out",
+            text: "",
+            icon: "info",
+            iconHtml: "<i class='fas fa-spinner fa-spin'></i>",
+            showConfirmButton: false,
+            // icon: "question",
+          });
+          // Swal.close();
+          // console.log(Swal.isVisible);
+          // this.logoutUser();
+          // Swal.isVisible({
+          //   title: "Good job!",
+          //   text: "You clicked the button!",
+          //   icon: "success",
+          //   button: "Aww yiss!",
+          // });
+          // Swal.fire("The Internet?", "That thing is still around?", "question");
         }
       });
     },

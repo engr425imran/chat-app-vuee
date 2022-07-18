@@ -94,6 +94,7 @@ export default {
     },
     setAvatar(event) {
       const image = event.target.files[0];
+      console.log(event.target.files);
       this.formAvatar = image;
       const reader = new FileReader();
       reader.readAsDataURL(image);
@@ -103,6 +104,7 @@ export default {
       };
     },
   },
+
   created() {},
 };
 </script>

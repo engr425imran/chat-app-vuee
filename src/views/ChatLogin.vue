@@ -18,70 +18,73 @@
           outlined
           elevation="0"
         >
-          <p class="heading">Sign in to Shifl chat bot</p>
-          <input
-            type="button"
-            value="Google Account"
-            class="google-signin-button"
-          />
-          <div
-            class="d-flex justify-center align-center"
-            style="margin-top: 25px"
-          >
-            <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
-            <span
-              style="
-                margin: 1px 10px;
-                font-size: 10px;
-                font-weight: 400;
-                font-family: 'Inter';
-              "
-              >or</span
+          <form @submit="login">
+            <p class="heading">Sign in to Shifl chat bot</p>
+            <input
+              type="button"
+              value="Google Account"
+              class="google-signin-button"
+            />
+            <div
+              class="d-flex justify-center align-center"
+              style="margin-top: 25px"
             >
-            <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
-          </div>
-          <div style="margin-top: 35px">
-            <div class="justify-center">
-              <input
-                v-model="user.email"
-                type="email"
-                class="card-input"
-                placeholder="Enter email Address"
-                :disabled="getDisableInput"
-              />
+              <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
+              <span
+                style="
+                  margin: 1px 10px;
+                  font-size: 10px;
+                  font-weight: 400;
+                  font-family: 'Inter';
+                "
+                >or</span
+              >
+              <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
             </div>
-            <div class="justify-center" style="margin-top: 12px">
-              <input
-                v-model="user.password"
-                type="password"
-                class="card-input"
-                placeholder="Enter Password"
-                :disabled="getDisableInput"
-              />
+            <div style="margin-top: 35px">
+              <div class="justify-center">
+                <input
+                  v-model="user.email"
+                  type="email"
+                  class="card-input"
+                  placeholder="Enter email Address"
+                  :disabled="getDisableInput"
+                />
+              </div>
+              <div class="justify-center" style="margin-top: 12px">
+                <input
+                  v-model="user.password"
+                  type="password"
+                  class="card-input"
+                  placeholder="Enter Password"
+                  :disabled="getDisableInput"
+                  autocomplete="trrr"
+                />
+              </div>
             </div>
-          </div>
-          <p style="margin-top: 2px; color: #ea3f3f; font-size: 13px">
-            {{ getErrorMessage }}
-          </p>
-          <button @click="login()" class="button-submit">
-            <v-progress-circular
-              :size="15"
-              color="#fff"
-              :width="3"
-              indeterminate
-              v-if="getLoadingStatus"
-              style="margin-right: 3px"
-            >
-            </v-progress-circular>
-            <span> Login </span>
-          </button>
+            <p style="margin-top: 2px; color: #ea3f3f; font-size: 13px">
+              {{ getErrorMessage }}
+            </p>
+            <button type="submit" class="button-submit">
+              <v-progress-circular
+                :size="15"
+                color="#fff"
+                :width="3"
+                indeterminate
+                v-if="getLoadingStatus"
+                style="margin-right: 3px"
+              >
+              </v-progress-circular>
+              <span> Login </span>
+            </button>
+          </form>
+
           <p style="margin-top: 10px">
             Create A New Account ?<span class="change-submit"
-              ><input
-                type="button"
-                value="Register"
-                @click="changeToRegister()"
-            /></span>
+              ><button value="Register" @click="changeToRegister()">
+                Register
+              </button></span
+            >
           </p>
         </v-card>
       </v-sheet>
@@ -113,8 +116,10 @@ export default {
   },
   methods: {
     ...mapActions("auth", ["loginUser"]),
-    login() {
+    login(e) {
+      // console.log("sss");
       this.loginUser(this.user);
+      e.preventDefault();
     },
     changeToRegister() {
       router.push("/register");

@@ -3,6 +3,7 @@ const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
 const authKey = process.env.VUE_APP_COMET_AUTH_KEY;
 import axios from "axios";
 import { CometChat } from "@cometchat-pro/chat";
+import Swal from "sweetalert2";
 
 const state = {
   user: localStorage.getItem("user")
@@ -98,6 +99,7 @@ const actions = {
     CometChat.logout().then(
       () => {
         console.log("Logout completed successfully");
+        Swal.close();
         commit("REMOVE_USER", null);
         localStorage.removeItem("access_token");
         console.log(payload);
