@@ -10,63 +10,6 @@ const getters = {
   getCheck: (state) => state.check,
 };
 const actions = {
-  sendImageToBackendd: ({ commit, dispatch }, payload) => {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-      },
-    };
-    let data = new FormData();
-    data.append("messageFile", payload.file.source);
-    data.append("messageExtension", payload.file.extension);
-    axios
-      .post(`${VUE_APP_API_URL}/chat/user/image-files`, data, config)
-      .then((res) => {
-        payload.file.url = res.data.filePath;
-        dispatch("sendImageMessage", payload);
-      })
-      .catch((e) => {
-        console.log(e);
-        commit("SET_CHECK", "sss");
-      });
-  },
-  sendImageToBackend({ commit, dispatch }, payload) {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-      },
-    };
-    // let dataPath = [];
-    const totalFilesAttached = payload.arrageFiles.length;
-    payload.arrageFiles.forEach((element, index) => {
-      let data = new FormData();
-      data.append("messageFile", element.source);
-      data.append("messageExtension", element.extension);
-      axios
-        .post(`${VUE_APP_API_URL}/chat/user/image-files`, data, config)
-        .then((res) => {
-          element.url = res.data.filePath;
-          if (totalFilesAttached == 1) {
-            dispatch("sendImageMessage", payload);
-          } else if (totalFilesAttached == index + 1) {
-            setTimeout(function () {
-              dispatch("sendImageMessage", payload);
-            }, 3000);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-          commit("SET_CHECK", "sss");
-          dispatch("sendImageMessage", payload);
-        });
-    });
-    // console.log(dataPath);
-
-    // dispatch("sendImageMessage", payload);
-  },
-
   sendAudioToBackend: ({ commit, dispatch }, payload) => {
     console.log(payload);
     const config = {
@@ -89,6 +32,7 @@ const actions = {
   },
 
   sendAudioMessage: ({ commit, rootGetters }, payload) => {
+    console.log(payload.arrageFiles[0]);
     var rooms = rootGetters["conversation/getRooms"];
     const room = rooms.find((ele) => ele.roomId == payload.receiverID);
     let messageType = CometChat.MESSAGE_TYPE.AUDIO;
@@ -101,6 +45,11 @@ const actions = {
     );
 
     let attachment = new CometChat.Attachment(payload.arrageFiles[0]);
+    let metadata = {
+      duration: payload.arrageFiles[0].duration,
+    };
+
+    mediaMessage.setMetadata(metadata);
 
     mediaMessage.setAttachment(attachment);
 
@@ -153,9 +102,39 @@ const actions = {
     );
   },
 
-  // sendImageMessage: ({ commit }, payload) => {
+  sendImageToBackend({ commit, dispatch }, payload) {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "application/json",
+      },
+    };
+    const totalFilesAttached = payload.arrageFiles.length;
+    payload.arrageFiles.forEach((element, index) => {
+      let data = new FormData();
+      data.append("messageFile", element.source);
+      data.append("messageExtension", element.extension);
+      axios
+        .post(`${VUE_APP_API_URL}/chat/user/image-files`, data, config)
+        .then((res) => {
+          element.url = res.data.filePath;
+          if (totalFilesAttached == 1) {
+            dispatch("sendImageMessage", payload);
+          } else if (totalFilesAttached == index + 1) {
+            setTimeout(function () {
+              dispatch("sendImageMessage", payload);
+            }, 2000);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          commit("SET_CHECK", "sss");
+          dispatch("sendImageMessage", payload);
+        });
+    });
+  },
+
   sendImageMessage: ({ commit, rootGetters }, payload) => {
-    console.log(payload.arrageFiles);
     var rooms = rootGetters["conversation/getRooms"];
     const room = rooms.find((ele) => ele.roomId == payload.receiverID);
     let messageType = CometChat.MESSAGE_TYPE.IMAGE;
@@ -203,7 +182,6 @@ const actions = {
         messagePushToState["distributed"] =
           room.users[1].status.state === "online" ? true : false;
         messagePushToState["seen"] = false;
-
         let files = [];
         mediaMessage.data.attachments.forEach((element) => {
           let filesObj = {
@@ -215,21 +193,6 @@ const actions = {
           files.push(filesObj);
         });
         messagePushToState["files"] = files;
-
-        // messagePushToState["files"] = [
-        //   {
-        //     name: mediaMessage.data.attachments[0].name,
-        //     size: mediaMessage.data.attachments[0].size,
-        //     type: mediaMessage.data.attachments[0].mimeType,
-        //     url: mediaMessage.data.attachments[0].url,
-        //   },
-        //   {
-        //     name: mediaMessage.data.attachments[1].name,
-        //     size: mediaMessage.data.attachments[1].size,
-        //     type: mediaMessage.data.attachments[1].mimeType,
-        //     url: mediaMessage.data.attachments[1].url,
-        //   },
-        // ]);
         commit("messages/PUSH_MESSAGE", messagePushToState, { root: true });
       },
       (error) => {

@@ -38,6 +38,7 @@ const actions = {
     conversationsRequest.fetchNext().then(
       (conversationList) => {
         dispatch("displayConversation", conversationList);
+        console.log(conversationList);
         if (conversationList.length == 0) dispatch("displayAlertBox");
       },
       (error) => {
@@ -90,34 +91,73 @@ const actions = {
             },
           },
         ];
-        roomObject["lastMessage"] = {
-          _id: element.lastMessage.id,
-          content: element.lastMessage.text ? element.lastMessage.text : "",
-          senderId: element.lastMessage.sender.uid,
-          username: element.lastMessage.sender.name,
-          timestamp: new Date(
+        // roomObject["lastMessage"] = {
+        roomObject["lastMessage"] = new Object();
+        (roomObject["lastMessage"]["_id"] = element.lastMessage.id),
+          (roomObject["lastMessage"]["content"] = element.lastMessage.text
+            ? element.lastMessage.text
+            : ""),
+          (roomObject["lastMessage"]["senderId"] =
+            element.lastMessage.sender.uid),
+          (roomObject["lastMessage"]["username"] =
+            element.lastMessage.sender.name),
+          (roomObject["lastMessage"]["timestamp"] = new Date(
             element.lastMessage.deletedAt
               ? element.lastMessage.deletedAt
               : element.lastMessage.sentAt * 1000
           ).toLocaleString("en-us", {
             hour: "numeric",
             minute: "numeric",
-          }),
-          date: "today, 10:45",
-          saved: true,
-          deleted: element.lastMessage.deletedAt ? true : false,
-          distributed: element.lastMessage.deliveredAt ? true : false,
-          seen:
-            element.lastMessage.readAt &&
-            element.lastMessage.receiverId !== rootGetters["auth/getUser"].uid
-              ? true
+          })),
+          (roomObject["lastMessage"]["date"] = "today, 10:45");
+        roomObject["lastMessage"]["saved"] = true;
+        roomObject["lastMessage"]["deleted"] = element.lastMessage.deletedAt
+          ? true
+          : false;
+        roomObject["lastMessage"]["distributed"] = element.lastMessage
+          .deliveredAt
+          ? true
+          : false;
+        roomObject["lastMessage"]["seen"] =
+          element.lastMessage.readAt &&
+          element.lastMessage.receiverId !== rootGetters["auth/getUser"].uid
+            ? true
+            : false;
+        roomObject["lastMessage"]["new"] =
+          element.lastMessage.receiverId == rootGetters["auth/getUser"].uid ||
+          element.lastMessage.sender.uid == rootGetters["auth/getUser"].uid
+            ? false
+            : true;
+        if (element.lastMessage.data.attachments) {
+          let files = [];
+          let filesObj = {
+            // name: element.lastMessage.data.attachments[0].name,
+            name: "element.lastMessage.data.attachments[0].name",
+            audio: element.type === "audio" ? true : false,
+            size: element.lastMessage.data.attachments[0].size,
+            duration: element.lastMessage.metadata
+              ? element.lastMessage.metadata.duration
               : false,
-          new:
-            element.lastMessage.receiverId == rootGetters["auth/getUser"].uid ||
-            element.lastMessage.sender.uid == rootGetters["auth/getUser"].uid
-              ? false
-              : true,
-        };
+            type: element.lastMessage.data.attachments[0].mimeType,
+            url: element.lastMessage.data.attachments[0].url,
+          };
+          files.push(filesObj);
+          roomObject["lastMessage"]["files"] = files;
+        }
+        // files: [
+        //   {
+        //     name: element.lastMessage.attachments[0].name,
+        //     type: element.lastMessage.attachments[0].mimeType,
+        //     audio:
+        //       element.lastMessage.attachments[0].extension === "mp3"
+        //         ? true
+        //         : false,
+        //     url: element.lastMessage.attachments[0].url,
+        //   },
+        // ],
+        // };
+        // console.log(element);
+
         roomObject["typingUsers"] = [];
       }
       newRooms.push(roomObject);

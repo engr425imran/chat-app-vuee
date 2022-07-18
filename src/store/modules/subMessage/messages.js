@@ -22,7 +22,7 @@ const actions = {
 
     messagesRequest.fetchPrevious().then(
       (messages) => {
-        console.log(messages);
+        // console.log(messages);
         let payload = {
           messages,
           roomId,
@@ -96,17 +96,18 @@ const actions = {
         (element.type === "image" && !element.deletedAt) ||
         (element.type === "audio" && !element.deletedAt)
       ) {
-        messageObject["files"] = [
-          {
-            name: element.data.attachments[0].name,
-            audio: element.type === "audio" ? true : false,
-            // duration: element.type === "audio" ? true:false,
-            size: element.data.attachments[0].size,
-            type: element.data.attachments[0].mimeType,
-            url: element.data.attachments[0].url,
-            preview: element.data.attachments[0].url,
-          },
-        ];
+        let files = [];
+        element.data.attachments.forEach((childElement) => {
+          let filesObj = {
+            name: childElement.name,
+            audio: childElement.extension === "mp3" ? true : false,
+            size: childElement.size,
+            type: childElement.mimeType,
+            url: childElement.url,
+          };
+          files.push(filesObj);
+        });
+        messageObject["files"] = files;
       }
       oldConverstion.push(messageObject);
     });
