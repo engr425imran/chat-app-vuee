@@ -16,9 +16,10 @@ const actions = {
         onTypingStarted: (typingIndicator) => {
           const id = typingIndicator.sender.uid;
           dispatch("startTypingIndicatorForUser", id);
-          // console.log(typingIndicator);
+          console.log("typingIndicator started");
         },
         onTypingEnded: (typingIndicator) => {
+          console.log("typing end");
           const id = typingIndicator.sender.uid;
           dispatch("endTypingIndicatorForUser", id);
         },
