@@ -70,6 +70,10 @@ const actions = {
             },
             (error) => {
               commit("SET_LOADING_STATUS", false);
+              commit(
+                "SET_ERROR_MESSAGE",
+                "error occured while login to comet chat "
+              );
               console.log("Login failed with exception:", { error });
             }
           );
