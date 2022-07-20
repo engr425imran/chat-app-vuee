@@ -16,8 +16,8 @@ const actions = {
     commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", true, {
       root: true,
     });
-
     const users = new CometChat.UsersRequestBuilder().setLimit(15);
+    // .friendsOnly(true);
     const usersRequest = users.build();
     usersRequest
       .fetchNext()

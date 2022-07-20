@@ -65,7 +65,11 @@
             <p style="margin-top: 2px; color: #ea3f3f; font-size: 13px">
               {{ getErrorMessage }}
             </p>
-            <button type="submit" class="button-submit">
+            <button
+              type="submit"
+              :disabled="getDisableInput"
+              class="button-submit"
+            >
               <v-progress-circular
                 :size="15"
                 color="#fff"
@@ -117,7 +121,6 @@ export default {
   methods: {
     ...mapActions("auth", ["loginUser"]),
     login(e) {
-      // console.log("sss");
       this.loginUser(this.user);
       e.preventDefault();
     },

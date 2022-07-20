@@ -11,7 +11,7 @@ const getters = {
 };
 const actions = {
   sendAudioToBackend: ({ commit, dispatch }, payload) => {
-    console.log(payload);
+    // console.log(payload);
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -32,7 +32,7 @@ const actions = {
   },
 
   sendAudioMessage: ({ commit, rootGetters }, payload) => {
-    console.log(payload.arrageFiles[0]);
+    // console.log(payload.arrageFiles[0]);
     var rooms = rootGetters["conversation/getRooms"];
     const room = rooms.find((ele) => ele.roomId == payload.receiverID);
     let messageType = CometChat.MESSAGE_TYPE.AUDIO;
@@ -133,9 +133,8 @@ const actions = {
           }
         })
         .catch((e) => {
-          console.log(e);
+          alert(e);
           commit("SET_CHECK", "sss");
-          dispatch("sendImageMessage", payload);
         });
     });
   },
@@ -153,14 +152,14 @@ const actions = {
     );
     let attachments = [];
     payload.arrageFiles.forEach((element) => {
-      console.log(element.url);
+      // console.log(element.url);
       attachments.push(new CometChat.Attachment(element));
     });
     mediaMessage.setAttachments(attachments);
 
     CometChat.sendMediaMessage(mediaMessage).then(
       (mediaMessage) => {
-        console.log("message ccc", mediaMessage);
+        // console.log("message ccc", mediaMessage);
         const messagePushToState = new Object();
         messagePushToState["_id"] = mediaMessage.id;
         messagePushToState["indexId"] = mediaMessage.id;
