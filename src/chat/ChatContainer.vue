@@ -69,9 +69,8 @@
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"
       @delete-message="deleteMessage"
+      @typing-message="typingMessage"
     >
-      <!-- @typing-message="typingMessage" -->
-
       <!-- <template #room-header="{ room, userStatus }">
         {{ room.roomName }} - {{ userStatus }}
       </template> -->
@@ -265,8 +264,8 @@ export default {
       this.delete(payload);
     },
 
-    typingMessage({ roomId, message }) {
-      console.log(message);
+    typingMessage({ roomId }) {
+      // console.log(message);
       let receiverId = roomId;
       let receiverType = CometChat.RECEIVER_TYPE.USER;
 

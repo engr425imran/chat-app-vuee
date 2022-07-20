@@ -1,4 +1,4 @@
-import { CometChat } from "@cometchat-pro/chat";
+// import { CometChat } from "@cometchat-pro/chat";
 import axios from "axios";
 const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
 
@@ -16,16 +16,27 @@ const actions = {
     commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", true, {
       root: true,
     });
-    const users = new CometChat.UsersRequestBuilder().setLimit(15);
-    // .friendsOnly(true);
-    const usersRequest = users.build();
-    usersRequest
-      .fetchNext()
+    axios
+      .get(
+        "https://2142068ce6e12059.api-us.cometchat.io/v3/users?per_page=10",
+        {
+          headers: {
+            apiKey: "04cfec9ccbd3cb70d36f825b6e6f8624e8945e3b",
+          },
+        }
+      )
+      // const users = new CometChat.UsersRequestBuilder().setLimit(15);
+      // const usersRequest = users.build();
+      // usersRequest
+      //   .fetchNext()
       .then((usersList) => {
         var newRooms = [];
         var roomObject;
         // console.log(usersList);
-        usersList.forEach((element) => {
+        usersList.data.data.forEach((element) => {
+          if (element.uid == rootGetters["auth/getUser"].uid) {
+            return;
+          }
           roomObject = {};
           roomObject["roomId"] = element.uid;
           roomObject["roomName"] = element.name;
@@ -61,9 +72,6 @@ const actions = {
           newRooms.push(roomObject);
         });
         commit("conversation/SET_ROOMS", newRooms, { root: true });
-        commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", false, {
-          root: true,
-        });
       })
       .catch((e) => {
         console.log(e);
