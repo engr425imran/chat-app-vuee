@@ -16,7 +16,7 @@ const actions = {
         onTypingStarted: (typingIndicator) => {
           const id = typingIndicator.sender.uid;
           dispatch("startTypingIndicatorForUser", id);
-          console.log(typingIndicator);
+          // console.log(typingIndicator);
         },
         onTypingEnded: (typingIndicator) => {
           const id = typingIndicator.sender.uid;
@@ -24,7 +24,9 @@ const actions = {
         },
         onTextMessageReceived: (textMessage) => {
           dispatch("checkIfUsersOrConversationTabIsSelected");
-          console.log(textMessage);
+          // console.log(textMessage);
+          // dispatch("playMessageSound", textMessage.sender.name);
+
           const message = {
             _id: textMessage.id,
             indexId: textMessage.id,
@@ -57,14 +59,16 @@ const actions = {
             message,
             roomId: room.roomId,
           };
+
           if (room.roomId == textMessage.sender.uid) {
             commit("messages/PUSH_MESSAGE", message, { root: true });
+            dispatch("playMessageSound", textMessage.sender.name);
             dispatch("updateRoomLastMessage", payload);
             dispatch("messages/markAsReadd", textMessage, { root: true });
             return;
           }
-          dispatch("updateRoomLastMessage", payload);
           dispatch("playMessageSound", textMessage.sender.name);
+          dispatch("updateRoomLastMessage", payload);
         },
         onMediaMessageReceived: (mediaMessage) => {
           console.log("Media message received successfully", mediaMessage);
@@ -112,14 +116,14 @@ const actions = {
             filesInMessage.push(filesObj);
           });
           mediaMessageObject["files"] = filesInMessage;
-          // let payload = {
-          //   mediaMessageObject,
-          //   message,
-          //   roomId: room.roomId,
-          // };
+          let payload = {
+            textMessage: mediaMessageObject,
+            message: mediaMessageObject,
+            roomId: room.roomId,
+          };
           if (room.roomId == mediaMessage.sender.uid) {
             commit("messages/PUSH_MESSAGE", mediaMessageObject, { root: true });
-            // dispatch("updateRoomLastMessage", payload);
+            dispatch("updateRoomLastMessage", payload);
             // dispatch("messages/markAsReadd", textMessage, { root: true });
             return;
           }
@@ -130,8 +134,7 @@ const actions = {
 
   checkIfUsersOrConversationTabIsSelected({ rootGetters, dispatch }) {
     const status = rootGetters["conversation/getConversationTabSelected"];
-    console.log(status, "sss");
-
+    // console.log(status, "sss");
     if (status === null) {
       console.log(status);
       dispatch("conversation/getConverstionforUserr", "dd", { root: true });
@@ -139,10 +142,10 @@ const actions = {
   },
 
   playMessageSound({ commit }, payload) {
+    console.log("sss");
     const audio = new Audio(require("@/assets/audio/notifi.wav"));
     const currntDocumentTitle = document.title;
     document.title = "New Message " + payload;
-    // audio.muted = true;
     audio.play();
     setTimeout(() => {
       document.title = currntDocumentTitle;
@@ -152,7 +155,11 @@ const actions = {
   updateRoomLastMessage: ({ commit, rootGetters }, payload) => {
     let currentRooms = rootGetters["conversation/getRooms"];
     currentRooms.forEach((element, index) => {
-      if (element.roomId == payload.textMessage.sender.uid) {
+      // console.log("ss");
+      if (
+        element.roomId == payload.textMessage.sender.uid ||
+        payload.mediaMessageObject.sender.uid
+      ) {
         currentRooms[index].unreadCount = 1;
         currentRooms[index].lastMessage = payload.message;
         currentRooms[index].users[1].status.state =
