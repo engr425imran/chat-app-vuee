@@ -214,6 +214,7 @@ export default {
     async sendMessage({ content, roomId, files }) {
       if (files) {
         console.log(files);
+        return;
         //   const arrageFiles = this.formattedFiles(files);
         //   let payload = {
         //     receiverID: roomId,
