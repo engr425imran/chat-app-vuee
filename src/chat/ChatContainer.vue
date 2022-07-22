@@ -69,9 +69,8 @@
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"
       @delete-message="deleteMessage"
+      @typing-message="typingMessage"
     >
-      <!-- @typing-message="typingMessage" -->
-
       <!-- <template #room-header="{ room, userStatus }">
         {{ room.roomName }} - {{ userStatus }}
       </template> -->
@@ -223,7 +222,7 @@ export default {
           payload.arrageFiles[0].audio = true;
           payload.arrageFiles[0].extension = "mp3";
           payload.arrageFiles[0].duration = files[0].duration;
-          console.log("ss", payload.arrageFiles[0]);
+          // console.log("ss", payload.arrageFiles[0]);
           this.sendAudioToBackend(payload);
           return;
         }
@@ -265,8 +264,8 @@ export default {
       this.delete(payload);
     },
 
-    typingMessage({ roomId, message }) {
-      console.log(message);
+    typingMessage({ roomId }) {
+      // console.log(message);
       let receiverId = roomId;
       let receiverType = CometChat.RECEIVER_TYPE.USER;
 

@@ -112,7 +112,7 @@ const actions = {
       oldConverstion.push(messageObject);
     });
     commit("SET_MESSAGES", oldConverstion);
-    console.log("messages added to  array Called From Message functio");
+    console.log("messages added to  array Called From Message function");
     dispatch("markAsReadd", payload.roomId);
     commit("conversation/SET_MESSAGE_LOADED", true, { root: true });
   },

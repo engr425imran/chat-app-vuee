@@ -16,18 +16,21 @@ const actions = {
         onTypingStarted: (typingIndicator) => {
           const id = typingIndicator.sender.uid;
           dispatch("startTypingIndicatorForUser", id);
+          console.log("typingIndicator started");
         },
         onTypingEnded: (typingIndicator) => {
+          console.log("typing end");
           const id = typingIndicator.sender.uid;
           dispatch("endTypingIndicatorForUser", id);
         },
         onTextMessageReceived: (textMessage) => {
-          dispatch("playMessageSound", textMessage.sender.name);
           dispatch("checkIfUsersOrConversationTabIsSelected");
+          // console.log(textMessage);
+          // dispatch("playMessageSound", textMessage.sender.name);
 
           const message = {
-            _id: textMessage.rawMessage.id,
-            indexId: textMessage.rawMessage.id,
+            _id: textMessage.id,
+            indexId: textMessage.id,
             senderId: textMessage.sender.uid,
             username: textMessage.sender.name,
             avatar: textMessage.sender.avatar,
@@ -57,13 +60,74 @@ const actions = {
             message,
             roomId: room.roomId,
           };
+
           if (room.roomId == textMessage.sender.uid) {
             commit("messages/PUSH_MESSAGE", message, { root: true });
+            dispatch("playMessageSound", textMessage.sender.name);
             dispatch("updateRoomLastMessage", payload);
             dispatch("messages/markAsReadd", textMessage, { root: true });
             return;
           }
+          dispatch("playMessageSound", textMessage.sender.name);
           dispatch("updateRoomLastMessage", payload);
+        },
+        onMediaMessageReceived: (mediaMessage) => {
+          console.log("Media message received successfully", mediaMessage);
+          let mediaMessageObject = new Object();
+          mediaMessageObject["_id"] = mediaMessage.id;
+          mediaMessageObject["indexId"] = mediaMessage.id;
+          mediaMessageObject["senderId"] = mediaMessage.sender.uid;
+          mediaMessageObject["username"] = mediaMessage.sender.name;
+          mediaMessageObject["avatar"] = mediaMessage.sender.avatar;
+          mediaMessageObject["content"] = mediaMessage.text
+            ? mediaMessage.text
+            : "";
+          mediaMessageObject["date"] = new Date(mediaMessage.sentAt * 1000)
+            .toLocaleString("en-us", {
+              day: "numeric",
+              month: "short",
+            })
+            .split(" ")
+            .reverse()
+            .join(" ");
+          mediaMessageObject["timestamp"] = new Date(mediaMessage.sentAt * 1000)
+            .toLocaleString("en-us", {
+              hour: "numeric",
+              minute: "numeric",
+            })
+            .split(" ")
+            .reverse()
+            .join(" ");
+          mediaMessageObject["saved"] = true;
+          mediaMessageObject["distributed"] = true;
+          mediaMessageObject["new"] = true;
+          let filesInMessage = [];
+          mediaMessage.data.attachments.forEach((element) => {
+            let filesObj = {
+              name: element.name,
+              audio: element.extension === "mp3" ? true : false,
+              size: element.size,
+              type: element.mimeType,
+              url: element.url,
+              extension: element.extension,
+              duration: mediaMessage.metadata
+                ? mediaMessage.metadata.duration
+                : false,
+            };
+            filesInMessage.push(filesObj);
+          });
+          mediaMessageObject["files"] = filesInMessage;
+          let payload = {
+            textMessage: mediaMessageObject,
+            message: mediaMessageObject,
+            roomId: room.roomId,
+          };
+          if (room.roomId == mediaMessage.sender.uid) {
+            commit("messages/PUSH_MESSAGE", mediaMessageObject, { root: true });
+            dispatch("updateRoomLastMessage", payload);
+            // dispatch("messages/markAsReadd", textMessage, { root: true });
+            return;
+          }
         },
       })
     );
@@ -71,8 +135,7 @@ const actions = {
 
   checkIfUsersOrConversationTabIsSelected({ rootGetters, dispatch }) {
     const status = rootGetters["conversation/getConversationTabSelected"];
-    console.log(status, "sss");
-
+    // console.log(status, "sss");
     if (status === null) {
       console.log(status);
       dispatch("conversation/getConverstionforUserr", "dd", { root: true });
@@ -80,6 +143,7 @@ const actions = {
   },
 
   playMessageSound({ commit }, payload) {
+    console.log("sss");
     const audio = new Audio(require("@/assets/audio/notifi.wav"));
     const currntDocumentTitle = document.title;
     document.title = "New Message " + payload;
@@ -87,13 +151,16 @@ const actions = {
     setTimeout(() => {
       document.title = currntDocumentTitle;
     }, 3000);
-    console.log(document.title);
     commit("SET_CHECK", true);
   },
   updateRoomLastMessage: ({ commit, rootGetters }, payload) => {
     let currentRooms = rootGetters["conversation/getRooms"];
     currentRooms.forEach((element, index) => {
-      if (element.roomId == payload.textMessage.sender.uid) {
+      // console.log("ss");
+      if (
+        element.roomId == payload.textMessage.sender.uid ||
+        payload.mediaMessageObject.sender.uid
+      ) {
         currentRooms[index].unreadCount = 1;
         currentRooms[index].lastMessage = payload.message;
         currentRooms[index].users[1].status.state =

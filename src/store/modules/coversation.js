@@ -38,7 +38,7 @@ const actions = {
     conversationsRequest.fetchNext().then(
       (conversationList) => {
         dispatch("displayConversation", conversationList);
-        console.log(conversationList);
+        // console.log(conversationList);
         if (conversationList.length == 0) dispatch("displayAlertBox");
       },
       (error) => {
