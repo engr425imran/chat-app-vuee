@@ -61,6 +61,9 @@ const actions = {
           newRooms.push(roomObject);
         });
         commit("conversation/SET_ROOMS", newRooms, { root: true });
+        commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", false, {
+          root: true,
+        });
       })
       .catch((e) => {
         console.log(e);

@@ -19,7 +19,7 @@
           elevation="0"
         >
           <form @submit="login">
-            <p class="heading">Sign in to Shifl chat bot</p>
+            <p class="heading">Sign in to Shifl chat ==== bot</p>
             <input
               type="button"
               value="Google Account"
