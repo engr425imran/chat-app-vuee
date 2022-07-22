@@ -11,7 +11,6 @@ const getters = {
 };
 const actions = {
   sendAudioToBackend: ({ commit, dispatch }, payload) => {
-    // console.log(payload);
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -23,6 +22,8 @@ const actions = {
       .post(`${VUE_APP_API_URL}/chat/user/audio-files`, data, config)
       .then((res) => {
         payload.arrageFiles[0].url = res.data.filePath;
+        console.log(payload);
+        console.log("requent wen succsesful to backend");
         dispatch("sendAudioMessage", payload);
       })
       .catch((e) => {

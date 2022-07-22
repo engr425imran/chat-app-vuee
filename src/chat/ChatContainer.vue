@@ -35,7 +35,7 @@
           @click="displayUsers()"
           :class="{ isActive: getConversationTabSelected === false }"
           class="checck"
-          value="users"
+          value="users#"
         />
         <input
           type="button"
@@ -213,22 +213,24 @@ export default {
 
     async sendMessage({ content, roomId, files }) {
       if (files) {
-        const arrageFiles = this.formattedFiles(files);
-        let payload = {
-          receiverID: roomId,
-          arrageFiles,
-        };
-        if (files[0].audio === true) {
-          payload.arrageFiles[0].audio = true;
-          payload.arrageFiles[0].extension = "mp3";
-          payload.arrageFiles[0].duration = files[0].duration;
-          // console.log("ss", payload.arrageFiles[0]);
-          this.sendAudioToBackend(payload);
-          return;
-        }
+        console.log(files);
+        //   const arrageFiles = this.formattedFiles(files);
+        //   let payload = {
+        //     receiverID: roomId,
+        //     arrageFiles,
+        //   };
+        //   if (files[0].audio === true) {
+        //     payload.arrageFiles[0].audio = true;
+        //     payload.arrageFiles[0].extension = "mp3";
+        //     payload.arrageFiles[0].duration = files[0].duration;
+        //     // console.log("ss", payload.arrageFiles[0]);
+        //     console.log(payload);
+        //     this.sendAudioToBackend(payload);
+        //     return;
+        //   }
 
-        this.sendImageToBackend(payload);
-        return;
+        //   this.sendImageToBackend(payload);
+        //   return;
       }
       this.sendTextMessage({ content, roomId });
     },
