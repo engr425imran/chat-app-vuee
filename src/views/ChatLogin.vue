@@ -20,6 +20,7 @@
         >
           <form @submit="login">
             <p class="heading">Sign in to Shifl chat boft</p>
+            <p class="heading">Sign in to Shifl || chat bot</p>
             <input
               type="button"
               value="Google Account"
