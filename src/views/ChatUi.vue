@@ -4,21 +4,16 @@
       class="app-container"
       :class="{ 'app-mobile': isDevice, 'app-mobile-dark': theme === 'dark' }"
     >
-      <span
+      <strong
         v-if="showOptions"
         class="user-logged"
         :class="{ 'user-logged-dark': theme === 'dark' }"
       >
         Logged as
-      </span>
-      <select>
-        <option>
-          {{ getUser.name }}
-        </option>
-      </select>
+      </strong>
+      <span>{{ getUser.name }}</span>
       <div v-if="showOptions" class="button-theme">
         <button class="button-light" @click="themeChange()">theme</button>
-        <!-- <button class="button-dark" @click="logoutUser()">logout</button> -->
         <v-card
           :img="getUser.avatar"
           rounded="circle"

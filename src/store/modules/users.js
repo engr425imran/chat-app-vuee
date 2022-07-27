@@ -4,10 +4,12 @@ const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
 
 const state = {
   irma: "khan",
+  userFind: true,
 };
 
 const getters = {
   getIk: (state) => state.irma,
+  getUserFind: (state) => state.userFind,
 };
 
 const actions = {
@@ -104,14 +106,26 @@ const actions = {
         // commit("CHECK", "sds");
       });
   },
-  checl() {
-    console.log("dispathx has been done !");
+
+  addFriends({ commit }, payload) {
+    const data = {
+      email: payload,
+    };
+    axios
+      .post(`${VUE_APP_API_URL}/chat/user/searchChatUser`, data)
+      .then((res) => {
+        console.log(res.data);
+        commit("SET_USER_FIND", false);
+      })
+      .catch((error) => {
+        console.log(error);
+        commit("SET_IRMA", "ss");
+      });
   },
 };
 const mutations = {
-  SET_IRMA: (state, payload) => {
-    console.log("commme");
-    state.irma = payload;
+  SET_USER_FIND: (state, payload) => {
+    state.userFind = payload;
   },
 };
 export default {

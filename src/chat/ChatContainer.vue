@@ -1,53 +1,21 @@
 <template>
   <div class="window-container" :class="{ 'window-mobile': isDevice }">
-    <form v-if="addNewRoom" @submit.prevent="createRoom">
-      <input v-model="addRoomUsername" type="text" placeholder="Add username" />
-      <button type="submit" :disabled="disableForm || !addRoomUsername">
-        Create Room
-      </button>
-      <button class="button-cancel" @click="addNewRoom = false">Cancel</button>
-    </form>
+    <div v-if="addNewRoom" @submit.prevent="createRoom">
+      <input
+        @keyup="checking"
+        v-model="addRoomUsername"
+        type="email"
+        placeholder="Enter email"
+        style="padding: 15px"
+        required
+      />
 
-    <form v-if="inviteRoomId" @submit.prevent="addRoomUser">
-      <input v-model="invitedUsername" type="text" placeholder="Add username" />
-      <button type="submit" :disabled="disableForm || !invitedUsername">
+      <button type="submit" :disabled="getUserFind">
+        <!-- <button type="submit" :disabled="disableForm || !addRoomUsername"> -->
         Add User
       </button>
-      <button class="button-cancel" @click="inviteRoomId = null">Cancel</button>
-    </form>
-
-    <form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
-      <select v-model="removeUserId">
-        <option default value="">Select User</option>
-        <option v-for="user in removeUsers" :key="user._id" :value="user._id">
-          {{ user }}
-        </option>
-      </select>
-      <button type="submit" :disabled="disableForm || !removeUserId">
-        Remove User
-      </button>
-      <button class="button-cancel" @click="removeRoomId = null">Cancel</button>
-    </form>
-    <v-card elevation="3" style="nav-header">
-      <div class="button-chat">
-        <input
-          type="button"
-          @click="displayUsers()"
-          :class="{ isActive: getConversationTabSelected === false }"
-          class="checck"
-          value="users"
-        />
-        <input
-          type="button"
-          style="margin-left: 20px"
-          @click="getConverstionforUser()"
-          class="checck"
-          :class="{ isActive: getConversationTabSelected === true }"
-          value="converstion"
-        />
-      </div>
-    </v-card>
-    <!-- :height="screenHeight" -->
+      <button class="button-cancel" @click="addNewRoom = false">Cancel</button>
+    </div>
 
     <chat-window
       :height="screenHeight"
@@ -83,7 +51,6 @@ import { mapGetters, mapActions } from "vuex";
 import ChatWindow from "vue-advanced-chat";
 import "vue-advanced-chat/dist/vue-advanced-chat.css";
 import { CometChat } from "@cometchat-pro/chat";
-// import axios from "axios";
 
 export default {
   name: "Chat-Container",
@@ -161,6 +128,7 @@ export default {
       "getMessagesLoaded",
     ]),
     ...mapGetters("messages", ["getMessages"]),
+    ...mapGetters("users", ["getUserFind"]),
     screenHeight() {
       return "calc(85vh - 70px)";
     },
@@ -175,7 +143,7 @@ export default {
       "sendImageToBackend",
       "sendMultipleMeid",
     ]),
-    ...mapActions("users", ["displayUserss"]),
+    ...mapActions("users", ["displayUserss", "addFriends"]),
     ...mapActions("messages/sendMessage", [
       "sendTextMessage",
       "sendMediaMessage",
@@ -263,6 +231,15 @@ export default {
       this.delete(payload);
     },
 
+    checking(e) {
+      const email = e.target.value;
+      if (email.length < 12) return;
+      const emailValidated = this.validateEmail(email);
+      if (emailValidated !== null) {
+        this.addFriends(emailValidated[0]);
+      }
+    },
+
     typingMessage({ roomId }) {
       // console.log(message);
       let receiverId = roomId;
@@ -288,26 +265,30 @@ export default {
       this.addNewRoom = true;
     },
     async createRoom(form) {
-      this.disableForm = true;
+      // const email = form.target[0].value;
+      // this.disableForm = true;
+      // const uid = Math.floor(Math.random() * 100) + Date.now();
       // const { id } = await firestoreService.addUser({
       //   username: this.addRoomUsername,
       // });
-      // await firestoreService.updateUser(id, { _id: id });
-      // await firestoreService.addRoom({
-      //   users: [id, this.currentUserId],
-      //   lastUpdated: new Date(),
-      // });
-      const newRoom = {
-        roomId: this.uniqueId(),
-        roomName: form.target[0]._value,
-        avatar: require("@/assets/images/users.svg"),
-        users: [],
-      };
-      // console.log(form.target[0]._value);
-      this.addNewRoom = false;
-      this.addRoomUsername = "";
-      this.rooms.push(newRoom);
+      // const newRoom = {
+      //   roomId: this.uniqueId(),
+      //   roomName: form.target[0]._value,
+      //   avatar: require("@/assets/images/users.svg"),
+      //   users: [],
+      // };
+      console.log(form.target[0]._value);
+      // this.addNewRoom = false;
+      // this.addRoomUsername = "";
+      // this.rooms.push(newRoom);
       // this.fetchRooms();
+    },
+    validateEmail(email) {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
     },
 
     fetchRooms() {
@@ -353,3 +334,20 @@ export default {
 <style lang="scss" scoped>
 @import "./Helper/chatContainer.scss";
 </style>
+// //
+<form v-if="addNewRoom" @submit.prevent="createRoom">
+//       <input
+//         v-model="addRoomUsername"
+//         type="email"
+//         placeholder="Enter email"
+//         style="padding: 15px"
+//         required
+//       />
+//       <button type="submit" :disabled="disableForm || !addRoomUsername">
+//         Check
+//       </button>
+//       <button type="submit" :disabled="disableForm || !addRoomUsername">
+//         Add User
+//       </button>
+//       <button class="button-cancel" @click="addNewRoom = false">Cancel</button>
+//     </form>

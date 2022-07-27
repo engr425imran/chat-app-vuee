@@ -20,18 +20,9 @@ body {
     select {
       margin: 10px 0;
     }
-    .button-theme {
-      margin: 10px 10px 0 0;
-      .button-github {
-        height: 23px;
-        img {
-          height: 23px;
-        }
-      }
-    }
   }
   .user-logged {
-    font-size: 12px;
+    font-size: 15px;
     margin-right: 5px;
     margin-top: 10px;
     &.user-logged-dark {
