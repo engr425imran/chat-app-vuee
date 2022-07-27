@@ -22,12 +22,33 @@ const getters = {
   getErrorMessage: (state) => state.errorMessage,
 };
 const actions = {
+  loginWithPhoneNumber({ commit, dispatch }, payload) {
+    commit("SET_LOADING_STATUS", true);
+    commit("SET_DISABLED_INPUT", true);
+
+    const data = {
+      number: payload,
+    };
+    axios
+      .post(`${VUE_APP_API_URL}/chat/user/loginWithNumber`, data)
+      .then((res) => {
+        commit("SET_ACCESS_TOKEN", res.data.access_token);
+        dispatch("loginUserToCometChat", res.data.user);
+
+        console.log(res.data);
+      })
+
+      .catch((error) => {
+        commit("SET_DISABLED_INPUT", false);
+        commit("SET_LOADING_STATUS", false);
+        commit("SET_ERROR_MESSAGE", error.response.data.message);
+      });
+  },
   loginUser: async ({ commit, dispatch }, payload) => {
     if (!payload.email.length && !payload.password.length) {
       commit("SET_ERROR_MESSAGE", "field is required ");
       return;
     }
-    commit("auth/SET_DISABLED_INPUT", true, { root: true });
     commit("SET_LOADING_STATUS", true);
     commit("SET_DISABLED_INPUT", true);
     const body = {
@@ -69,6 +90,7 @@ const actions = {
               router.push("/");
             },
             (error) => {
+              commit("SET_LOADING_STATUS", false);
               commit("SET_LOADING_STATUS", false);
               commit(
                 "SET_ERROR_MESSAGE",
@@ -114,6 +136,9 @@ const actions = {
         console.log("Logout failed with exception:", { error });
       }
     );
+  },
+  resetState({ commit }) {
+    commit("SET_ERROR_MESSAGE", "");
   },
 };
 const mutations = {

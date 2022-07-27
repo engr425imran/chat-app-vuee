@@ -222,8 +222,6 @@ export default {
           payload.arrageFiles[0].audio = true;
           payload.arrageFiles[0].extension = "mp3";
           payload.arrageFiles[0].duration = files[0].duration;
-          // console.log("ss", payload.arrageFiles[0]);
-          console.log(payload);
           this.sendAudioToBackend(payload);
           return;
         }

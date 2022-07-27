@@ -41,7 +41,38 @@
               >
               <hr style="width: 188px; border-top: 1px solid #c4c4c4" />
             </div>
-            <div style="margin-top: 35px">
+            <button
+              v-if="!loginWithNumber"
+              type="button"
+              @click="showLoginWithNumber"
+              class="loginWithNumberBtn"
+            >
+              Login With Number
+            </button>
+            <button
+              v-else
+              class="loginWithNumberBtn"
+              type="button"
+              @click="showLoginWithEmailAndPassword"
+            >
+              Login With email
+            </button>
+
+            <div
+              v-if="loginWithNumber"
+              class="justify-center"
+              style="margin-top: 12px"
+            >
+              <input
+                v-model="numberToLogin"
+                type="text"
+                class="card-input"
+                placeholder="Enter Number"
+                :disabled="getDisableInput"
+                autocomplete="trrr"
+              />
+            </div>
+            <div v-else style="margin-top: 20px">
               <div class="justify-center">
                 <input
                   v-model="user.email"
@@ -105,6 +136,8 @@ export default {
   name: "LoginView",
   data() {
     return {
+      numberToLogin: "",
+      loginWithNumber: false,
       user: {
         email: "",
         password: "",
@@ -119,13 +152,26 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions("auth", ["loginUser"]),
+    ...mapActions("auth", ["loginUser", "loginWithPhoneNumber", "resetState"]),
     login(e) {
+      if (this.loginWithNumber) {
+        this.loginWithPhoneNumber(this.numberToLogin);
+        e.preventDefault();
+        return;
+      }
       this.loginUser(this.user);
       e.preventDefault();
     },
     changeToRegister() {
       router.push("/register");
+    },
+    showLoginWithNumber() {
+      this.resetState();
+      this.loginWithNumber = true;
+    },
+    showLoginWithEmailAndPassword() {
+      this.resetState();
+      this.loginWithNumber = false;
     },
   },
 };
@@ -133,4 +179,10 @@ export default {
 
 <style scoped>
 @import "@/assets/scss/Views/chatLogin.scss";
+.loginWithNumberBtn {
+  color: #0271a1;
+  font-family: "Times New Roman", Times, serif;
+  text-decoration: underline;
+  font-weight: 700;
+}
 </style>

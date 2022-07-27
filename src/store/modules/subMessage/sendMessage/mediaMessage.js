@@ -22,7 +22,7 @@ const actions = {
       .post(`${VUE_APP_API_URL}/chat/user/audio-files`, data, config)
       .then((res) => {
         payload.arrageFiles[0].url = res.data.filePath;
-        console.log(payload);
+        // console.log(payload);
         console.log("requent wen succsesful to backend");
         dispatch("sendAudioMessage", payload);
       })
@@ -56,7 +56,7 @@ const actions = {
 
     CometChat.sendMediaMessage(mediaMessage).then(
       (mediaMessage) => {
-        console.log("Message sent successfully:", mediaMessage);
+        // console.log("Message sent successfully:", mediaMessage);
         const messagePushToState = {
           _id: mediaMessage.id,
           indexId: mediaMessage.id,
