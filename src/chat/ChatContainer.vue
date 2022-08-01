@@ -1,21 +1,23 @@
 <template>
   <div class="window-container" :class="{ 'window-mobile': isDevice }">
-    <div v-if="addNewRoom" @submit.prevent="createRoom">
+    <form v-if="getHideAddUserButton" @submit.prevent="createRoom">
       <input
         @keyup="checking"
         v-model="addRoomUsername"
         type="email"
         placeholder="Enter email"
         style="padding: 15px"
-        required
       />
 
       <button type="submit" :disabled="getUserFind">
         <!-- <button type="submit" :disabled="disableForm || !addRoomUsername"> -->
         Add User
       </button>
-      <button class="button-cancel" @click="addNewRoom = false">Cancel</button>
-    </div>
+      <button class="button-cancel" @click="addFriendInCometChat">
+        Cancel
+      </button>
+      <!-- <button class="button-cancel" @click="cancelNewRoom">Cancel</button> -->
+    </form>
 
     <chat-window
       :height="screenHeight"
@@ -47,7 +49,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import ChatWindow from "vue-advanced-chat";
 import "vue-advanced-chat/dist/vue-advanced-chat.css";
 import { CometChat } from "@cometchat-pro/chat";
@@ -128,13 +130,14 @@ export default {
       "getMessagesLoaded",
     ]),
     ...mapGetters("messages", ["getMessages"]),
-    ...mapGetters("users", ["getUserFind"]),
+    ...mapGetters("users", ["getUserFind", "getHideAddUserButton"]),
     screenHeight() {
       return "calc(85vh - 70px)";
     },
   },
 
   methods: {
+    ...mapMutations("users", ["SET_HIDE_ADD_USER_BUTTON"]),
     ...mapActions("conversation", ["getConverstionforUserr"]),
     ...mapActions("messages", ["getOldMessagesBetweenUserr", "markAsReadd"]),
     ...mapActions("messages/sendMessage/mediaMessage", [
@@ -143,12 +146,19 @@ export default {
       "sendImageToBackend",
       "sendMultipleMeid",
     ]),
-    ...mapActions("users", ["displayUserss", "addFriends"]),
+    ...mapActions("users", [
+      "displayUserss",
+      "addFriends",
+      "searchUserInCometChat",
+      "addRoomForUser",
+      "addFriendInCometChat",
+    ]),
     ...mapActions("messages/sendMessage", [
       "sendTextMessage",
       "sendMediaMessage",
     ]),
     ...mapActions("messages/receiveMessage", ["listningforMessagee"]),
+    ...mapActions("listFriends", ["getFriendsForUsers"]),
     ...mapActions("messages/deleteMessage", ["delete"]),
     heightCheck() {
       console.log(window.innerHeight);
@@ -213,6 +223,9 @@ export default {
       });
       return formattedFiles;
     },
+    cancelNewRoom() {
+      this.SET_HIDE_ADD_USER_BUTTON(false);
+    },
     // --------------------------------------    **************   ---------------------------------------------
 
     // --------------------------------------   Recive Message Functons   ---------------------------------------------
@@ -236,7 +249,7 @@ export default {
       if (email.length < 12) return;
       const emailValidated = this.validateEmail(email);
       if (emailValidated !== null) {
-        this.addFriends(emailValidated[0]);
+        this.searchUserInCometChat(emailValidated[0]);
       }
     },
 
@@ -261,27 +274,12 @@ export default {
       console.log("fetchMoreRooms");
     },
     addRoom() {
+      this.SET_HIDE_ADD_USER_BUTTON(true);
       this.resetForms();
-      this.addNewRoom = true;
     },
-    async createRoom(form) {
-      // const email = form.target[0].value;
-      // this.disableForm = true;
-      // const uid = Math.floor(Math.random() * 100) + Date.now();
-      // const { id } = await firestoreService.addUser({
-      //   username: this.addRoomUsername,
-      // });
-      // const newRoom = {
-      //   roomId: this.uniqueId(),
-      //   roomName: form.target[0]._value,
-      //   avatar: require("@/assets/images/users.svg"),
-      //   users: [],
-      // };
-      console.log(form.target[0]._value);
-      // this.addNewRoom = false;
-      // this.addRoomUsername = "";
-      // this.rooms.push(newRoom);
-      // this.fetchRooms();
+    async createRoom() {
+      console.log("adding user to room");
+      this.addRoomForUser();
     },
     validateEmail(email) {
       return String(email)
@@ -327,6 +325,7 @@ export default {
   },
   created() {
     this.listningforMessage();
+    this.getFriendsForUsers();
   },
 };
 </script>
@@ -334,20 +333,3 @@ export default {
 <style lang="scss" scoped>
 @import "./Helper/chatContainer.scss";
 </style>
-// //
-<form v-if="addNewRoom" @submit.prevent="createRoom">
-//       <input
-//         v-model="addRoomUsername"
-//         type="email"
-//         placeholder="Enter email"
-//         style="padding: 15px"
-//         required
-//       />
-//       <button type="submit" :disabled="disableForm || !addRoomUsername">
-//         Check
-//       </button>
-//       <button type="submit" :disabled="disableForm || !addRoomUsername">
-//         Add User
-//       </button>
-//       <button class="button-cancel" @click="addNewRoom = false">Cancel</button>
-//     </form>

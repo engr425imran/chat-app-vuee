@@ -5,6 +5,7 @@ import messages from "./modules/subMessage/messages";
 import conversation from "./modules/coversation";
 import register from "./modules/register";
 import users from "./modules/users";
+import listFriends from "./modules/listFriends";
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {},
@@ -17,5 +18,6 @@ export default new Vuex.Store({
     messages,
     conversation,
     users,
+    listFriends,
   },
 });

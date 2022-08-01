@@ -4,12 +4,18 @@ const VUE_APP_API_URL = process.env.VUE_APP_BACKEND_URL;
 
 const state = {
   irma: "khan",
+  hideAddUserButton: false,
   userFind: true,
+  dummy: localStorage.getItem("dummy")
+    ? JSON.parse(localStorage.getItem("dummy"))
+    : null,
 };
 
 const getters = {
   getIk: (state) => state.irma,
   getUserFind: (state) => state.userFind,
+  getHideAddUserButton: (state) => state.hideAddUserButton,
+  getDummy: (state) => state.dummy,
 };
 
 const actions = {
@@ -107,7 +113,7 @@ const actions = {
       });
   },
 
-  addFriends({ commit }, payload) {
+  searchUserInCometChat({ commit }, payload) {
     const data = {
       email: payload,
     };
@@ -115,17 +121,95 @@ const actions = {
       .post(`${VUE_APP_API_URL}/chat/user/searchChatUser`, data)
       .then((res) => {
         console.log(res.data);
-        commit("SET_USER_FIND", false);
+        localStorage.setItem("dummy", JSON.stringify(res.data.user));
+
+        commit("SET_USER_FIND", res.data.user);
       })
       .catch((error) => {
         console.log(error);
-        commit("SET_IRMA", "ss");
+      });
+  },
+  addRoomForUser({ getters, rootGetters, commit, dispatch }) {
+    dispatch("addFriendInCometChat", getters.getDummy.uid);
+    commit("conversation/SET_CONVERSATION_TAB_SELECTED", false, { root: true });
+    commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", true, {
+      root: true,
+    });
+    // // .friendsOnly(true);
+    var roomObject;
+    // // console.log(usersList);
+    let newRooms = [];
+    roomObject = {};
+    roomObject["roomId"] = getters.getDummy.uid;
+    roomObject["roomName"] = getters.getDummy.first_name;
+    roomObject["avatar"] = getters.getDummy.avatar;
+    roomObject["uid"] = getters.getDummy.uid;
+    let users = [
+      {
+        _id: rootGetters["auth/getUser"].uid,
+        username: rootGetters["auth/getUser"].name,
+        avatar: rootGetters["auth/getUser"].avatar,
+        status: {
+          state: rootGetters["auth/getUser"].status,
+          lastChanged: "live",
+        },
+      },
+
+      {
+        _id: getters.getDummy.uid,
+        username: getters.getDummy.last_name,
+        avatar: getters.getDummy.avatar,
+        status: {
+          state: "offline",
+          lastChanged: new Date().toLocaleString("en-us", {
+            hour: "numeric",
+            minute: "numeric",
+            day: "2-digit",
+          }),
+        },
+      },
+    ];
+    roomObject["users"] = users;
+    console.log(roomObject);
+    newRooms.push(roomObject);
+    console.log(newRooms);
+    commit("conversation/SET_ROOMS", newRooms, { root: true });
+    commit("conversation/SET_INITIAL_STAGE_ROOMS_LOADING", false, {
+      root: true,
+    });
+    commit("SET_HIDE_ADD_USER_BUTTON", false);
+  },
+
+  addFriendInCometChat({ commit, rootGetters }, payload) {
+    let usersIds = [payload];
+
+    let data = {
+      userUID: rootGetters["auth/getUser"].uid,
+      userIDs: usersIds,
+      // userIDs: usersIds.push(payload),
+    };
+    axios
+      .post(`${VUE_APP_API_URL}/chat/user/addFriends`, data)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+        commit("SET");
       });
   },
 };
+
 const mutations = {
   SET_USER_FIND: (state, payload) => {
-    state.userFind = payload;
+    state.dummy = payload;
+    state.userFind = false;
+  },
+  SET_HIDE_ADD_USER_BUTTON: (state, payload) => {
+    state.hideAddUserButton = payload;
+  },
+  SET: () => {
+    console.log("rrr");
   },
 };
 export default {

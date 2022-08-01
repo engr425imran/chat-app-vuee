@@ -18,7 +18,7 @@
           outlined
           elevation="0"
         >
-          <form @submit="login">
+          <form @submit.prevent="login">
             <p class="heading">Sign in to Shifl chat bot</p>
             <input
               type="button"
@@ -153,14 +153,12 @@ export default {
   },
   methods: {
     ...mapActions("auth", ["loginUser", "loginWithPhoneNumber", "resetState"]),
-    login(e) {
+    login() {
       if (this.loginWithNumber) {
         this.loginWithPhoneNumber(this.numberToLogin);
-        e.preventDefault();
         return;
       }
       this.loginUser(this.user);
-      e.preventDefault();
     },
     changeToRegister() {
       router.push("/register");
